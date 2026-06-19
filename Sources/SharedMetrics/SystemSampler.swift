@@ -217,6 +217,15 @@ public final class SystemSampler: @unchecked Sendable {
         self.systemInfo = Self.sampleSystemInfo()
     }
 
+    public func resetNetworkBaselines() {
+        sampleLock.lock()
+        defer { sampleLock.unlock() }
+
+        previousNetworkInBytes = nil
+        previousNetworkOutBytes = nil
+        previousNetworkDate = nil
+    }
+
     public func sample(now: Date = Date()) -> MetricSnapshot {
         sampleLock.lock()
         defer { sampleLock.unlock() }

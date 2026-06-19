@@ -58,7 +58,7 @@ if [[ -d "$SOURCE_WIDGET_EXTENSION" ]]; then
 fi
 
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \
-  -f -R -trusted "$INSTALLED_APP"
+  -f "$INSTALLED_APP"
 
 wait_for_widget_registration
 pluginkit -e use -i "$WIDGET_BUNDLE_IDENTIFIER" >/dev/null || true

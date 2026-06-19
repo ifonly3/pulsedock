@@ -4908,8 +4908,9 @@ import Testing
     #expect(appDelegate.contains("private func prepareStatusPopover(_ popover: NSPopover, for button: NSStatusBarButton) -> StatusPopoverPresentation"))
     #expect(appDelegate.contains("let presentation = prepareStatusPopover(popover, for: button)"))
     #expect(appDelegate.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)"))
-    #expect(appDelegate.contains("private func statusPopoverSize(for button: NSStatusBarButton) -> NSSize"))
-    #expect(appDelegate.contains("private func statusPopoverPreferredEdge(for button: NSStatusBarButton, contentSize: NSSize) -> NSRectEdge"))
+    #expect(appDelegate.contains("private func statusPopoverPlacement(for button: NSStatusBarButton) -> MenuBarPopoverGeometry.Placement"))
+    #expect(!appDelegate.contains("private func statusPopoverSize(for button: NSStatusBarButton) -> NSSize"))
+    #expect(!appDelegate.contains("private func statusPopoverPreferredEdge(for button: NSStatusBarButton, contentSize: NSSize) -> NSRectEdge"))
     #expect(appDelegate.contains("button.window?.screen?.visibleFrame ?? NSScreen.main?.visibleFrame"))
     #expect(appDelegate.contains("window.convertToScreen(button.convert(button.bounds, to: nil))"))
     #expect(appDelegate.contains("MenuPopoverLayout.minimumHeight"))
@@ -5102,7 +5103,7 @@ import Testing
 
     #expect(appDelegate.contains("private func statusPopoverAnchorKind(for button: NSStatusBarButton) -> MenuBarPopoverGeometry.AnchorKind"))
     #expect(appDelegate.contains("isStatusBarAnchorWindow(button.window) ? .statusBar : .regular"))
-    #expect(appDelegate.contains("return statusPopoverPlacement(for: button).preferredEdge.nsRectEdge"))
+    #expect(appDelegate.contains("preferredEdge: placement.preferredEdge.nsRectEdge"))
     #expect(audit.contains("Menu bar popover treats the NSStatusBar window as a fixed top anchor, always opening downward while clamping height from the actual anchor frame and visible screen."))
     #expect(audit.contains("Source-level tests require the menu bar popover to bypass dynamic edge inference for NSStatusBar windows."))
 }
@@ -5122,7 +5123,7 @@ import Testing
     #expect(appDelegate.contains("window.level.rawValue >= NSWindow.Level.statusBar.rawValue"))
     #expect(appDelegate.contains("private func statusPopoverAnchorKind(for button: NSStatusBarButton) -> MenuBarPopoverGeometry.AnchorKind"))
     #expect(appDelegate.contains("isStatusBarAnchorWindow(button.window) ? .statusBar : .regular"))
-    #expect(appDelegate.contains("return statusPopoverPlacement(for: button).preferredEdge.nsRectEdge"))
+    #expect(appDelegate.contains("preferredEdge: placement.preferredEdge.nsRectEdge"))
     #expect(!appDelegate.contains("if button.window?.level == .statusBar, let visibleFrame = statusPopoverVisibleFrame(for: button)"))
     #expect(!appDelegate.contains("guard button.window?.level != .statusBar else { return .minY }"))
     #expect(audit.contains("Menu bar popover treats status-bar-level or higher anchor windows as fixed top anchors, so menu extra window-level differences cannot trigger transient off-screen edge calculation."))
@@ -7523,8 +7524,8 @@ import Testing
     )
 
     #expect(metricsStore.contains("timer?.invalidate()\n            timer = nil"))
-    #expect(metricsStore.contains("} else {\n            scheduleTimer()\n            startInitialRefresh()"))
-    #expect(metricsStore.contains("WidgetCenter.shared.reloadTimelines(ofKind: \"SystemDashboardWidget\")"))
+    #expect(metricsStore.contains("} else {\n            sampler.resetNetworkBaselines()\n            scheduleTimer()\n            startInitialRefresh()"))
+    #expect(metricsStore.contains("WidgetCenter.shared.reloadTimelines(ofKind: WidgetTimelineKind.pulseDock)"))
     #expect(!metricsStore.contains("WidgetCenter.shared.reloadAllTimelines()"))
     #expect(!widget.contains("Thread.sleep"))
 }
@@ -7570,4 +7571,72 @@ import Testing
     #expect(chargingHigh.powerStatusTone == .normal)
     #expect(batteryHigh.powerStatusTone == .warning)
     #expect(batteryLow.powerStatusTone == .critical)
+}
+
+@Test func releaseScriptsRegisterAppBundlesWithoutInvalidLsregisterOptions() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let packageScript = try String(contentsOf: root.appendingPathComponent("scripts/package-app.sh"), encoding: .utf8)
+    let installScript = try String(contentsOf: root.appendingPathComponent("scripts/install-system-widget.sh"), encoding: .utf8)
+
+    for script in [packageScript, installScript] {
+        #expect(!script.contains("-trusted"))
+        #expect(!script.contains("-f -R"))
+    }
+
+    #expect(packageScript.contains("lsregister \\\n  -f \"$APP_DIR\""))
+    #expect(installScript.contains("lsregister \\\n  -f \"$INSTALLED_APP\""))
+}
+
+@Test func widgetTimelineKindUsesPulseDockSharedConstant() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let widgetKind = (try? String(contentsOf: root.appendingPathComponent("Sources/SharedMetrics/WidgetTimelineKind.swift"), encoding: .utf8)) ?? ""
+    let metricsStore = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"), encoding: .utf8)
+    let widget = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"), encoding: .utf8)
+
+    #expect(widgetKind.contains("public enum WidgetTimelineKind"))
+    #expect(widgetKind.contains("public static let pulseDock = \"PulseDockWidget\""))
+    #expect(metricsStore.contains("WidgetCenter.shared.reloadTimelines(ofKind: WidgetTimelineKind.pulseDock)"))
+    #expect(widget.contains("let kind = WidgetTimelineKind.pulseDock"))
+    #expect(!metricsStore.contains("\"SystemDashboardWidget\""))
+    #expect(!widget.contains("let kind = \"SystemDashboardWidget\""))
+}
+
+@Test func pauseResumeResetsNetworkBaselinesAndRejectsStaleRefreshResults() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let sampler = try String(contentsOf: root.appendingPathComponent("Sources/SharedMetrics/SystemSampler.swift"), encoding: .utf8)
+    let metricsStore = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"), encoding: .utf8)
+
+    #expect(sampler.contains("public func resetNetworkBaselines()"))
+    #expect(sampler.contains("previousNetworkInBytes = nil"))
+    #expect(sampler.contains("previousNetworkOutBytes = nil"))
+    #expect(sampler.contains("previousNetworkDate = nil"))
+    #expect(metricsStore.contains("sampler.resetNetworkBaselines()"))
+    #expect(metricsStore.contains("private var refreshGeneration = 0"))
+    #expect(metricsStore.contains("refreshGeneration += 1"))
+    #expect(metricsStore.contains("let generation = refreshGeneration"))
+    #expect(metricsStore.contains("guard generation == refreshGeneration else { return }"))
+}
+
+@Test func appKitPolishCoversAboutStatusItemAndReadOnlyWidgetRefreshSetting() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
+    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
+
+    #expect(appDelegate.contains("NSApplication.AboutPanelOptionKey(rawValue: \"Copyright\"): \"© 2026 张轩赫\""))
+    #expect(appDelegate.contains("if let statusItem {"))
+    #expect(appDelegate.contains("NSStatusBar.system.removeStatusItem(statusItem)"))
+    #expect(appDelegate.contains("self.statusItem = nil"))
+    #expect(!appDelegate.contains("private func statusPopoverSize(for button: NSStatusBarButton) -> NSSize"))
+    #expect(!appDelegate.contains("private func statusPopoverPreferredEdge(for button: NSStatusBarButton, contentSize: NSSize) -> NSRectEdge"))
+    #expect(dashboardView.contains("SettingReadOnlyRow(title: \"小组件刷新\""))
+    #expect(dashboardView.contains("private struct SettingReadOnlyRow: View"))
+    #expect(dashboardView.contains(".opacity(0.78)"))
+}
+
+@Test func widgetExtensionDeclaresAttributesForGeneratedBundleMetadata() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let widgetInfo = try String(contentsOf: root.appendingPathComponent("Resources/WidgetInfo.plist"), encoding: .utf8)
+
+    #expect(widgetInfo.contains("<key>NSExtensionAttributes</key>"))
+    #expect(widgetInfo.contains("<dict/>"))
 }

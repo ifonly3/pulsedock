@@ -56,6 +56,7 @@ final class MetricsStore: ObservableObject {
     private var timer: Timer?
     private var initialRefreshTask: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
+    private var refreshGeneration = 0
     private var lastWidgetReloadDate: Date?
     private var lastHistoryPersistenceDate: Date?
     private let initialSampleWarmUpDelayNanoseconds: UInt64 = 150_000_000
@@ -106,6 +107,7 @@ final class MetricsStore: ObservableObject {
             timer?.invalidate()
             timer = nil
         } else {
+            sampler.resetNetworkBaselines()
             scheduleTimer()
             startInitialRefresh()
         }
@@ -283,6 +285,7 @@ final class MetricsStore: ObservableObject {
     }
 
     private func cancelRefreshTask() {
+        refreshGeneration += 1
         refreshTask?.cancel()
         refreshTask = nil
     }
@@ -291,12 +294,14 @@ final class MetricsStore: ObservableObject {
         guard !isPaused, refreshTask == nil else { return }
 
         let sampler = self.sampler
+        let generation = refreshGeneration
         refreshTask = Task { @MainActor [weak self] in
             let sampledSnapshot = await Task.detached(priority: .userInitiated) {
                 sampler.sample()
             }.value
 
             guard let self else { return }
+            guard generation == refreshGeneration else { return }
             refreshTask = nil
             guard !Task.isCancelled, !isPaused else { return }
 
@@ -368,7 +373,7 @@ final class MetricsStore: ObservableObject {
         lastWidgetReloadDate = date
 
 #if canImport(WidgetKit)
-        WidgetCenter.shared.reloadTimelines(ofKind: "SystemDashboardWidget")
+        WidgetCenter.shared.reloadTimelines(ofKind: WidgetTimelineKind.pulseDock)
 #endif
     }
 

@@ -893,7 +893,7 @@ private struct SettingsPage: View {
                             .toggleStyle(.switch)
                             .labelsHidden()
                         }
-                        SettingRow(title: "小组件刷新", detail: "由系统按时间线调度", control: "5m")
+                        SettingReadOnlyRow(title: "小组件刷新", detail: "由系统按时间线调度", control: "5m")
                         SettingControlRow(title: "本地历史", detail: "保留最近 \(store.historyDepth.sampleCount) 次采样") {
                             Picker("本地历史", selection: Binding(
                                 get: { store.historyDepth },
@@ -1603,6 +1603,34 @@ private struct SettingRow: View {
         }
         .padding(12)
         .background(DashboardColor.panelAlt, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+}
+
+private struct SettingReadOnlyRow: View {
+    let title: String
+    let detail: String
+    let control: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.system(size: 13, weight: .semibold))
+                Text(detail)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(DashboardColor.muted)
+            }
+            Spacer()
+            Text(control)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(DashboardColor.muted)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(.quaternary.opacity(0.40), in: Capsule())
+        }
+        .padding(12)
+        .background(DashboardColor.panelAlt.opacity(0.72), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .opacity(0.78)
     }
 }
 

@@ -148,7 +148,7 @@ struct SystemDashboardWidgetView: View {
 }
 
 struct SystemDashboardWidget: Widget {
-    let kind = "SystemDashboardWidget"
+    let kind = WidgetTimelineKind.pulseDock
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: SystemProvider()) { entry in

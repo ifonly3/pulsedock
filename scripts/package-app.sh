@@ -77,6 +77,6 @@ if [[ "$PACKAGE_SIGNING_MODE" == "adhoc" ]]; then
 fi
 
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \
-  -f -R -trusted "$APP_DIR"
+  -f "$APP_DIR"
 
 echo "$APP_DIR"

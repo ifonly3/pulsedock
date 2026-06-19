@@ -10,10 +10,18 @@
 - [x] Widget 只刷新自己的 timeline kind
 - [x] 暂停时停止刷新定时器
 - [x] 修正电源状态颜色与进程启动日期显示
+- [x] 修正 lsregister 本地注册命令参数
+- [x] 将 Widget timeline kind 统一为 PulseDockWidget 共享常量
+- [x] 暂停恢复时重置网络速率基线并忽略陈旧 refresh 结果
+- [x] About 面板补版权信息并在退出时清理菜单栏状态项
+- [x] 将小组件刷新设置改为只读视觉样式
+- [x] 移除未使用的菜单栏 popover helper
+- [x] 补 Widget extension attributes 元数据
 
 ## Still Open
 
 - [ ] 评估 App Group 共享最近一次样本
+- [ ] 评估是否将内部 Xcode target/scheme 从 SystemDashboard 迁移为 PulseDock
 
 ## Notes
 

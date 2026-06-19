@@ -58,6 +58,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         store.stop()
+        if let statusItem {
+            NSStatusBar.system.removeStatusItem(statusItem)
+            self.statusItem = nil
+        }
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -154,7 +158,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.orderFrontStandardAboutPanel(options: [
             .applicationName: "Pulse Dock",
             .applicationVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0",
-            .version: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
+            .version: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1",
+            NSApplication.AboutPanelOptionKey(rawValue: "Copyright"): "© 2026 张轩赫"
         ])
     }
 
@@ -321,15 +326,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             preferredEdge: placement.preferredEdge.nsRectEdge,
             visibleFrame: visibleFrame
         )
-    }
-
-    private func statusPopoverSize(for button: NSStatusBarButton) -> NSSize {
-        statusPopoverPlacement(for: button).size
-    }
-
-    private func statusPopoverPreferredEdge(for button: NSStatusBarButton, contentSize: NSSize) -> NSRectEdge {
-        _ = contentSize
-        return statusPopoverPlacement(for: button).preferredEdge.nsRectEdge
     }
 
     private func statusPopoverPlacement(for button: NSStatusBarButton) -> MenuBarPopoverGeometry.Placement {
