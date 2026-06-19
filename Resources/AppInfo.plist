@@ -31,5 +31,7 @@
   <string>public.app-category.utilities</string>
   <key>NSHighResolutionCapable</key>
   <true/>
+  <key>NSHumanReadableCopyright</key>
+  <string>© 2026 乔尼的铃角</string>
 </dict>
 </plist>

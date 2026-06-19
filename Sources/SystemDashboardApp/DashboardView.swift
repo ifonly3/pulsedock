@@ -1022,6 +1022,10 @@ private struct MetricCard: View {
         .padding(15)
         .frame(minHeight: 184, alignment: .topLeading)
         .panel(cornerRadius: 8)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
+        .accessibilityHint(detail)
     }
 }
 
@@ -1195,6 +1199,9 @@ private struct RingGauge: View {
                     .foregroundStyle(DashboardColor.muted)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
     }
 }
 
@@ -1262,6 +1269,8 @@ private struct Sparkline: View {
             context.stroke(line, with: .color(tint), lineWidth: 2)
         }
         .background(tint.opacity(0.05), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+        .accessibilityLabel("趋势图")
+        .accessibilityValue(sparklineAccessibilityValue)
     }
 
     private var preparedValues: [Double] {
@@ -1274,6 +1283,11 @@ private struct Sparkline: View {
         }
 
         return []
+    }
+
+    private var sparklineAccessibilityValue: String {
+        guard let lastValue = preparedValues.last else { return "未报告" }
+        return MetricFormatting.percentage(lastValue)
     }
 }
 
@@ -1372,10 +1386,13 @@ private struct MemorySegmentBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if snapshot.hasMemoryUsageReport && snapshot.hasMemoryCompositionReport {
-                HStack(spacing: 2) {
-                    segment(snapshot.memoryUsedBytes, color: DashboardColor.blue)
-                    segment(snapshot.memoryCachedBytes, color: DashboardColor.cyan)
-                    segment(snapshot.memoryFreeBytes, color: Color.secondary.opacity(0.20))
+                GeometryReader { proxy in
+                    let availableWidth = max(proxy.size.width - 4, 0)
+                    HStack(spacing: 2) {
+                        segment(snapshot.memoryUsedBytes, color: DashboardColor.blue, in: availableWidth)
+                        segment(snapshot.memoryCachedBytes, color: DashboardColor.cyan, in: availableWidth)
+                        segment(snapshot.memoryFreeBytes, color: Color.secondary.opacity(0.20), in: availableWidth)
+                    }
                 }
                 .frame(height: 16)
                 .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
@@ -1393,10 +1410,15 @@ private struct MemorySegmentBar: View {
         }
     }
 
-    private func segment(_ bytes: UInt64, color: Color) -> some View {
+    private func segment(_ bytes: UInt64, color: Color, in totalWidth: CGFloat) -> some View {
         Rectangle()
             .fill(color)
-            .frame(maxWidth: max(CGFloat(normalizedBytes(bytes, total: snapshot.memoryTotalBytes)) * 420, 8))
+            .frame(width: segmentWidth(bytes, in: totalWidth))
+    }
+
+    private func segmentWidth(_ bytes: UInt64, in totalWidth: CGFloat) -> CGFloat {
+        let width = CGFloat(normalizedBytes(bytes, total: snapshot.memoryTotalBytes)) * totalWidth
+        return max(width, 8)
     }
 }
 
@@ -1748,6 +1770,7 @@ private struct StatusDot: View {
             .fill(color)
             .frame(width: 7, height: 7)
             .shadow(color: color.opacity(0.32), radius: 4)
+            .accessibilityHidden(true)
     }
 }
 

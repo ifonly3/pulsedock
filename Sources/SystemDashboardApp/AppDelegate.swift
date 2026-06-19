@@ -158,8 +158,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.orderFrontStandardAboutPanel(options: [
             .applicationName: "Pulse Dock",
             .applicationVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0",
-            .version: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1",
-            NSApplication.AboutPanelOptionKey(rawValue: "Copyright"): "© 2026 张轩赫"
+            .version: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
         ])
     }
 
@@ -192,6 +191,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             defer: false
         )
         window.title = "Pulse Dock"
+        window.setFrameAutosaveName("PulseDockMainWindow")
         window.minSize = NSSize(width: 1180, height: 760)
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: DashboardView(store: store, router: router))

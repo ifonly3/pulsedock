@@ -6695,8 +6695,8 @@ import Testing
     #expect(!sampler.contains("let usedPages = UInt64(stats.active_count + stats.inactive_count + stats.wire_count + stats.compressor_page_count)"))
     #expect(sampler.contains("let cachedPages = UInt64(stats.inactive_count + stats.purgeable_count)"))
     #expect(sampler.contains("let reclaimableFreePages = UInt64(stats.free_count + stats.speculative_count)"))
-    #expect(dashboardView.contains("segment(snapshot.memoryUsedBytes, color: DashboardColor.blue)"))
-    #expect(dashboardView.contains("segment(snapshot.memoryCachedBytes, color: DashboardColor.cyan)"))
+    #expect(dashboardView.contains("segment(snapshot.memoryUsedBytes, color: DashboardColor.blue, in: availableWidth)"))
+    #expect(dashboardView.contains("segment(snapshot.memoryCachedBytes, color: DashboardColor.cyan, in: availableWidth)"))
     #expect(audit.contains("used memory excludes inactive cache pages"))
 }
 
@@ -7415,6 +7415,14 @@ import Testing
     #expect(checklist.contains("- [x] Widget 只刷新自己的 timeline kind"))
     #expect(checklist.contains("- [x] 暂停时停止刷新定时器"))
     #expect(checklist.contains("- [x] 修正电源状态颜色与进程启动日期显示"))
+    #expect(checklist.contains("- [x] 修正 lsregister 本地注册命令参数"))
+    #expect(checklist.contains("- [x] 将 Widget timeline kind 统一为 PulseDockWidget 共享常量"))
+    #expect(checklist.contains("- [x] 暂停恢复时重置网络速率基线并忽略陈旧 refresh 结果"))
+    #expect(checklist.contains("- [x] About 版权改由 Info.plist 的 NSHumanReadableCopyright 提供"))
+    #expect(checklist.contains("- [x] 统一 LICENSE 与 About 面板版权归属"))
+    #expect(checklist.contains("- [x] 为主窗口启用 frame autosave 记住用户窗口位置"))
+    #expect(checklist.contains("- [x] 将内存分段条从固定宽度改为自适应可用宽度"))
+    #expect(checklist.contains("- [x] 为核心自绘仪表、趋势图和状态点补基础 accessibility 语义"))
     #expect(checklist.contains("- [ ] 评估 App Group 共享最近一次样本"))
 }
 
@@ -7428,7 +7436,7 @@ import Testing
     #expect(readme.contains("scripts/archive-app-store.sh"))
     #expect(readme.contains("APP_BUNDLE_IDENTIFIER=com.ifonly3.pulsedock"))
     #expect(license.contains("MIT License"))
-    #expect(license.contains("Pulse Dock contributors"))
+    #expect(license.contains("乔尼的铃角"))
 }
 
 @Test func appStoreIdentityUsesPulseDockAcrossBundlesScriptsAndSurfaces() throws {
@@ -7622,7 +7630,7 @@ import Testing
     let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
     let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
 
-    #expect(appDelegate.contains("NSApplication.AboutPanelOptionKey(rawValue: \"Copyright\"): \"© 2026 张轩赫\""))
+    #expect(!appDelegate.contains("NSApplication.AboutPanelOptionKey(rawValue: \"Copyright\")"))
     #expect(appDelegate.contains("if let statusItem {"))
     #expect(appDelegate.contains("NSStatusBar.system.removeStatusItem(statusItem)"))
     #expect(appDelegate.contains("self.statusItem = nil"))
@@ -7639,4 +7647,56 @@ import Testing
 
     #expect(widgetInfo.contains("<key>NSExtensionAttributes</key>"))
     #expect(widgetInfo.contains("<dict/>"))
+}
+
+@Test func aboutPanelUsesInfoPlistCopyrightAndLicenseMatchesOwner() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let appInfo = try String(contentsOf: root.appendingPathComponent("Resources/AppInfo.plist"), encoding: .utf8)
+    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
+    let license = try String(contentsOf: root.appendingPathComponent("LICENSE"), encoding: .utf8)
+
+    #expect(appInfo.contains("<key>NSHumanReadableCopyright</key>"))
+    #expect(appInfo.contains("<string>© 2026 乔尼的铃角</string>"))
+    #expect(!appDelegate.contains("NSApplication.AboutPanelOptionKey(rawValue: \"Copyright\")"))
+    #expect(license.contains("Copyright (c) 2026 乔尼的铃角"))
+    #expect(!license.contains("Copyright (c) 2026 Pulse Dock contributors"))
+}
+
+@Test func mainWindowPersistsUserFrameAcrossLaunches() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
+    let autosavePosition = appDelegate.range(of: "window.setFrameAutosaveName(\"PulseDockMainWindow\")")?.lowerBound
+    let centerPosition = appDelegate.range(of: "window.center()")?.lowerBound
+
+    #expect(appDelegate.contains("window.setFrameAutosaveName(\"PulseDockMainWindow\")"))
+    #expect(autosavePosition != nil)
+    #expect(centerPosition != nil)
+    if let autosavePosition, let centerPosition {
+        #expect(autosavePosition < centerPosition)
+    }
+}
+
+@Test func memorySegmentBarUsesAvailableWidthInsteadOfMagicConstant() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
+    let start = try #require(dashboardView.range(of: "private struct MemorySegmentBar")?.lowerBound)
+    let end = dashboardView.range(of: "private struct CapacitySegment")?.lowerBound ?? dashboardView.endIndex
+    let memorySegmentBar = String(dashboardView[start..<end])
+
+    #expect(memorySegmentBar.contains("GeometryReader { proxy in"))
+    #expect(memorySegmentBar.contains("proxy.size.width"))
+    #expect(memorySegmentBar.contains("private func segmentWidth(_ bytes: UInt64, in totalWidth: CGFloat) -> CGFloat"))
+    #expect(!memorySegmentBar.contains("* 420"))
+}
+
+@Test func customDashboardVisualControlsExposeAccessibilitySemantics() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
+
+    #expect(dashboardView.contains(".accessibilityElement(children: .combine)"))
+    #expect(dashboardView.contains(".accessibilityLabel(\"\\(title), \\(value)\""))
+    #expect(dashboardView.contains(".accessibilityValue(progress.map(MetricFormatting.percentage) ?? \"未报告\")"))
+    #expect(dashboardView.contains(".accessibilityLabel(\"趋势图\""))
+    #expect(dashboardView.contains(".accessibilityValue(sparklineAccessibilityValue)"))
+    #expect(dashboardView.contains(".accessibilityHidden(true)"))
 }

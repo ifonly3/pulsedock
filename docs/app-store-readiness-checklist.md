@@ -14,6 +14,11 @@
 - [x] 将 Widget timeline kind 统一为 PulseDockWidget 共享常量
 - [x] 暂停恢复时重置网络速率基线并忽略陈旧 refresh 结果
 - [x] About 面板补版权信息并在退出时清理菜单栏状态项
+- [x] About 版权改由 Info.plist 的 NSHumanReadableCopyright 提供
+- [x] 统一 LICENSE 与 About 面板版权归属
+- [x] 为主窗口启用 frame autosave 记住用户窗口位置
+- [x] 将内存分段条从固定宽度改为自适应可用宽度
+- [x] 为核心自绘仪表、趋势图和状态点补基础 accessibility 语义
 - [x] 将小组件刷新设置改为只读视觉样式
 - [x] 移除未使用的菜单栏 popover helper
 - [x] 补 Widget extension attributes 元数据
