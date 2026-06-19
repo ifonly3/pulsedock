@@ -1,4 +1,4 @@
-# System Dashboard Data Capability Audit
+# Pulse Dock Data Capability Audit
 
 Last updated: 2026-06-13
 

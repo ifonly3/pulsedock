@@ -2,13 +2,13 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_DIR="$ROOT_DIR/dist/System Dashboard.app"
-APP_BUNDLE_IDENTIFIER="${APP_BUNDLE_IDENTIFIER:-local.system-dashboard}"
+APP_DIR="$ROOT_DIR/dist/Pulse Dock.app"
+APP_BUNDLE_IDENTIFIER="${APP_BUNDLE_IDENTIFIER:-local.pulsedock}"
 WIDGET_BUNDLE_IDENTIFIER="${WIDGET_BUNDLE_IDENTIFIER:-$APP_BUNDLE_IDENTIFIER.widget}"
 PACKAGE_CONFIGURATION="${PACKAGE_CONFIGURATION:-Release}"
 PACKAGE_SIGNING_MODE="${PACKAGE_SIGNING_MODE:-adhoc}"
 PACKAGE_DERIVED_DATA_PATH="${PACKAGE_DERIVED_DATA_PATH:-$ROOT_DIR/.build/package-derived-data}"
-MARKETING_VERSION="${MARKETING_VERSION:-0.1.0}"
+MARKETING_VERSION="${MARKETING_VERSION:-1.0.0}"
 CURRENT_PROJECT_VERSION="${CURRENT_PROJECT_VERSION:-1}"
 DEVELOPMENT_TEAM="${DEVELOPMENT_TEAM:-}"
 
@@ -56,7 +56,7 @@ xcodebuild \
   "${BUILD_SETTINGS[@]}" \
   build
 
-BUILT_APP="$PACKAGE_DERIVED_DATA_PATH/Build/Products/$PACKAGE_CONFIGURATION/System Dashboard.app"
+BUILT_APP="$PACKAGE_DERIVED_DATA_PATH/Build/Products/$PACKAGE_CONFIGURATION/Pulse Dock.app"
 
 if [[ ! -d "$BUILT_APP" ]]; then
   echo "Built app not found for configuration $PACKAGE_CONFIGURATION" >&2
@@ -69,7 +69,7 @@ cp -R "$BUILT_APP" "$APP_DIR"
 if [[ "$PACKAGE_SIGNING_MODE" == "adhoc" ]]; then
   codesign --force --sign - \
     --entitlements "$ROOT_DIR/Resources/SystemDashboardWidget.entitlements" \
-    "$APP_DIR/Contents/PlugIns/SystemDashboardWidgetExtension.appex"
+    "$APP_DIR/Contents/PlugIns/PulseDockWidgetExtension.appex"
 
   codesign --force --sign - \
     --entitlements "$ROOT_DIR/Resources/SystemDashboard.entitlements" \

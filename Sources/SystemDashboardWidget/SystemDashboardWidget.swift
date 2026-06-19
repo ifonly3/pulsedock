@@ -21,7 +21,6 @@ private final class WidgetSamplerCache: @unchecked Sendable {
 
         if !isPrimed {
             _ = systemSampler.sample()
-            Thread.sleep(forTimeInterval: 0.15)
             isPrimed = true
         }
 
@@ -158,7 +157,7 @@ struct SystemDashboardWidget: Widget {
                     WidgetBackground()
                 }
         }
-        .configurationDisplayName("System Pulse")
+        .configurationDisplayName("Pulse Dock")
         .description("在桌面显示 Mac 的 CPU、内存、连接、电池和热状态。")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
         .contentMarginsDisabled()
@@ -182,7 +181,7 @@ private struct SmallWidget: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            WidgetHeader(title: "Pulse", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
+            WidgetHeader(title: "Pulse Dock", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
 
             Spacer(minLength: 4)
 
@@ -210,7 +209,7 @@ private struct MediumWidget: View {
     var body: some View {
         HStack(alignment: .center, spacing: 22) {
             VStack(alignment: .leading, spacing: 9) {
-                CompactWidgetHeader(title: "Pulse", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
+                CompactWidgetHeader(title: "Pulse Dock", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
                 Text(snapshot.cpuText)
                     .font(.system(size: 52, weight: .semibold).monospacedDigit())
                     .foregroundStyle(widgetPrimaryText(for: colorScheme))
@@ -333,7 +332,7 @@ private struct EmptyDataWidget: View {
                 Image(systemName: "waveform.path.ecg.rectangle")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(WidgetColor.green)
-                Text("Pulse")
+                Text("Pulse Dock")
                     .font(.system(size: 14, weight: .semibold))
                 Circle()
                     .fill(WidgetColor.amber)

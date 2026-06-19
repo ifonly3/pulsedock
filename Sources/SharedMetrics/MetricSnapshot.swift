@@ -86,7 +86,7 @@ public struct ProcessMetric: Codable, Equatable, Sendable, Identifiable {
 
     public var launchText: String {
         guard let launchDate else { return "系统未报告" }
-        return launchDate.formatted(.dateTime.hour().minute())
+        return launchDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits).hour().minute())
     }
 
     public var hasInventoryReport: Bool {
@@ -1288,8 +1288,25 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         }
     }
     public var powerStatusTone: MetricStatusTone {
-        if batteryPercent != nil {
-            return .warning
+        if let batteryPercent {
+            if batteryPercent < 0.2 {
+                return .critical
+            }
+
+            if batteryIsCharging {
+                return .normal
+            }
+
+            switch batteryPowerSource?.lowercased() {
+            case "ac power":
+                return .normal
+            case "battery power", "ups power":
+                return .warning
+            case .some(let value) where !value.isEmpty:
+                return .neutral
+            default:
+                return .warning
+            }
         }
 
         switch batteryPowerSource?.lowercased() {

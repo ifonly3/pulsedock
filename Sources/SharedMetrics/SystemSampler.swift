@@ -127,7 +127,7 @@ private struct NetworkPathSample: Sendable {
 #if canImport(Network)
 private final class NetworkPathObserver: @unchecked Sendable {
     private let monitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: "local.system-dashboard.network-path", qos: .utility)
+    private let queue = DispatchQueue(label: "local.pulsedock.network-path", qos: .utility)
     private let lock = NSLock()
     private var latest = NetworkPathSample()
 

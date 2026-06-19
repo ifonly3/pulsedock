@@ -103,7 +103,10 @@ final class MetricsStore: ObservableObject {
             cancelInitialRefresh()
             cancelRefreshTask()
             persistHistoryIfNeeded(at: Date(), force: true)
+            timer?.invalidate()
+            timer = nil
         } else {
+            scheduleTimer()
             startInitialRefresh()
         }
     }
@@ -365,7 +368,7 @@ final class MetricsStore: ObservableObject {
         lastWidgetReloadDate = date
 
 #if canImport(WidgetKit)
-        WidgetCenter.shared.reloadAllTimelines()
+        WidgetCenter.shared.reloadTimelines(ofKind: "SystemDashboardWidget")
 #endif
     }
 

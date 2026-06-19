@@ -192,7 +192,7 @@ private struct DashboardSidebar: View {
                     Image(systemName: "waveform.path.ecg.rectangle")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(DashboardColor.green)
-                    Text("System Pulse")
+                    Text("Pulse Dock")
                         .font(.system(size: 19, weight: .semibold, design: .default))
                 }
 
@@ -1105,7 +1105,7 @@ private struct WidgetMiniPreview: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Pulse")
+                Text("Pulse Dock")
                     .font(.system(size: 14, weight: .semibold))
                 StatusDot(color: DashboardColor.green)
                 Spacer()

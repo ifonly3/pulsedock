@@ -226,8 +226,8 @@ import Testing
     #expect(dashboardView.contains("StatusSummaryRow(title: \"最近采样\", value: snapshot.sampleTimeText, status: snapshot.hasSampleTimeReport ? .normal : .neutral)"))
     #expect(widgetPanel.contains("Text(snapshot.sampleTimeText)"))
     #expect(!widgetPanel.contains("snapshot.timestamp.formatted(.dateTime.hour().minute().second())"))
-    #expect(widget.contains("WidgetHeader(title: \"Pulse\", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)"))
-    #expect(widget.contains("CompactWidgetHeader(title: \"Pulse\", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)"))
+    #expect(widget.contains("WidgetHeader(title: \"Pulse Dock\", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)"))
+    #expect(widget.contains("CompactWidgetHeader(title: \"Pulse Dock\", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)"))
     #expect(widget.contains("WidgetHeader(title: \"系统状态\", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)"))
     #expect(widget.contains("let hasTimeReport: Bool"))
     #expect(widget.contains("if hasTimeReport {"))
@@ -235,8 +235,8 @@ import Testing
     #expect(!widget.contains("timeText != \"未报告\""))
     #expect(!widget.contains("timeText == \"未报告\""))
     #expect(!widget.contains("timeText: snapshot.sampleTimeText"))
-    #expect(!widget.contains("WidgetHeader(title: \"Pulse\", time: snapshot.timestamp)"))
-    #expect(!widget.contains("CompactWidgetHeader(title: \"Pulse\", time: snapshot.timestamp)"))
+    #expect(!widget.contains("WidgetHeader(title: \"Pulse Dock\", time: snapshot.timestamp)"))
+    #expect(!widget.contains("CompactWidgetHeader(title: \"Pulse Dock\", time: snapshot.timestamp)"))
     #expect(audit.contains("Sample timestamp display text reports the system-not-reported state for placeholder or missing timestamp snapshots."))
     #expect(audit.contains("Widget headers use minute-level sampled time text so narrow widget families stay readable."))
     #expect(audit.contains("Widget headers use explicit sample-time reported-state flags instead of comparing sampled time display text."))
@@ -1921,7 +1921,7 @@ import Testing
     #expect(activeProcess.architectureText == "Apple Silicon")
     #expect(hiddenProcess.architectureText == "系统未报告")
     #expect(backgroundProcess.architectureText == "系统未报告")
-    #expect(activeProcess.launchText == launchDate.formatted(.dateTime.hour().minute()))
+    #expect(activeProcess.launchText == launchDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits).hour().minute()))
     #expect(hiddenProcess.launchText == "系统未报告")
     #expect(metricSnapshot.contains("public var stateText: String"))
     #expect(metricSnapshot.contains("public var architectureText: String"))
@@ -1989,7 +1989,7 @@ import Testing
 
     #expect(capabilityOnlyProcess.stateText == "未报告")
     #expect(capabilityOnlyProcess.architectureText == "Apple Silicon")
-    #expect(capabilityOnlyProcess.launchText == launchDate.formatted(.dateTime.hour().minute()))
+    #expect(capabilityOnlyProcess.launchText == launchDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits).hour().minute()))
     #expect(capabilityOnlyProcess.hasInventoryReport)
     #expect(metricSnapshot.contains("hasStateReport: Bool = false"))
     #expect(!metricSnapshot.contains("hasStateReport: Bool = true"))
@@ -4059,12 +4059,12 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(widget.contains("CompactWidgetHeader(title: \"Pulse\""))
+    #expect(widget.contains("CompactWidgetHeader(title: \"Pulse Dock\""))
     #expect(!widget.contains("CompactWidgetHeader(title: \"System\""))
     #expect(!widget.contains("WidgetHeader(title: \"System\", time: snapshot.timestamp)"))
     #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText)\" : title)"))
     #expect(!widget.contains(".accessibilityLabel(timeText == \"未报告\" ? title : \"\\(title), \\(timeText)\")"))
-    #expect(dashboardView.contains("Text(\"Pulse\")"))
+    #expect(dashboardView.contains("Text(\"Pulse Dock\")"))
     #expect(!dashboardView.contains("Text(\"System\")\n                    .font(.system(size: 14, weight: .semibold))"))
 }
 
@@ -4706,11 +4706,11 @@ import Testing
         #expect(plist.contains("<string>$(CURRENT_PROJECT_VERSION)</string>"))
     }
 
-    #expect(projectGenerator.contains("marketing_version = ENV.fetch(\"MARKETING_VERSION\", \"0.1.0\")"))
+    #expect(projectGenerator.contains("marketing_version = ENV.fetch(\"MARKETING_VERSION\", \"1.0.0\")"))
     #expect(projectGenerator.contains("current_project_version = ENV.fetch(\"CURRENT_PROJECT_VERSION\", \"1\")"))
     #expect(projectGenerator.contains("settings[\"MARKETING_VERSION\"] = marketing_version"))
     #expect(projectGenerator.contains("settings[\"CURRENT_PROJECT_VERSION\"] = current_project_version"))
-    #expect(xcodeProject.contains("MARKETING_VERSION = 0.1.0;"))
+    #expect(xcodeProject.contains("MARKETING_VERSION = 1.0.0;"))
     #expect(xcodeProject.contains("CURRENT_PROJECT_VERSION = 1;"))
     #expect(audit.contains("App and Widget version metadata use shared Xcode build settings so App Store archives keep matching marketing and build versions."))
     #expect(audit.contains("Source-level tests require App Store version metadata to come from archive build settings instead of hard-coded plist literals."))
@@ -4739,7 +4739,7 @@ import Testing
     let packageScript = try String(contentsOf: root.appendingPathComponent("scripts/package-app.sh"), encoding: .utf8)
     let audit = try String(contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"), encoding: .utf8)
 
-    #expect(packageScript.contains("MARKETING_VERSION=\"${MARKETING_VERSION:-0.1.0}\""))
+    #expect(packageScript.contains("MARKETING_VERSION=\"${MARKETING_VERSION:-1.0.0}\""))
     #expect(packageScript.contains("CURRENT_PROJECT_VERSION=\"${CURRENT_PROJECT_VERSION:-1}\""))
     #expect(packageScript.contains("APP_BUNDLE_IDENTIFIER=\"$APP_BUNDLE_IDENTIFIER\" \\"))
     #expect(packageScript.contains("WIDGET_BUNDLE_IDENTIFIER=\"$WIDGET_BUNDLE_IDENTIFIER\" \\"))
@@ -4763,7 +4763,7 @@ import Testing
     #expect(archiveScript.contains("require_env APP_BUNDLE_IDENTIFIER"))
     #expect(archiveScript.contains("require_env DEVELOPMENT_TEAM"))
     #expect(archiveScript.contains("WIDGET_BUNDLE_IDENTIFIER=\"${WIDGET_BUNDLE_IDENTIFIER:-$APP_BUNDLE_IDENTIFIER.widget}\""))
-    #expect(archiveScript.contains("MARKETING_VERSION=\"${MARKETING_VERSION:-0.1.0}\""))
+    #expect(archiveScript.contains("MARKETING_VERSION=\"${MARKETING_VERSION:-1.0.0}\""))
     #expect(archiveScript.contains("CURRENT_PROJECT_VERSION=\"${CURRENT_PROJECT_VERSION:-1}\""))
     #expect(archiveScript.contains("ARCHIVE_PATH=\"${ARCHIVE_PATH:-$ROOT_DIR/dist/SystemDashboard.xcarchive}\""))
     #expect(archiveScript.contains("EXPORT_PATH=\"${EXPORT_PATH:-$ROOT_DIR/dist/AppStore}\""))
@@ -5218,7 +5218,8 @@ import Testing
     #expect(toggleBody.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)"))
     #expect(!toggleBody.contains("NSApp.activate"))
     #expect(appDelegate.contains("private func showDashboardWindow(activating: Bool)"))
-    #expect(appDelegate.contains("NSApp.activate(ignoringOtherApps: true)"))
+    #expect(appDelegate.contains("NSApp.activate()"))
+    #expect(!appDelegate.contains("NSApp.activate(ignoringOtherApps: true)"))
     #expect(audit.contains("Menu bar popover shows without activating the main app, avoiding a second window-ordering pass after the popover is positioned."))
     #expect(audit.contains("Source-level tests prevent status popover opening from calling app activation after showing the popover."))
 }
@@ -5338,7 +5339,7 @@ import Testing
     #expect(packageScript.contains("-configuration \"$PACKAGE_CONFIGURATION\""))
     #expect(packageScript.contains("BUILD_SETTINGS=("))
     #expect(packageScript.contains("BUILD_SETTINGS+=(CODE_SIGNING_ALLOWED=NO)"))
-    #expect(packageScript.contains("Build/Products/$PACKAGE_CONFIGURATION/System Dashboard.app"))
+    #expect(packageScript.contains("Build/Products/$PACKAGE_CONFIGURATION/Pulse Dock.app"))
     #expect(packageScript.contains("if [[ \"$PACKAGE_SIGNING_MODE\" == \"adhoc\" ]]; then"))
     #expect(audit.contains("Local packaging uses a Release build with ad-hoc signing only for on-device testing"))
     #expect(audit.contains("App Store signing should use the generated Xcode project with Apple-managed signing"))
@@ -5357,7 +5358,7 @@ import Testing
 
     #expect(packageScript.contains("PACKAGE_DERIVED_DATA_PATH=\"${PACKAGE_DERIVED_DATA_PATH:-$ROOT_DIR/.build/package-derived-data}\""))
     #expect(packageScript.contains("-derivedDataPath \"$PACKAGE_DERIVED_DATA_PATH\""))
-    #expect(packageScript.contains("BUILT_APP=\"$PACKAGE_DERIVED_DATA_PATH/Build/Products/$PACKAGE_CONFIGURATION/System Dashboard.app\""))
+    #expect(packageScript.contains("BUILT_APP=\"$PACKAGE_DERIVED_DATA_PATH/Build/Products/$PACKAGE_CONFIGURATION/Pulse Dock.app\""))
     #expect(!packageScript.contains("SystemDashboard-dajnlerkpyejjkavcmyhiyskuhsc"))
     #expect(!packageScript.contains("find \"$HOME/Library/Developer/Xcode/DerivedData\""))
     #expect(audit.contains("Local packaging uses a deterministic derived-data directory so built app discovery does not depend on user-specific Xcode DerivedData hashes."))
@@ -7398,4 +7399,175 @@ import Testing
     #expect(archiveScript.contains("[[ \"$WIDGET_BUNDLE_IDENTIFIER\" == \"$APP_BUNDLE_IDENTIFIER\".* ]]"))
     #expect(installScript.contains("validate_bundle_identifier APP_BUNDLE_IDENTIFIER \"$APP_BUNDLE_IDENTIFIER\""))
     #expect(installScript.contains("osascript - \"$APP_BUNDLE_IDENTIFIER\" <<'APPLESCRIPT'"))
+}
+
+@Test func appStoreReadinessChecklistTracksCompletedFixes() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let checklist = try String(
+        contentsOf: root.appendingPathComponent("docs/app-store-readiness-checklist.md"),
+        encoding: .utf8
+    )
+
+    #expect(checklist.contains("- [x] 统一产品名为 Pulse Dock"))
+    #expect(checklist.contains("- [x] 补标准 AppKit 主菜单、About 和设置快捷键"))
+    #expect(checklist.contains("- [x] 声明中文本地化与 Utilities 分类"))
+    #expect(checklist.contains("- [x] Widget 只刷新自己的 timeline kind"))
+    #expect(checklist.contains("- [x] 暂停时停止刷新定时器"))
+    #expect(checklist.contains("- [x] 修正电源状态颜色与进程启动日期显示"))
+    #expect(checklist.contains("- [ ] 评估 App Group 共享最近一次样本"))
+}
+
+@Test func publicOpenSourceRepositoryIncludesReadmeAndMITLicense() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let readme = try String(contentsOf: root.appendingPathComponent("README.md"), encoding: .utf8)
+    let license = try String(contentsOf: root.appendingPathComponent("LICENSE"), encoding: .utf8)
+
+    #expect(readme.contains("# Pulse Dock"))
+    #expect(readme.contains("native macOS system monitor"))
+    #expect(readme.contains("scripts/archive-app-store.sh"))
+    #expect(readme.contains("APP_BUNDLE_IDENTIFIER=com.ifonly3.pulsedock"))
+    #expect(license.contains("MIT License"))
+    #expect(license.contains("Pulse Dock contributors"))
+}
+
+@Test func appStoreIdentityUsesPulseDockAcrossBundlesScriptsAndSurfaces() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let appInfo = try String(contentsOf: root.appendingPathComponent("Resources/AppInfo.plist"), encoding: .utf8)
+    let widgetInfo = try String(contentsOf: root.appendingPathComponent("Resources/WidgetInfo.plist"), encoding: .utf8)
+    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
+    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
+    let widgetPanel = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"), encoding: .utf8)
+    let widget = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"), encoding: .utf8)
+    let packageScript = try String(contentsOf: root.appendingPathComponent("scripts/package-app.sh"), encoding: .utf8)
+    let installScript = try String(contentsOf: root.appendingPathComponent("scripts/install-system-widget.sh"), encoding: .utf8)
+    let projectGenerator = try String(contentsOf: root.appendingPathComponent("scripts/generate-xcodeproj.rb"), encoding: .utf8)
+    let xcodeProject = try String(contentsOf: root.appendingPathComponent("SystemDashboard.xcodeproj/project.pbxproj"), encoding: .utf8)
+
+    #expect(appInfo.contains("<string>Pulse Dock</string>"))
+    #expect(widgetInfo.contains("<string>Pulse Dock Widget</string>"))
+    #expect(appDelegate.contains("window.title = \"Pulse Dock\""))
+    #expect(appDelegate.contains("accessibilityDescription: \"Pulse Dock\""))
+    #expect(dashboardView.contains("Text(\"Pulse Dock\")"))
+    #expect(widgetPanel.contains("Text(\"Pulse Dock\")"))
+    #expect(widget.contains(".configurationDisplayName(\"Pulse Dock\")"))
+    #expect(widget.contains("WidgetHeader(title: \"Pulse Dock\""))
+    #expect(widget.contains("CompactWidgetHeader(title: \"Pulse Dock\""))
+    #expect(widget.contains("Text(\"Pulse Dock\")"))
+    #expect(packageScript.contains("APP_DIR=\"$ROOT_DIR/dist/Pulse Dock.app\""))
+    #expect(packageScript.contains("APP_BUNDLE_IDENTIFIER=\"${APP_BUNDLE_IDENTIFIER:-local.pulsedock}\""))
+    #expect(packageScript.contains("BUILT_APP=\"$PACKAGE_DERIVED_DATA_PATH/Build/Products/$PACKAGE_CONFIGURATION/Pulse Dock.app\""))
+    #expect(installScript.contains("SOURCE_APP=\"$ROOT_DIR/dist/Pulse Dock.app\""))
+    #expect(installScript.contains("INSTALLED_APP=\"$INSTALL_DIR/Pulse Dock.app\""))
+    #expect(installScript.contains("APP_BUNDLE_IDENTIFIER=\"${APP_BUNDLE_IDENTIFIER:-local.pulsedock}\""))
+    #expect(projectGenerator.contains("app_bundle_identifier = ENV.fetch(\"APP_BUNDLE_IDENTIFIER\", \"com.ifonly3.pulsedock\")"))
+    #expect(projectGenerator.contains("settings[\"PRODUCT_NAME\"] = target == app_target ? \"Pulse Dock\" : \"PulseDockWidgetExtension\""))
+    #expect(xcodeProject.contains("PRODUCT_NAME = \"Pulse Dock\";"))
+    #expect(![appInfo, widgetInfo, appDelegate, dashboardView, widgetPanel, widget, packageScript, installScript, projectGenerator].contains { text in
+        text.contains("System Pulse") || text.contains("System Dashboard")
+    })
+}
+
+@Test func appDelegateInstallsStandardMainMenuAndRestorableStateHooks() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let appDelegate = try String(
+        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        encoding: .utf8
+    )
+
+    #expect(appDelegate.contains("configureMainMenu()"))
+    #expect(appDelegate.contains("NSApp.mainMenu = mainMenu"))
+    #expect(appDelegate.contains("private func makeAppMenu() -> NSMenuItem"))
+    #expect(appDelegate.contains("private func makeEditMenu() -> NSMenuItem"))
+    #expect(appDelegate.contains("private func makeViewMenu() -> NSMenuItem"))
+    #expect(appDelegate.contains("private func makeWindowMenu() -> NSMenuItem"))
+    #expect(appDelegate.contains("@objc private func showAboutPanel"))
+    #expect(appDelegate.contains("@objc private func openSettingsFromMenu"))
+    #expect(appDelegate.contains("NSApp.orderFrontStandardAboutPanel"))
+    #expect(appDelegate.contains("settingsItem.keyEquivalent = \",\""))
+    #expect(appDelegate.contains("func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool"))
+    #expect(appDelegate.contains("return true"))
+    #expect(appDelegate.contains("NSApp.activate()"))
+    #expect(!appDelegate.contains("activate(ignoringOtherApps: true)"))
+}
+
+@Test func appStoreMetadataDeclaresLocalizationCategoryAndAvoidsDeadAssetCatalogSettings() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let appInfo = try String(contentsOf: root.appendingPathComponent("Resources/AppInfo.plist"), encoding: .utf8)
+    let widgetInfo = try String(contentsOf: root.appendingPathComponent("Resources/WidgetInfo.plist"), encoding: .utf8)
+    let projectGenerator = try String(contentsOf: root.appendingPathComponent("scripts/generate-xcodeproj.rb"), encoding: .utf8)
+    let xcodeProject = try String(contentsOf: root.appendingPathComponent("SystemDashboard.xcodeproj/project.pbxproj"), encoding: .utf8)
+
+    for plist in [appInfo, widgetInfo] {
+        #expect(plist.contains("<key>CFBundleDevelopmentRegion</key>"))
+        #expect(plist.contains("<string>zh-Hans</string>"))
+        #expect(plist.contains("<key>CFBundleLocalizations</key>"))
+    }
+
+    #expect(appInfo.contains("<key>LSApplicationCategoryType</key>"))
+    #expect(appInfo.contains("<string>public.app-category.utilities</string>"))
+    #expect(!projectGenerator.contains("ASSETCATALOG_COMPILER_APPICON_NAME"))
+    #expect(!projectGenerator.contains("ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME"))
+    #expect(!xcodeProject.contains("ASSETCATALOG_COMPILER_APPICON_NAME"))
+    #expect(!xcodeProject.contains("ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME"))
+}
+
+@Test func appRefreshAndWidgetTimelineAvoidUnnecessaryWakeups() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let metricsStore = try String(
+        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        encoding: .utf8
+    )
+    let widget = try String(
+        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        encoding: .utf8
+    )
+
+    #expect(metricsStore.contains("timer?.invalidate()\n            timer = nil"))
+    #expect(metricsStore.contains("} else {\n            scheduleTimer()\n            startInitialRefresh()"))
+    #expect(metricsStore.contains("WidgetCenter.shared.reloadTimelines(ofKind: \"SystemDashboardWidget\")"))
+    #expect(!metricsStore.contains("WidgetCenter.shared.reloadAllTimelines()"))
+    #expect(!widget.contains("Thread.sleep"))
+}
+
+@Test func powerToneDistinguishesChargingBatteryAndLowPowerStates() {
+    let chargingHigh = MetricSnapshot(
+        cpuUsage: 0,
+        memoryUsedBytes: 1,
+        memoryTotalBytes: 2,
+        loadAverage: 0,
+        thermalState: "Nominal",
+        batteryPercent: 0.82,
+        batteryIsCharging: true,
+        batteryPowerSource: "AC Power",
+        diskFreeBytes: 1,
+        timestamp: Date(timeIntervalSince1970: 1)
+    )
+    let batteryHigh = MetricSnapshot(
+        cpuUsage: 0,
+        memoryUsedBytes: 1,
+        memoryTotalBytes: 2,
+        loadAverage: 0,
+        thermalState: "Nominal",
+        batteryPercent: 0.82,
+        batteryIsCharging: false,
+        batteryPowerSource: "Battery Power",
+        diskFreeBytes: 1,
+        timestamp: Date(timeIntervalSince1970: 1)
+    )
+    let batteryLow = MetricSnapshot(
+        cpuUsage: 0,
+        memoryUsedBytes: 1,
+        memoryTotalBytes: 2,
+        loadAverage: 0,
+        thermalState: "Nominal",
+        batteryPercent: 0.12,
+        batteryIsCharging: false,
+        batteryPowerSource: "Battery Power",
+        diskFreeBytes: 1,
+        timestamp: Date(timeIntervalSince1970: 1)
+    )
+
+    #expect(chargingHigh.powerStatusTone == .normal)
+    #expect(batteryHigh.powerStatusTone == .warning)
+    #expect(batteryLow.powerStatusTone == .critical)
 }

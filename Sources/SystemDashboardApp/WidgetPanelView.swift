@@ -119,7 +119,7 @@ private struct MenuPopoverPreview: View {
                 .background(Palette.green.opacity(0.12), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("System Pulse")
+                Text("Pulse Dock")
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(popoverPrimaryText(for: colorScheme))
                 Text(snapshot.sampleTimeText)

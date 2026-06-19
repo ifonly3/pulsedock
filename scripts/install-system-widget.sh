@@ -2,12 +2,12 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SOURCE_APP="$ROOT_DIR/dist/System Dashboard.app"
+SOURCE_APP="$ROOT_DIR/dist/Pulse Dock.app"
 INSTALL_DIR="$HOME/Applications"
-INSTALLED_APP="$INSTALL_DIR/System Dashboard.app"
-WIDGET_EXTENSION="$INSTALLED_APP/Contents/PlugIns/SystemDashboardWidgetExtension.appex"
-SOURCE_WIDGET_EXTENSION="$SOURCE_APP/Contents/PlugIns/SystemDashboardWidgetExtension.appex"
-APP_BUNDLE_IDENTIFIER="${APP_BUNDLE_IDENTIFIER:-local.system-dashboard}"
+INSTALLED_APP="$INSTALL_DIR/Pulse Dock.app"
+WIDGET_EXTENSION="$INSTALLED_APP/Contents/PlugIns/PulseDockWidgetExtension.appex"
+SOURCE_WIDGET_EXTENSION="$SOURCE_APP/Contents/PlugIns/PulseDockWidgetExtension.appex"
+APP_BUNDLE_IDENTIFIER="${APP_BUNDLE_IDENTIFIER:-local.pulsedock}"
 WIDGET_BUNDLE_IDENTIFIER="${WIDGET_BUNDLE_IDENTIFIER:-$APP_BUNDLE_IDENTIFIER.widget}"
 
 validate_bundle_identifier() {
@@ -41,7 +41,7 @@ validate_bundle_identifier WIDGET_BUNDLE_IDENTIFIER "$WIDGET_BUNDLE_IDENTIFIER"
 
 mkdir -p "$INSTALL_DIR"
 
-if pgrep -f "$INSTALLED_APP/Contents/MacOS/System Dashboard" >/dev/null; then
+if pgrep -f "$INSTALLED_APP/Contents/MacOS/Pulse Dock" >/dev/null; then
   osascript - "$APP_BUNDLE_IDENTIFIER" <<'APPLESCRIPT' >/dev/null 2>&1 || true
 on run argv
   tell application id (item 1 of argv) to quit

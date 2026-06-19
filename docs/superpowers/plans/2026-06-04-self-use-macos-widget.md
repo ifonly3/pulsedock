@@ -27,7 +27,7 @@
 
 - [x] Build native SwiftUI dashboard.
 - [x] Start live sampler for the dashboard and menu bar.
-- [x] Notify WidgetKit from the app with throttled `WidgetCenter.reloadAllTimelines()`.
+- [x] Notify WidgetKit from the app with throttled `WidgetCenter.reloadTimelines(ofKind:)`.
 - [x] Add menu bar monitor popover.
 - [x] Add sandbox-safe process fallback via `NSWorkspace`.
 

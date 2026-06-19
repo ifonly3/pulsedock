@@ -28,9 +28,9 @@ widget_privacy_manifest = resources_group.new_file(File.join(root, "Resources/Wi
 app_icon = resources_group.new_file(File.join(root, "Resources/AppIcon.icns"))
 
 deployment_target = "14.0"
-app_bundle_identifier = ENV.fetch("APP_BUNDLE_IDENTIFIER", "com.qiaoni.systemdashboard")
+app_bundle_identifier = ENV.fetch("APP_BUNDLE_IDENTIFIER", "com.ifonly3.pulsedock")
 widget_bundle_identifier = ENV.fetch("WIDGET_BUNDLE_IDENTIFIER", "#{app_bundle_identifier}.widget")
-marketing_version = ENV.fetch("MARKETING_VERSION", "0.1.0")
+marketing_version = ENV.fetch("MARKETING_VERSION", "1.0.0")
 current_project_version = ENV.fetch("CURRENT_PROJECT_VERSION", "1")
 development_team = ENV.fetch("DEVELOPMENT_TEAM", "")
 
@@ -78,8 +78,8 @@ project.targets.each do |target|
     settings["INFOPLIST_FILE"] = target == app_target ? "Resources/AppInfo.plist" : "Resources/WidgetInfo.plist"
     settings["CODE_SIGN_ENTITLEMENTS"] = target == app_target ? "Resources/SystemDashboard.entitlements" : "Resources/SystemDashboardWidget.entitlements"
     settings["PRODUCT_BUNDLE_IDENTIFIER"] = target == app_target ? app_bundle_identifier : widget_bundle_identifier
-    settings["PRODUCT_NAME"] = target == app_target ? "System Dashboard" : "SystemDashboardWidgetExtension"
-    settings["ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME"] = "AccentColor"
+    settings["PRODUCT_NAME"] = target == app_target ? "Pulse Dock" : "PulseDockWidgetExtension"
+    settings.reject! { |key, _| key.start_with?("ASSETCATALOG_COMPILER_") }
   end
 end
 

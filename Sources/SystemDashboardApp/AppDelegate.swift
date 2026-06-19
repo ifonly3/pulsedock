@@ -48,6 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
+        configureMainMenu()
         showDashboardWindow(activating: true)
         createStatusItem()
         DispatchQueue.main.async { [store] in
@@ -64,6 +65,109 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
 
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        true
+    }
+
+    private func configureMainMenu() {
+        let mainMenu = NSMenu()
+        mainMenu.addItem(makeAppMenu())
+        mainMenu.addItem(makeEditMenu())
+        mainMenu.addItem(makeViewMenu())
+        mainMenu.addItem(makeWindowMenu())
+        NSApp.mainMenu = mainMenu
+    }
+
+    private func makeAppMenu() -> NSMenuItem {
+        let appMenuItem = NSMenuItem()
+        let appMenu = NSMenu(title: "Pulse Dock")
+
+        appMenu.addItem(NSMenuItem(title: "关于 Pulse Dock", action: #selector(showAboutPanel(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem.separator())
+
+        let settingsItem = NSMenuItem(title: "设置...", action: #selector(openSettingsFromMenu(_:)), keyEquivalent: ",")
+        settingsItem.keyEquivalent = ","
+        appMenu.addItem(settingsItem)
+        appMenu.addItem(NSMenuItem.separator())
+
+        let servicesItem = NSMenuItem(title: "服务", action: nil, keyEquivalent: "")
+        let servicesMenu = NSMenu(title: "服务")
+        servicesItem.submenu = servicesMenu
+        appMenu.addItem(servicesItem)
+        NSApp.servicesMenu = servicesMenu
+        appMenu.addItem(NSMenuItem.separator())
+
+        appMenu.addItem(NSMenuItem(title: "隐藏 Pulse Dock", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h"))
+        let hideOthersItem = NSMenuItem(title: "隐藏其他", action: #selector(NSApplication.hideOtherApplications(_:)), keyEquivalent: "h")
+        hideOthersItem.keyEquivalentModifierMask = [.command, .option]
+        appMenu.addItem(hideOthersItem)
+        appMenu.addItem(NSMenuItem(title: "全部显示", action: #selector(NSApplication.unhideAllApplications(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem.separator())
+        appMenu.addItem(NSMenuItem(title: "退出 Pulse Dock", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+
+        appMenuItem.submenu = appMenu
+        return appMenuItem
+    }
+
+    private func makeEditMenu() -> NSMenuItem {
+        let editMenuItem = NSMenuItem()
+        let editMenu = NSMenu(title: "编辑")
+
+        editMenu.addItem(NSMenuItem(title: "撤销", action: Selector(("undo:")), keyEquivalent: "z"))
+        let redoItem = NSMenuItem(title: "重做", action: Selector(("redo:")), keyEquivalent: "Z")
+        redoItem.keyEquivalentModifierMask = [.command, .shift]
+        editMenu.addItem(redoItem)
+        editMenu.addItem(NSMenuItem.separator())
+        editMenu.addItem(NSMenuItem(title: "剪切", action: #selector(NSText.cut(_:)), keyEquivalent: "x"))
+        editMenu.addItem(NSMenuItem(title: "复制", action: #selector(NSText.copy(_:)), keyEquivalent: "c"))
+        editMenu.addItem(NSMenuItem(title: "粘贴", action: #selector(NSText.paste(_:)), keyEquivalent: "v"))
+        editMenu.addItem(NSMenuItem(title: "删除", action: #selector(NSText.delete(_:)), keyEquivalent: ""))
+        editMenu.addItem(NSMenuItem.separator())
+        editMenu.addItem(NSMenuItem(title: "全选", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a"))
+
+        editMenuItem.submenu = editMenu
+        return editMenuItem
+    }
+
+    private func makeViewMenu() -> NSMenuItem {
+        let viewMenuItem = NSMenuItem()
+        let viewMenu = NSMenu(title: "显示")
+        viewMenu.addItem(NSMenuItem(title: "显示总览", action: #selector(showDashboardFromMenu(_:)), keyEquivalent: "1"))
+        viewMenu.addItem(NSMenuItem(title: "打开设置", action: #selector(openSettingsFromMenu(_:)), keyEquivalent: ""))
+        viewMenuItem.submenu = viewMenu
+        return viewMenuItem
+    }
+
+    private func makeWindowMenu() -> NSMenuItem {
+        let windowMenuItem = NSMenuItem()
+        let windowMenu = NSMenu(title: "窗口")
+        windowMenu.addItem(NSMenuItem(title: "最小化", action: #selector(NSWindow.miniaturize(_:)), keyEquivalent: "m"))
+        windowMenu.addItem(NSMenuItem(title: "缩放", action: #selector(NSWindow.zoom(_:)), keyEquivalent: ""))
+        windowMenu.addItem(NSMenuItem.separator())
+        windowMenu.addItem(NSMenuItem(title: "全部置于前方", action: #selector(NSApplication.arrangeInFront(_:)), keyEquivalent: ""))
+        NSApp.windowsMenu = windowMenu
+        windowMenuItem.submenu = windowMenu
+        return windowMenuItem
+    }
+
+    @objc private func showAboutPanel(_ sender: Any?) {
+        NSApp.orderFrontStandardAboutPanel(options: [
+            .applicationName: "Pulse Dock",
+            .applicationVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0",
+            .version: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
+        ])
+    }
+
+    @objc private func openSettingsFromMenu(_ sender: Any?) {
+        showDashboardWindow(activating: true)
+        router.selectedPage = .settings
+    }
+
+    @objc private func showDashboardFromMenu(_ sender: Any?) {
+        showDashboardWindow(activating: true)
+        router.selectedPage = .overview
+    }
+
     private func showDashboardWindow(activating: Bool) {
         if dashboardWindow == nil {
             createDashboardWindow()
@@ -71,7 +175,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         dashboardWindow?.makeKeyAndOrderFront(nil)
         if activating {
-            NSApp.activate(ignoringOtherApps: true)
+            NSApp.activate()
         }
     }
 
@@ -82,7 +186,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "System Pulse"
+        window.title = "Pulse Dock"
         window.minSize = NSSize(width: 1180, height: 760)
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: DashboardView(store: store, router: router))
@@ -93,7 +197,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func createStatusItem() {
         let item = NSStatusBar.system.statusItem(withLength: MenuBarStatusItemLayout.compactLength)
         if let button = item.button {
-            button.image = NSImage(systemSymbolName: "waveform.path.ecg.rectangle", accessibilityDescription: "System Pulse")
+            button.image = NSImage(systemSymbolName: "waveform.path.ecg.rectangle", accessibilityDescription: "Pulse Dock")
             button.imagePosition = .imageLeading
             button.target = self
             button.action = #selector(toggleStatusPopover(_:))
