@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "xcodeproj"
+require "fileutils"
+
+root = File.expand_path("..", __dir__)
+project_path = File.join(root, "SystemDashboard.xcodeproj")
+FileUtils.rm_rf(project_path)
+
+project = Xcodeproj::Project.new(project_path)
+
+shared_group = project.new_group("SharedMetrics", "Sources/SharedMetrics")
+app_group = project.new_group("SystemDashboardApp", "Sources/SystemDashboardApp")
+widget_group = project.new_group("SystemDashboardWidget", "Sources/SystemDashboardWidget")
+resources_group = project.new_group("Resources", "Resources")
+
+shared_files = Dir.glob(File.join(root, "Sources/SharedMetrics/*.swift")).sort.map { |path| shared_group.new_file(path) }
+app_files = Dir.glob(File.join(root, "Sources/SystemDashboardApp/*.swift")).sort.map { |path| app_group.new_file(path) }
+widget_files = Dir.glob(File.join(root, "Sources/SystemDashboardWidget/*.swift")).sort.map { |path| widget_group.new_file(path) }
+
+app_info = resources_group.new_file(File.join(root, "Resources/AppInfo.plist"))
+widget_info = resources_group.new_file(File.join(root, "Resources/WidgetInfo.plist"))
+app_entitlements = resources_group.new_file(File.join(root, "Resources/SystemDashboard.entitlements"))
+widget_entitlements = resources_group.new_file(File.join(root, "Resources/SystemDashboardWidget.entitlements"))
+app_privacy_manifest = resources_group.new_file(File.join(root, "Resources/App/PrivacyInfo.xcprivacy"))
+widget_privacy_manifest = resources_group.new_file(File.join(root, "Resources/Widget/PrivacyInfo.xcprivacy"))
+app_icon = resources_group.new_file(File.join(root, "Resources/AppIcon.icns"))
+
+deployment_target = "14.0"
+app_bundle_identifier = ENV.fetch("APP_BUNDLE_IDENTIFIER", "com.qiaoni.systemdashboard")
+widget_bundle_identifier = ENV.fetch("WIDGET_BUNDLE_IDENTIFIER", "#{app_bundle_identifier}.widget")
+marketing_version = ENV.fetch("MARKETING_VERSION", "0.1.0")
+current_project_version = ENV.fetch("CURRENT_PROJECT_VERSION", "1")
+development_team = ENV.fetch("DEVELOPMENT_TEAM", "")
+
+app_target = project.new_target(:application, "SystemDashboard", :osx, deployment_target)
+widget_target = project.new_target(:app_extension, "SystemDashboardWidgetExtension", :osx, deployment_target)
+
+(shared_files + app_files).each { |file| app_target.add_file_references([file]) }
+(shared_files + widget_files).each { |file| widget_target.add_file_references([file]) }
+app_target.add_resources([app_privacy_manifest, app_icon])
+widget_target.add_resources([widget_privacy_manifest])
+
+app_target.add_system_framework("SwiftUI")
+app_target.add_system_framework("AppKit")
+app_target.add_system_framework("WidgetKit")
+app_target.add_system_framework("CoreGraphics")
+app_target.add_system_framework("IOKit")
+app_target.add_system_framework("Metal")
+app_target.add_system_framework("Network")
+app_target.add_system_framework("SystemConfiguration")
+widget_target.add_system_framework("SwiftUI")
+widget_target.add_system_framework("WidgetKit")
+widget_target.add_system_framework("CoreGraphics")
+widget_target.add_system_framework("IOKit")
+widget_target.add_system_framework("Metal")
+widget_target.add_system_framework("Network")
+widget_target.add_system_framework("SystemConfiguration")
+
+copy_phase = app_target.new_copy_files_build_phase("Embed App Extensions")
+copy_phase.symbol_dst_subfolder_spec = :plug_ins
+copy_phase.add_file_reference(widget_target.product_reference, true)
+
+app_target.add_dependency(widget_target)
+
+project.targets.each do |target|
+  target.build_configurations.each do |config|
+    settings = config.build_settings
+    settings["CODE_SIGN_STYLE"] = "Automatic"
+    settings["DEVELOPMENT_TEAM"] = development_team
+    settings["MACOSX_DEPLOYMENT_TARGET"] = deployment_target
+    settings["MARKETING_VERSION"] = marketing_version
+    settings["CURRENT_PROJECT_VERSION"] = current_project_version
+    settings["SWIFT_VERSION"] = "6.0"
+    settings["ENABLE_HARDENED_RUNTIME"] = "YES"
+    settings["GENERATE_INFOPLIST_FILE"] = "NO"
+    settings["INFOPLIST_FILE"] = target == app_target ? "Resources/AppInfo.plist" : "Resources/WidgetInfo.plist"
+    settings["CODE_SIGN_ENTITLEMENTS"] = target == app_target ? "Resources/SystemDashboard.entitlements" : "Resources/SystemDashboardWidget.entitlements"
+    settings["PRODUCT_BUNDLE_IDENTIFIER"] = target == app_target ? app_bundle_identifier : widget_bundle_identifier
+    settings["PRODUCT_NAME"] = target == app_target ? "System Dashboard" : "SystemDashboardWidgetExtension"
+    settings["ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME"] = "AccentColor"
+  end
+end
+
+project.save
+puts project_path

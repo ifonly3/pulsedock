@@ -1,0 +1,22 @@
+.DS_Store
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Xcode user/build state
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+xcuserdata/
+
+# Local build outputs and archives
+dist/
+*.dSYM/
+*.xcarchive/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
