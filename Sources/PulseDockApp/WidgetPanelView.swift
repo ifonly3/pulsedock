@@ -239,6 +239,9 @@ private struct PopoverMetricRow: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .strokeBorder(popoverPanelStroke(for: colorScheme), lineWidth: 1)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value), \(detail)")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
     }
 }
 
@@ -251,6 +254,7 @@ private struct PopoverSmallStat: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
             Circle().fill(tint).frame(width: 7, height: 7)
+                .accessibilityHidden(true)
             Text(title)
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(popoverSecondaryText(for: colorScheme))
@@ -267,6 +271,8 @@ private struct PopoverSmallStat: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .strokeBorder(popoverPanelStroke(for: colorScheme), lineWidth: 0.7)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
     }
 }
 

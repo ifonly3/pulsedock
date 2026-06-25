@@ -3,13 +3,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "SystemDashboard",
+    name: "PulseDock",
     platforms: [
         .macOS(.v14)
     ],
     products: [
         .library(name: "SharedMetrics", targets: ["SharedMetrics"]),
-        .executable(name: "SystemDashboardApp", targets: ["SystemDashboardApp"])
+        .executable(name: "PulseDockApp", targets: ["PulseDockApp"])
     ],
     targets: [
         .target(
@@ -23,8 +23,9 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "SystemDashboardApp",
+            name: "PulseDockApp",
             dependencies: ["SharedMetrics"],
+            path: "Sources/PulseDockApp",
             linkerSettings: [
                 .linkedFramework("AppKit"),
                 .linkedFramework("SwiftUI"),

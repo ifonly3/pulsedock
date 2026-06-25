@@ -6,24 +6,29 @@ This project is a native macOS app, `Pulse Dock`, with a WidgetKit extension. Th
 
 ## 1. Current Project Readiness
 
-- App target: `SystemDashboard`
-- Widget extension target: `SystemDashboardWidgetExtension`
+- Xcode project: `PulseDock.xcodeproj`
+- App target: `PulseDock`
+- Widget extension target: `PulseDockWidgetExtension`
 - Minimum macOS version: `14.0`
 - Default generated bundle IDs in the Xcode project today:
   - App: `com.ifonly3.pulsedock`
   - Widget: `com.ifonly3.pulsedock.widget`
 - Release script: `scripts/archive-app-store.sh`
 - Local packaging script: `scripts/package-app.sh`
-- App Store archive output: `dist/SystemDashboard.xcarchive`
+- Source folders: `Sources/PulseDockApp` and `Sources/PulseDockWidget`
+- App Store archive output: `dist/PulseDock.xcarchive`
 - Export output: `dist/AppStore`
 - App sandbox is enabled for both the app and widget extension.
+- App Group entitlement is declared for both targets with suite `group.com.ifonly3.pulsedock`.
+- Pre-submit provisioning gate: register `group.com.ifonly3.pulsedock` in Apple Developer Portal, enable it for both app and widget Bundle IDs, and regenerate App Store provisioning profiles.
+- Local adhoc signing verifies entitlement shape only; functional App Group sharing must be verified with Xcode automatic signing, TestFlight, or an App Store-signed archive.
 - No temporary sandbox exception entitlements are currently declared.
 - Privacy manifests are included in both targets:
   - App: `Resources/App/PrivacyInfo.xcprivacy`
   - Widget: `Resources/Widget/PrivacyInfo.xcprivacy`
 - Current privacy manifest posture:
   - App: Disk Space `85F4.1`, UserDefaults `CA92.1`, System Boot Time `35F9.1`
-  - Widget: Disk Space `85F4.1`, System Boot Time `35F9.1`
+  - Widget: Disk Space `85F4.1`, UserDefaults `CA92.1`, System Boot Time `35F9.1`
   - Both targets declare no collected data and no tracking.
 
 ## 2. Inputs We Need Before Upload
@@ -34,7 +39,9 @@ This project is a native macOS app, `Pulse Dock`, with a WidgetKit extension. Th
   - App: `APP_BUNDLE_IDENTIFIER`
   - Widget: `WIDGET_BUNDLE_IDENTIFIER`, normally `${APP_BUNDLE_IDENTIFIER}.widget`
 - App Store app name, SKU, primary language, category, price, and availability.
-- Support URL and privacy policy URL.
+- Do not submit as a global English-localized app until scripts/audit-localization.sh reports zero Swift Chinese string findings. App Store metadata/screenshots must also be available in English.
+- Support URL: `https://ifonly3.github.io/pulsedock/support/`
+- Privacy policy URL: `https://ifonly3.github.io/pulsedock/privacy-policy/`
 - Copyright holder string.
 - App Review contact information.
 - 1 to 10 Mac screenshots, in `.png`, `.jpg`, or `.jpeg`.
@@ -68,8 +75,10 @@ Prepare these before the first binary upload finishes processing:
 - Description: explain that it is a local macOS system monitor with app and widgets.
 - Keywords: system monitor, widget, CPU, memory, disk, network, status, macOS.
 - Category: likely `Utilities`.
-- Support URL: public page with contact channel.
-- Privacy policy URL: public page that matches the current no-collection posture.
+- Support URL: `https://ifonly3.github.io/pulsedock/support/`, a public page with contact channel.
+- Privacy policy URL: `https://ifonly3.github.io/pulsedock/privacy-policy/`, a public page that matches the current no-collection posture.
+- Pre-submit gate: after publishing the docs, both GitHub Pages URLs must return HTTP 200 before submitting the App Store version.
+- Current external publishing blocker as of 2026-06-25: both GitHub Pages URLs returned HTTP 404 to `curl --max-time 15 -L -I`; publish the pages and re-run the check before App Store submission.
 - Marketing URL: optional.
 - Promotional text: optional.
 - Copyright: legal owner and year.
@@ -77,7 +86,7 @@ Prepare these before the first binary upload finishes processing:
 - Review notes:
 
 ```text
-Pulse Dock is a local macOS system monitor. It samples public on-device system metrics such as CPU, memory, disk, network path/counters, battery/thermal, display, and GPU capability data. It stores only local settings and sanitized trend history in UserDefaults. It does not create accounts, collect personal data, track users, send analytics, or perform remote network probes. The WidgetKit extension displays local metrics on a system-scheduled timeline.
+Pulse Dock is a local macOS system monitor. It samples public on-device system metrics such as CPU, memory, disk, network path/counters, battery/thermal, display, and GPU capability data. It stores local settings, sanitized trend history, and a compact latest widget snapshot in UserDefaults/App Group UserDefaults. It does not create accounts, collect personal data, track users, send analytics, or perform remote network probes. The WidgetKit extension displays local metrics on a system-scheduled timeline.
 ```
 
 ## 5. Screenshots And App Icon
@@ -91,11 +100,19 @@ Apple currently requires 1 to 10 screenshots for Mac apps. Use one supported 16:
 
 Recommended screenshot set:
 
-1. Main dashboard overview.
-2. CPU / memory detail view.
-3. Network / storage detail view.
-4. Widget on desktop or widget gallery.
-5. Settings or history view.
+1. `01-overview.png`: main dashboard overview.
+2. `02-cpu-memory.png`: CPU and memory-focused detail view.
+3. `03-network-storage.png`: network and storage-focused detail view.
+4. `04-widget-popover.png`: menu bar widget/popover.
+5. `05-settings-history.png`: settings or history view.
+
+Place final screenshots in `docs/app-store/screenshots/`.
+
+Validate the final screenshot set before upload:
+
+```bash
+scripts/validate-app-store-screenshots.sh
+```
 
 The app icon is generated by `scripts/generate-app-icon.swift` and included as `Resources/AppIcon.icns`. Before submission, visually inspect the icon in Finder, Dock, and App Store Connect after upload.
 
@@ -105,7 +122,8 @@ App Store Connect privacy answers should match the current implementation:
 
 - Data collection answer: "No, we do not collect data from this app", assuming no third-party SDKs, analytics, crash reporters, or remote telemetry are added.
 - Tracking: no.
-- Privacy policy URL: still required for macOS apps.
+- Privacy policy URL: `https://ifonly3.github.io/pulsedock/privacy-policy/`.
+- Export compliance: `ITSAppUsesNonExemptEncryption` is declared as `false` in the app Info.plist for the current no-custom-cryptography build.
 - User privacy choices URL: optional because the app currently does not collect data.
 
 Keep these checks before every release:
@@ -115,8 +133,21 @@ Keep these checks before every release:
 - If new required-reason APIs are introduced, update `PrivacyInfo.xcprivacy` for the app and/or widget.
 - If any sandbox temporary exception entitlement is added, write review-facing usage information for the entitlement.
 - Avoid claims that the app measures system data Apple does not expose. For unavailable metrics, the UI should keep showing "未报告" instead of invented values.
+- Local notifications are deferred to a future opt-in feature. If implemented later, update user-facing copy, permission-flow testing, support/privacy docs, and App Store Connect metadata before submission.
 
 ## 7. Local Verification Before Archive
+
+Latest local verification on 2026-06-25:
+
+- `swift build` passed.
+- `swift test` passed with 256 Swift Testing tests.
+- `scripts/generate-xcodeproj.rb` regenerated `PulseDock.xcodeproj`.
+- `scripts/package-app.sh` produced `dist/Pulse Dock.app`.
+- App and widget binaries are universal (`x86_64 arm64`).
+- `codesign --verify --deep --strict --verbose=2 "dist/Pulse Dock.app"` passed.
+- App and widget each include one `PrivacyInfo.xcprivacy`.
+- `scripts/validate-app-store-screenshots.sh` validated 5 screenshots.
+- Launch smoke test passed from a clean process state using bundle id `local.pulsedock`.
 
 Run these before making the App Store archive:
 
@@ -158,33 +189,33 @@ scripts/archive-app-store.sh
 The script will:
 
 - Regenerate the app icon.
-- Regenerate `SystemDashboard.xcodeproj` with the release bundle IDs, version, build number, and team ID.
-- Archive scheme `SystemDashboard` for `generic/platform=macOS`.
+- Regenerate `PulseDock.xcodeproj` with the release bundle IDs, version, build number, and team ID.
+- Archive scheme `PulseDock` for `generic/platform=macOS`.
 - Export with `method = app-store-connect`.
-- Write outputs to `dist/SystemDashboard.xcarchive` and `dist/AppStore`.
+- Write outputs to `dist/PulseDock.xcarchive` and `dist/AppStore`.
 
 After archive/export, check signing and sandbox entitlements:
 
 ```bash
-codesign -dv --verbose=4 "dist/SystemDashboard.xcarchive/Products/Applications/Pulse Dock.app"
+codesign -dv --verbose=4 "dist/PulseDock.xcarchive/Products/Applications/Pulse Dock.app"
 ```
 
 ```bash
-codesign -d --entitlements :- "dist/SystemDashboard.xcarchive/Products/Applications/Pulse Dock.app"
+codesign -d --entitlements :- "dist/PulseDock.xcarchive/Products/Applications/Pulse Dock.app"
 ```
 
 ```bash
-codesign -d --entitlements :- "dist/SystemDashboard.xcarchive/Products/Applications/Pulse Dock.app/Contents/PlugIns/PulseDockWidgetExtension.appex"
+codesign -d --entitlements :- "dist/PulseDock.xcarchive/Products/Applications/Pulse Dock.app/Contents/PlugIns/PulseDockWidgetExtension.appex"
 ```
 
 Remove and verify quarantine attributes before upload:
 
 ```bash
-xattr -dr com.apple.quarantine "dist/SystemDashboard.xcarchive"
+xattr -dr com.apple.quarantine "dist/PulseDock.xcarchive"
 ```
 
 ```bash
-xattr -lr "dist/SystemDashboard.xcarchive" | rg "com.apple.quarantine"
+xattr -lr "dist/PulseDock.xcarchive" | rg "com.apple.quarantine"
 ```
 
 Expected result for the last command: no output.
@@ -216,7 +247,7 @@ Before first public App Store submission, run a short TestFlight pass:
 - Install on a clean Mac, ideally one not used for development.
 - Verify the main app, menu bar behavior, and widget.
 - Confirm no hidden debug UI, placeholder text, or test bundle IDs remain.
-- Confirm the privacy policy and support links are live.
+- Confirm the privacy policy and support links are live and both GitHub Pages URLs return HTTP 200.
 
 ## 11. Submit For Review
 

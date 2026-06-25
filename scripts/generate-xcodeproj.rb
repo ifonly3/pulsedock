@@ -5,24 +5,26 @@ require "xcodeproj"
 require "fileutils"
 
 root = File.expand_path("..", __dir__)
-project_path = File.join(root, "SystemDashboard.xcodeproj")
+project_path = File.join(root, "PulseDock.xcodeproj")
+legacy_project_path = File.join(root, "SystemDashboard.xcodeproj")
 FileUtils.rm_rf(project_path)
+FileUtils.rm_rf(legacy_project_path)
 
 project = Xcodeproj::Project.new(project_path)
 
 shared_group = project.new_group("SharedMetrics", "Sources/SharedMetrics")
-app_group = project.new_group("SystemDashboardApp", "Sources/SystemDashboardApp")
-widget_group = project.new_group("SystemDashboardWidget", "Sources/SystemDashboardWidget")
+app_group = project.new_group("PulseDockApp", "Sources/PulseDockApp")
+widget_group = project.new_group("PulseDockWidget", "Sources/PulseDockWidget")
 resources_group = project.new_group("Resources", "Resources")
 
 shared_files = Dir.glob(File.join(root, "Sources/SharedMetrics/*.swift")).sort.map { |path| shared_group.new_file(path) }
-app_files = Dir.glob(File.join(root, "Sources/SystemDashboardApp/*.swift")).sort.map { |path| app_group.new_file(path) }
-widget_files = Dir.glob(File.join(root, "Sources/SystemDashboardWidget/*.swift")).sort.map { |path| widget_group.new_file(path) }
+app_files = Dir.glob(File.join(root, "Sources/PulseDockApp/*.swift")).sort.map { |path| app_group.new_file(path) }
+widget_files = Dir.glob(File.join(root, "Sources/PulseDockWidget/*.swift")).sort.map { |path| widget_group.new_file(path) }
 
 app_info = resources_group.new_file(File.join(root, "Resources/AppInfo.plist"))
 widget_info = resources_group.new_file(File.join(root, "Resources/WidgetInfo.plist"))
-app_entitlements = resources_group.new_file(File.join(root, "Resources/SystemDashboard.entitlements"))
-widget_entitlements = resources_group.new_file(File.join(root, "Resources/SystemDashboardWidget.entitlements"))
+app_entitlements = resources_group.new_file(File.join(root, "Resources/PulseDock.entitlements"))
+widget_entitlements = resources_group.new_file(File.join(root, "Resources/PulseDockWidgetExtension.entitlements"))
 app_privacy_manifest = resources_group.new_file(File.join(root, "Resources/App/PrivacyInfo.xcprivacy"))
 widget_privacy_manifest = resources_group.new_file(File.join(root, "Resources/Widget/PrivacyInfo.xcprivacy"))
 app_icon = resources_group.new_file(File.join(root, "Resources/AppIcon.icns"))
@@ -34,8 +36,10 @@ marketing_version = ENV.fetch("MARKETING_VERSION", "1.0.0")
 current_project_version = ENV.fetch("CURRENT_PROJECT_VERSION", "1")
 development_team = ENV.fetch("DEVELOPMENT_TEAM", "")
 
-app_target = project.new_target(:application, "SystemDashboard", :osx, deployment_target)
-widget_target = project.new_target(:app_extension, "SystemDashboardWidgetExtension", :osx, deployment_target)
+app_target = project.new_target(:application, "PulseDock", :osx, deployment_target)
+widget_target = project.new_target(:app_extension, "PulseDockWidgetExtension", :osx, deployment_target)
+app_target.product_reference.path = "Pulse Dock.app"
+widget_target.product_reference.path = "PulseDockWidgetExtension.appex"
 
 (shared_files + app_files).each { |file| app_target.add_file_references([file]) }
 (shared_files + widget_files).each { |file| widget_target.add_file_references([file]) }
@@ -76,12 +80,19 @@ project.targets.each do |target|
     settings["ENABLE_HARDENED_RUNTIME"] = "YES"
     settings["GENERATE_INFOPLIST_FILE"] = "NO"
     settings["INFOPLIST_FILE"] = target == app_target ? "Resources/AppInfo.plist" : "Resources/WidgetInfo.plist"
-    settings["CODE_SIGN_ENTITLEMENTS"] = target == app_target ? "Resources/SystemDashboard.entitlements" : "Resources/SystemDashboardWidget.entitlements"
+    settings["CODE_SIGN_ENTITLEMENTS"] = target == app_target ? "Resources/PulseDock.entitlements" : "Resources/PulseDockWidgetExtension.entitlements"
     settings["PRODUCT_BUNDLE_IDENTIFIER"] = target == app_target ? app_bundle_identifier : widget_bundle_identifier
     settings["PRODUCT_NAME"] = target == app_target ? "Pulse Dock" : "PulseDockWidgetExtension"
     settings.reject! { |key, _| key.start_with?("ASSETCATALOG_COMPILER_") }
   end
 end
 
+scheme = Xcodeproj::XCScheme.new
+scheme.add_build_target(app_target)
+scheme.add_build_target(widget_target)
+scheme.set_launch_target(app_target)
+scheme.archive_action.build_configuration = "Release"
+
 project.save
+scheme.save_as(project.path, "PulseDock", true)
 puts project_path

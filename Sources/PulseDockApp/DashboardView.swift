@@ -26,27 +26,44 @@ struct DashboardView: View {
             VStack(spacing: 0) {
                 DashboardTopBar(page: router.selectedPage, snapshot: store.snapshot, refreshInterval: store.refreshInterval)
 
-                ScrollView {
-                    pageContent
-                        .padding(.horizontal, 24)
-                        .padding(.top, 18)
-                        .padding(.bottom, 28)
+                GeometryReader { proxy in
+                    ScrollView {
+                        if proxy.size.width < 1080 {
+                            pageContent(
+                                metricColumns: adaptiveMetricColumns(for: proxy.size.width),
+                                summaryColumns: adaptiveSummaryColumns(for: proxy.size.width),
+                                isCompact: true
+                            )
+                            .padding(.horizontal, 24)
+                            .padding(.top, 18)
+                            .padding(.bottom, 28)
+                        } else {
+                            pageContent(
+                                metricColumns: adaptiveMetricColumns(for: proxy.size.width),
+                                summaryColumns: adaptiveSummaryColumns(for: proxy.size.width),
+                                isCompact: false
+                            )
+                            .padding(.horizontal, 24)
+                            .padding(.top, 18)
+                            .padding(.bottom, 28)
+                        }
+                    }
+                    .background(DashboardColor.canvas)
                 }
-                .background(DashboardColor.canvas)
             }
         }
-        .frame(minWidth: 1180, idealWidth: 1320, minHeight: 760, idealHeight: 860)
+        .frame(minWidth: 960, idealWidth: 1320, minHeight: 640, idealHeight: 860)
         .background(WindowBackdrop())
     }
 
     @ViewBuilder
-    private var pageContent: some View {
+    private func pageContent(metricColumns: [GridItem], summaryColumns: [GridItem], isCompact: Bool) -> some View {
         let snapshot = store.snapshot
         let history = store.recentSnapshots
 
         switch router.selectedPage {
         case .overview:
-            OverviewPage(store: store, history: history)
+            OverviewPage(store: store, history: history, metricColumns: metricColumns, isCompact: isCompact)
         case .cpu:
             CPUPage(snapshot: snapshot, history: history)
         case .gpu:
@@ -56,17 +73,17 @@ struct DashboardView: View {
         case .storage:
             StoragePage(store: store, history: history)
         case .network:
-            NetworkPage(snapshot: snapshot, history: history)
+            NetworkPage(snapshot: snapshot, history: history, metricColumns: metricColumns)
         case .power:
             PowerPage(snapshot: snapshot, history: history)
         case .processes:
-            ProcessesPage(snapshot: snapshot)
+            ProcessesPage(snapshot: snapshot, summaryColumns: summaryColumns)
         case .sensors:
             SensorsPage(store: store)
         case .history:
             HistoryAlertsPage(store: store, history: history)
         case .settings:
-            SettingsPage(store: store)
+            SettingsPage(store: store, isCompact: isCompact)
         }
     }
 }
@@ -113,7 +130,7 @@ enum DashboardPage: String, CaseIterable, Identifiable {
         case .power: "电池、电源与热状态"
         case .processes: "运行中的应用"
         case .sensors: "热状态与系统信号"
-        case .history: "本地采样历史与告警"
+        case .history: "本地采样历史与阈值判断"
         case .settings: "显示、刷新与小组件"
         }
     }
@@ -179,6 +196,16 @@ private func windowBackdropColors(for colorScheme: ColorScheme) -> [Color] {
         Color(red: 0.92, green: 0.95, blue: 0.94).opacity(0.48),
         Color(red: 0.96, green: 0.94, blue: 0.90).opacity(0.34)
     ]
+}
+
+private func adaptiveMetricColumns(for width: CGFloat) -> [GridItem] {
+    let count = width < 1080 ? 2 : 4
+    return Array(repeating: GridItem(.flexible(), spacing: 12), count: count)
+}
+
+private func adaptiveSummaryColumns(for width: CGFloat) -> [GridItem] {
+    let count = width < 1080 ? 2 : 4
+    return Array(repeating: GridItem(.flexible(), spacing: 12), count: count)
 }
 
 private struct DashboardSidebar: View {
@@ -334,50 +361,73 @@ private struct DashboardTopBar: View {
 private struct OverviewPage: View {
     @ObservedObject var store: MetricsStore
     let history: [MetricSnapshot]
+    let metricColumns: [GridItem]
+    let isCompact: Bool
 
     private var snapshot: MetricSnapshot { store.snapshot }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 12) {
+            LazyVGrid(columns: metricColumns, spacing: 12) {
                 MetricCard(title: "CPU 使用率", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, icon: "cpu", tint: DashboardColor.green, badgeText: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), values: cpuTrendValues(from: history))
                 MetricCard(title: "内存占用", value: snapshot.memoryUsageText, detail: snapshot.memoryText, icon: "memorychip", tint: DashboardColor.blue, badgeText: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), values: memoryTrendValues(from: history))
                 MetricCard(title: "网络吞吐", value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", icon: "arrow.up.arrow.down", tint: DashboardColor.cyan, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond, baseline: 40_000_000)), values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
                 MetricCard(title: "电源状态", value: snapshot.powerStatusText, detail: snapshot.powerSourceText, icon: "battery.75percent", tint: powerTint(snapshot), badgeText: snapshot.batteryPercent.map { MetricFormatting.percentage($0) }, progress: powerGaugeProgress(snapshot), values: powerTrendValues(from: history))
             }
 
-            HStack(alignment: .top, spacing: 12) {
-                DashboardPanel(title: "运行趋势", subtitle: reportedHistorySampleCountText(from: history), icon: "chart.xyaxis.line") {
-                    VStack(spacing: 14) {
-                        TrendRow(title: "CPU", value: snapshot.cpuText, tint: DashboardColor.green, values: cpuTrendValues(from: history))
-                        TrendRow(title: "负载", value: snapshot.loadText, tint: DashboardColor.purple, values: loadTrendValues(from: history))
-                        TrendRow(title: "内存", value: snapshot.memoryUsageText, tint: DashboardColor.blue, values: memoryTrendValues(from: history))
-                        TrendRow(title: "网络", value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
-                        TrendRow(title: "磁盘", value: snapshot.diskUsageText, tint: DashboardColor.amber, values: diskTrendValues(from: history))
-                    }
+            if isCompact {
+                VStack(alignment: .leading, spacing: 12) {
+                    overviewTrendPanel
+                    overviewStatusPanel
                 }
-
-                DashboardPanel(title: "系统状态", subtitle: snapshot.osVersionText, icon: "checkmark.seal") {
-                    VStack(spacing: 10) {
-                        StatusSummaryRow(title: "热状态", value: snapshot.thermalText, status: thermalStatus(snapshot.thermalState))
-                        StatusSummaryRow(title: "运行时间", value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral)
-                        StatusSummaryRow(title: "内核版本", value: snapshot.kernelText, status: snapshot.hasKernelReleaseReport ? .normal : .neutral)
-                        StatusSummaryRow(title: "CPU 状态", value: "\(snapshot.cpuText) / \(MetricFormatting.percentage(store.cpuAlertThreshold))", status: usageStatusLevel(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold))
-                        StatusSummaryRow(title: "内存状态", value: "\(snapshot.memoryUsageText) / \(MetricFormatting.percentage(store.memoryAlertThreshold))", status: usageStatusLevel(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold))
-                        StatusSummaryRow(title: "负载 1/5/15", value: snapshot.loadDetailText, status: snapshot.hasLoadAverageReport ? .normal : .neutral)
-                        StatusSummaryRow(title: "运行中 App", value: snapshot.runningAppSummaryText, status: snapshot.hasRunningAppReport ? .normal : .neutral)
-                        StatusSummaryRow(title: "网络连接", value: snapshot.networkPathText, status: networkStatusLevel(snapshot))
-                        StatusSummaryRow(title: "GPU / 显示器", value: snapshot.gpuDisplaySummaryText, status: snapshot.hasGPUDisplayReport ? .normal : .neutral)
-                        StatusSummaryRow(title: "磁盘可用", value: snapshot.diskText, status: usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold))
-                    }
+            } else {
+                HStack(alignment: .top, spacing: 12) {
+                    overviewTrendPanel
+                    overviewStatusPanel
+                        .frame(width: 330)
                 }
-                .frame(width: 330)
             }
 
-            HStack(alignment: .top, spacing: 12) {
-                ProcessListPanel(processes: snapshot.topProcesses)
-                WidgetPreviewPanel(snapshot: snapshot)
-                    .frame(width: 360)
+            if isCompact {
+                VStack(alignment: .leading, spacing: 12) {
+                    ProcessListPanel(processes: snapshot.runningApps)
+                    WidgetPreviewPanel(snapshot: snapshot)
+                }
+            } else {
+                HStack(alignment: .top, spacing: 12) {
+                    ProcessListPanel(processes: snapshot.runningApps)
+                    WidgetPreviewPanel(snapshot: snapshot)
+                        .frame(width: 360)
+                }
+            }
+        }
+    }
+
+    private var overviewTrendPanel: some View {
+        DashboardPanel(title: "运行趋势", subtitle: reportedHistorySampleCountText(from: history), icon: "chart.xyaxis.line") {
+            VStack(spacing: 14) {
+                TrendRow(title: "CPU", value: snapshot.cpuText, tint: DashboardColor.green, values: cpuTrendValues(from: history))
+                TrendRow(title: "负载", value: snapshot.loadText, tint: DashboardColor.purple, values: loadTrendValues(from: history))
+                TrendRow(title: "内存", value: snapshot.memoryUsageText, tint: DashboardColor.blue, values: memoryTrendValues(from: history))
+                TrendRow(title: "网络", value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
+                TrendRow(title: "磁盘", value: snapshot.diskUsageText, tint: DashboardColor.amber, values: diskTrendValues(from: history))
+            }
+        }
+    }
+
+    private var overviewStatusPanel: some View {
+        DashboardPanel(title: "系统状态", subtitle: snapshot.osVersionText, icon: "checkmark.seal") {
+            VStack(spacing: 10) {
+                StatusSummaryRow(title: "热状态", value: snapshot.thermalText, status: thermalStatus(snapshot.thermalState))
+                StatusSummaryRow(title: "运行时间", value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral)
+                StatusSummaryRow(title: "内核版本", value: snapshot.kernelText, status: snapshot.hasKernelReleaseReport ? .normal : .neutral)
+                StatusSummaryRow(title: "CPU 状态", value: "\(snapshot.cpuText) / \(MetricFormatting.percentage(store.cpuAlertThreshold))", status: usageStatusLevel(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold))
+                StatusSummaryRow(title: "内存状态", value: "\(snapshot.memoryUsageText) / \(MetricFormatting.percentage(store.memoryAlertThreshold))", status: usageStatusLevel(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold))
+                StatusSummaryRow(title: "负载 1/5/15", value: snapshot.loadDetailText, status: snapshot.hasLoadAverageReport ? .normal : .neutral)
+                StatusSummaryRow(title: "运行中 App", value: snapshot.runningAppSummaryText, status: snapshot.hasRunningAppReport ? .normal : .neutral)
+                StatusSummaryRow(title: "网络连接", value: snapshot.networkPathText, status: networkStatusLevel(snapshot))
+                StatusSummaryRow(title: "GPU / 显示器", value: snapshot.gpuDisplaySummaryText, status: snapshot.hasGPUDisplayReport ? .normal : .neutral)
+                StatusSummaryRow(title: "磁盘可用", value: snapshot.diskText, status: usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold))
             }
         }
     }
@@ -438,7 +488,7 @@ private struct CPUPage: View {
                 }
             }
 
-            ProcessListPanel(processes: snapshot.topProcesses, title: "运行中 App", subtitle: "前台优先 · 按名称排序")
+            ProcessListPanel(processes: snapshot.runningApps, title: "运行中 App", subtitle: "前台优先 · 按名称排序")
         }
     }
 }
@@ -483,7 +533,7 @@ private struct MemoryPage: View {
                 .frame(width: 360)
             }
 
-            ProcessListPanel(processes: snapshot.topProcesses, title: "运行中 App", subtitle: "当前会话中的应用列表")
+            ProcessListPanel(processes: snapshot.runningApps, title: "运行中 App", subtitle: "当前会话中的应用列表")
         }
     }
 
@@ -545,10 +595,11 @@ private struct StoragePage: View {
 private struct NetworkPage: View {
     let snapshot: MetricSnapshot
     let history: [MetricSnapshot]
+    let metricColumns: [GridItem]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 12) {
+            LazyVGrid(columns: metricColumns, spacing: 12) {
                 MetricCard(title: "下载", value: snapshot.networkInText, detail: "实时速率", icon: "arrow.down", tint: DashboardColor.blue, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkInBytesPerSecond, baseline: 20_000_000)), values: networkTrendValues(from: history, keyPath: \.networkInBytesPerSecond, baseline: 20_000_000))
                 MetricCard(title: "上传", value: snapshot.networkOutText, detail: "实时速率", icon: "arrow.up", tint: DashboardColor.green, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkOutBytesPerSecond, baseline: 20_000_000)), values: networkTrendValues(from: history, keyPath: \.networkOutBytesPerSecond, baseline: 20_000_000))
                 MetricCard(title: "总吞吐", value: snapshot.networkText, detail: "合并上下行", icon: "network", tint: DashboardColor.cyan, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond, baseline: 40_000_000)), values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
@@ -728,20 +779,21 @@ private struct GPUDisplayPage: View {
 
 private struct ProcessesPage: View {
     let snapshot: MetricSnapshot
+    let summaryColumns: [GridItem]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 12) {
+            LazyVGrid(columns: summaryColumns, spacing: 12) {
                 SummaryCard(title: "运行中 App", value: snapshot.runningAppCountText, icon: "app.badge", tint: DashboardColor.blue)
                 SummaryCard(title: "列表项", value: snapshot.runningAppListCountText, icon: "list.bullet.rectangle", tint: DashboardColor.green)
                 SummaryCard(title: "前台 App", value: snapshot.activeApplicationCountText, icon: "cursorarrow.click", tint: DashboardColor.amber)
                 SummaryCard(title: "隐藏 App", value: snapshot.hiddenApplicationCountText, icon: "eye.slash", tint: DashboardColor.purple)
             }
 
-            DashboardPanel(title: "运行中 App", subtitle: ProcessMetric.listSubtitle(for: snapshot.topProcesses, defaultSubtitle: "前台优先 · 按名称排序"), icon: "list.bullet.rectangle") {
+            DashboardPanel(title: "运行中 App", subtitle: ProcessMetric.listSubtitle(for: snapshot.runningApps, defaultSubtitle: "前台优先 · 按名称排序"), icon: "list.bullet.rectangle") {
                 VStack(spacing: 0) {
                     TableHeader(columns: ["名称", "状态", "架构", "启动"])
-                    ForEach(snapshot.topProcesses.filter(\.hasInventoryReport)) { process in
+                    ForEach(snapshot.runningApps.filter(\.hasInventoryReport)) { process in
                         TableRow(values: [
                             process.name,
                             process.stateText,
@@ -789,7 +841,7 @@ private struct SensorsPage: View {
                 }
             }
 
-            DashboardPanel(title: "本地规则", subtitle: "当前采样的阈值判断", icon: "checkmark.shield") {
+            DashboardPanel(title: "状态判断", subtitle: "当前采样的本地结果", icon: "checkmark.shield") {
                 VStack(spacing: 0) {
                     TableHeader(columns: ["规则", "阈值", "当前", "状态"])
                     TableRow(values: ["CPU", MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: "注意")])
@@ -849,7 +901,7 @@ private struct HistoryAlertsPage: View {
                 }
             }
 
-            DashboardPanel(title: "状态判断", subtitle: "当前采样的本地结果", icon: "bell.badge") {
+            DashboardPanel(title: "状态判断", subtitle: "当前采样的本地结果", icon: "checkmark.shield") {
                 VStack(spacing: 0) {
                     TableHeader(columns: ["规则", "阈值", "当前", "状态"])
                     TableRow(values: ["CPU 超过", MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: "触发")])
@@ -864,66 +916,34 @@ private struct HistoryAlertsPage: View {
 
 private struct SettingsPage: View {
     @ObservedObject var store: MetricsStore
+    let isCompact: Bool
 
     private var snapshot: MetricSnapshot { store.snapshot }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                DashboardPanel(title: "刷新与显示", subtitle: "低唤醒、可读性优先", icon: "slider.horizontal.3") {
-                    VStack(spacing: 14) {
-                        SettingControlRow(title: "主窗口刷新", detail: "实时趋势与状态卡片") {
-                            Picker("主窗口刷新", selection: Binding(
-                                get: { store.refreshInterval },
-                                set: { store.updateRefreshInterval($0) }
-                            )) {
-                                ForEach(RefreshIntervalOption.allCases) { option in
-                                    Text(option.label).tag(option)
-                                }
-                            }
-                            .labelsHidden()
-                            .pickerStyle(.segmented)
-                            .frame(width: 164)
-                        }
-                        SettingControlRow(title: "菜单栏状态", detail: "显示当前 CPU 占用") {
-                            Toggle("菜单栏 CPU", isOn: Binding(
-                                get: { store.showsMenuBarCPU },
-                                set: { store.updateShowsMenuBarCPU($0) }
-                            ))
-                            .toggleStyle(.switch)
-                            .labelsHidden()
-                        }
-                        SettingReadOnlyRow(title: "小组件刷新", detail: "由系统按时间线调度", control: "5m")
-                        SettingControlRow(title: "本地历史", detail: "保留最近 \(store.historyDepth.sampleCount) 次采样") {
-                            Picker("本地历史", selection: Binding(
-                                get: { store.historyDepth },
-                                set: { store.updateHistoryDepth($0) }
-                            )) {
-                                ForEach(HistoryDepthOption.allCases) { option in
-                                    Text(option.label).tag(option)
-                                }
-                            }
-                            .labelsHidden()
-                            .pickerStyle(.segmented)
-                            .frame(width: 214)
-                        }
-                    }
+            if isCompact {
+                VStack(alignment: .leading, spacing: 12) {
+                    refreshDisplayPanel
+                    widgetPreviewPanel
                 }
+            } else {
+                HStack(alignment: .top, spacing: 12) {
+                    refreshDisplayPanel
+                    widgetPreviewPanel
+                        .frame(width: 360)
+                }
+            }
 
-                DashboardPanel(title: "小组件", subtitle: "桌面状态预览", icon: "rectangle.grid.2x2") {
-                    VStack(spacing: 12) {
-                        WidgetMiniPreview(snapshot: snapshot)
-                        KeyValueGrid(items: [
-                            ("尺寸", "小 / 中 / 大"),
-                            ("数据源", "系统采样"),
-                            ("刷新", "系统调度"),
-                            ("采样", snapshot.sampleTimeText),
-                            ("历史", store.historyDurationText),
-                            ("主窗口", store.refreshInterval.label)
-                        ])
+            DashboardPanel(title: "支持与隐私", subtitle: "审核信息与公开入口", icon: "hand.raised") {
+                VStack(spacing: 12) {
+                    SettingsLinkRow(title: "隐私政策", detail: "本地采样、无账号、无追踪") {
+                        PulseDockLinks.openPrivacyPolicy()
+                    }
+                    SettingsLinkRow(title: "支持", detail: "联系渠道与版本支持信息") {
+                        PulseDockLinks.openSupport()
                     }
                 }
-                .frame(width: 360)
             }
 
             DashboardPanel(title: "数据来源", subtitle: "当前页面使用的系统信号", icon: "checklist") {
@@ -938,6 +958,64 @@ private struct SettingsPage: View {
                     TableRow(values: ["电源 / 热状态", snapshot.powerThermalSourceStatusText, "电源与温控状态"])
                     TableRow(values: ["系统版本 / 运行时间 / 内核版本", snapshot.systemVersionSourceStatusText, "系统版本与启动时间"])
                 }
+            }
+        }
+    }
+
+    private var refreshDisplayPanel: some View {
+        DashboardPanel(title: "刷新与显示", subtitle: "低唤醒、可读性优先", icon: "slider.horizontal.3") {
+            VStack(spacing: 14) {
+                SettingControlRow(title: "主窗口刷新", detail: "实时趋势与状态卡片") {
+                    Picker("主窗口刷新", selection: Binding(
+                        get: { store.refreshInterval },
+                        set: { store.updateRefreshInterval($0) }
+                    )) {
+                        ForEach(RefreshIntervalOption.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .frame(width: 164)
+                }
+                SettingControlRow(title: "菜单栏状态", detail: "显示当前 CPU 占用") {
+                    Toggle("菜单栏 CPU", isOn: Binding(
+                        get: { store.showsMenuBarCPU },
+                        set: { store.updateShowsMenuBarCPU($0) }
+                    ))
+                    .toggleStyle(.switch)
+                    .labelsHidden()
+                }
+                SettingReadOnlyRow(title: "小组件刷新", detail: "由系统按时间线调度", control: "5m")
+                SettingControlRow(title: "本地历史", detail: "保留最近 \(store.historyDepth.sampleCount) 次采样") {
+                    Picker("本地历史", selection: Binding(
+                        get: { store.historyDepth },
+                        set: { store.updateHistoryDepth($0) }
+                    )) {
+                        ForEach(HistoryDepthOption.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .frame(width: 214)
+                }
+            }
+        }
+    }
+
+    private var widgetPreviewPanel: some View {
+        DashboardPanel(title: "小组件", subtitle: "桌面状态预览", icon: "rectangle.grid.2x2") {
+            VStack(spacing: 12) {
+                WidgetMiniPreview(snapshot: snapshot)
+                KeyValueGrid(items: [
+                    ("尺寸", "小 / 中 / 大"),
+                    ("数据源", "系统采样"),
+                    ("刷新", "系统调度"),
+                    ("采样", snapshot.sampleTimeText),
+                    ("历史", store.historyDurationText),
+                    ("主窗口", store.refreshInterval.label)
+                ])
             }
         }
     }
@@ -1042,6 +1120,7 @@ private struct SummaryCard: View {
                 .foregroundStyle(tint)
                 .frame(width: 34, height: 34)
                 .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
@@ -1056,6 +1135,8 @@ private struct SummaryCard: View {
         }
         .padding(15)
         .panel(cornerRadius: 8)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
     }
 }
 
@@ -1350,6 +1431,9 @@ private struct StatLine: View {
             }
             StatProgress(progress: progress, tint: tint)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(label), \(value)")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
     }
 }
 
@@ -1377,6 +1461,8 @@ private struct CoreUsageTile: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .strokeBorder(DashboardColor.border, lineWidth: 1)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Core \(index), \(MetricFormatting.percentage(value))")
     }
 }
 
@@ -1522,6 +1608,8 @@ private struct StatusSummaryRow: View {
         }
         .padding(10)
         .background(DashboardColor.panelAlt, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value), \(status.text)")
     }
 }
 
@@ -1537,6 +1625,7 @@ private struct SourceCapabilityCard: View {
             HStack {
                 Image(systemName: icon)
                     .foregroundStyle(status.color)
+                    .accessibilityHidden(true)
                 Spacer()
                 Text(value)
                     .font(.system(size: 11, weight: .semibold))
@@ -1556,6 +1645,8 @@ private struct SourceCapabilityCard: View {
         }
         .padding(14)
         .panel(cornerRadius: 8)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value), \(source)")
     }
 }
 
@@ -1656,6 +1747,35 @@ private struct SettingReadOnlyRow: View {
     }
 }
 
+private struct SettingsLinkRow: View {
+    let title: String
+    let detail: String
+    let action: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.system(size: 13, weight: .semibold))
+                Text(detail)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(DashboardColor.muted)
+            }
+            Spacer()
+            Button(action: action) {
+                Image(systemName: "arrow.up.right.square")
+                    .font(.system(size: 13, weight: .semibold))
+                    .frame(width: 28, height: 28)
+            }
+            .buttonStyle(.borderless)
+            .help("打开\(title)")
+            .accessibilityLabel("打开\(title)")
+        }
+        .padding(12)
+        .background(DashboardColor.panelAlt, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+}
+
 private struct SettingControlRow<Control: View>: View {
     let title: String
     let detail: String
@@ -1741,6 +1861,8 @@ private struct TableRow: View {
         .overlay(alignment: .bottom) {
             Divider().overlay(DashboardColor.border.opacity(0.7))
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(values.joined(separator: ", "))
     }
 }
 

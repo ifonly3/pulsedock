@@ -764,13 +764,28 @@ public final class SystemSampler: @unchecked Sendable {
     }
 
     private func sampleDiskSpace() -> (free: UInt64, total: UInt64) {
-        guard let attributes = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory()),
+        let homePath = FileManager.default.homeDirectoryForCurrentUser.path
+        guard let attributes = try? FileManager.default.attributesOfFileSystem(forPath: homePath),
               let freeSize = attributes[.systemFreeSize] as? NSNumber,
               let totalSize = attributes[.systemSize] as? NSNumber else {
             return (0, 0)
         }
 
         return (freeSize.uint64Value, totalSize.uint64Value)
+    }
+
+    private func path(_ path: String, isInsideMountPath mountPath: String) -> Bool {
+        let normalizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
+        var normalizedMountPath = URL(fileURLWithPath: mountPath).standardizedFileURL.path
+        if normalizedMountPath != "/", normalizedMountPath.hasSuffix("/") {
+            normalizedMountPath.removeLast()
+        }
+
+        if normalizedMountPath == "/" {
+            return normalizedPath.hasPrefix("/")
+        }
+
+        return normalizedPath == normalizedMountPath || normalizedPath.hasPrefix(normalizedMountPath + "/")
     }
 
     private func cachedStorage(now: Date) -> StorageSample {
@@ -850,9 +865,9 @@ public final class SystemSampler: @unchecked Sendable {
             return StorageVolumeCandidate(mountPath: url.path, metric: metric)
         }
 
-        let homePath = NSHomeDirectory()
+        let homePath = FileManager.default.homeDirectoryForCurrentUser.path
         let primaryIndex = volumeCandidates
-            .filter { homePath.hasPrefix($0.mountPath) || $0.mountPath == "/" }
+            .filter { path(homePath, isInsideMountPath: $0.mountPath) }
             .sorted { $0.mountPath.count > $1.mountPath.count }
             .first?.metric.index ?? volumeCandidates.first?.metric.index
         let volumes = volumeCandidates.map { candidate -> StorageVolumeMetric in

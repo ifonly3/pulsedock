@@ -113,11 +113,11 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -151,15 +151,15 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -254,15 +254,15 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let widgetView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -294,7 +294,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -429,7 +429,7 @@ import Testing
 @Test func networkPathSupportRowsUseUnavailableWhenPathIsOffline() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -467,7 +467,7 @@ import Testing
 @Test func networkPageSurfacesLowDataAndMeteredPathFlags() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -546,7 +546,7 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -572,7 +572,7 @@ import Testing
 @Test func networkPageSurfacesAggregateThroughputTrend() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -592,7 +592,7 @@ import Testing
 @Test func networkPageTrendPanelSurfacesPathStatusHistory() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -675,11 +675,11 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -725,11 +725,11 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -762,7 +762,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -800,7 +800,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -861,7 +861,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -941,11 +941,11 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -991,7 +991,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1021,7 +1021,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1078,7 +1078,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1153,15 +1153,15 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1193,7 +1193,7 @@ import Testing
     let snapshot = MetricSnapshot.placeholder
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1227,7 +1227,7 @@ import Testing
 @Test func statusSummaryNeutralBadgeUsesNotReportedLabelInsteadOfOptional() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1252,11 +1252,11 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1314,7 +1314,7 @@ import Testing
 @Test func cpuTrendChartsFilterMissingUsageSamplesInsteadOfPlottingZeroDips() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1334,7 +1334,7 @@ import Testing
 @Test func capacityAndNetworkTrendChartsFilterMissingSamplesInsteadOfPlottingZeroDips() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1364,11 +1364,11 @@ import Testing
 @Test func currentProgressSurfacesSuppressMissingSamplesInsteadOfDrawingZeroProgress() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1417,7 +1417,7 @@ import Testing
 @Test func menuPopoverProgressSuppressesMissingSamplesInsteadOfDrawingZeroProgress() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1446,7 +1446,7 @@ import Testing
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1537,7 +1537,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1562,7 +1562,7 @@ import Testing
 @Test func networkPageSummarySurfacesSampledInterfaceCount() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1584,7 +1584,7 @@ import Testing
 @Test func networkPathTrendFiltersUnknownSamplesWithoutDroppingOfflineStates() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1609,7 +1609,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1641,7 +1641,40 @@ import Testing
     let snapshot = SystemSampler().sample()
 
     #expect(snapshot.processCount == 0)
-    #expect(snapshot.topProcesses.isEmpty)
+    #expect(snapshot.runningApps.isEmpty)
+}
+
+@Test func diskFallbackUsesCurrentUserHomeUrlInsteadOfNSHomeDirectoryString() throws {
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
+
+    #expect(sampler.contains("FileManager.default.homeDirectoryForCurrentUser.path"))
+    #expect(!sampler.contains("attributesOfFileSystem(forPath: NSHomeDirectory())"))
+}
+
+@Test func storagePrimaryVolumeMatchIsPathComponentSafe() throws {
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
+
+    #expect(sampler.contains("private func path(_ path: String, isInsideMountPath mountPath: String) -> Bool"))
+    #expect(sampler.contains("standardizedFileURL.path"))
+    #expect(sampler.contains("if normalizedMountPath == \"/\""))
+    #expect(sampler.contains("return normalizedPath.hasPrefix(\"/\")"))
+    #expect(sampler.contains("normalizedPath == normalizedMountPath || normalizedPath.hasPrefix(normalizedMountPath + \"/\")"))
+    #expect(sampler.contains("path(homePath, isInsideMountPath: $0.mountPath)"))
+    #expect(!sampler.contains("homePath.hasPrefix($0.mountPath)"))
+}
+
+@Test func runningAppInventoryUsesRunningAppsNamingAtAppBoundaries() throws {
+    let metricsStore = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+    let snapshot = try fixture("Sources/SharedMetrics/MetricSnapshot.swift")
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+
+    #expect(metricsStore.contains("snapshot.runningApps = visibleApplications.prefix(8)"))
+    #expect(snapshot.contains("public var runningApps: [ProcessMetric]"))
+    #expect(snapshot.contains("case runningApps = \"topProcesses\""))
+    #expect(!snapshot.contains("@available(*, deprecated, renamed: \"runningApps\")"))
+    #expect(!snapshot.contains("public var topProcesses: [ProcessMetric]"))
+    #expect(dashboard.contains("snapshot.runningApps.filter"))
+    #expect(!dashboard.contains("snapshot.topProcesses.filter"))
 }
 
 @Test func runningAppsUsePublicWorkspaceStateWithoutResourceScanning() throws {
@@ -1651,11 +1684,11 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1700,7 +1733,7 @@ import Testing
         processCount: 3,
         activeApplicationCount: 1,
         hiddenApplicationCount: 2,
-        topProcesses: [
+        runningApps: [
             ProcessMetric(index: 0, name: "Finder"),
             ProcessMetric(index: 1, name: "Safari")
         ],
@@ -1721,7 +1754,7 @@ import Testing
     #expect(reportedSnapshot.activeApplicationCountText == "1")
     #expect(reportedSnapshot.hiddenApplicationCountText == "2")
     #expect(ProcessMetric.listSubtitle(for: [], defaultSubtitle: "前台优先 · 按名称排序") == "未报告")
-    #expect(ProcessMetric.listSubtitle(for: reportedSnapshot.topProcesses, defaultSubtitle: "前台优先 · 按名称排序") == "前台优先 · 按名称排序")
+    #expect(ProcessMetric.listSubtitle(for: reportedSnapshot.runningApps, defaultSubtitle: "前台优先 · 按名称排序") == "前台优先 · 按名称排序")
     #expect(metricsStore.contains("NSWorkspace.shared.runningApplications"))
     #expect(metricsStore.contains("application.isActive"))
     #expect(metricsStore.contains("application.isHidden"))
@@ -1751,7 +1784,7 @@ import Testing
     #expect(dashboardView.contains("KeyValueGrid(items: ["))
     #expect(dashboardView.contains("(\"运行中 App\", snapshot.runningAppCountText)"))
     #expect(dashboardView.contains("ProcessMetric.listSubtitle(for: processes, defaultSubtitle: subtitle)"))
-    #expect(dashboardView.contains("ProcessMetric.listSubtitle(for: snapshot.topProcesses, defaultSubtitle: \"前台优先 · 按名称排序\")"))
+    #expect(dashboardView.contains("ProcessMetric.listSubtitle(for: snapshot.runningApps, defaultSubtitle: \"前台优先 · 按名称排序\")"))
     #expect(!dashboardView.contains("private func processListSubtitle"))
     #expect(!dashboardView.contains("SummaryCard(title: \"运行中 App\", value: \"\\(snapshot.processCount)\""))
     #expect(!dashboardView.contains("SummaryCard(title: \"前台 App\", value: \"\\(snapshot.activeApplicationCount)\""))
@@ -1766,8 +1799,8 @@ import Testing
     #expect(audit.contains("Running-app summary display text is centralized on the shared snapshot model."))
     #expect(audit.contains("Source-level tests prevent missing running-app samples from being displayed as zero-count summaries"))
     #expect(audit.contains("Source-level tests require running-app summary labels to come from the shared snapshot model."))
-    #expect(!dashboardView.contains("value: \"\\(activeApplicationCount(snapshot.topProcesses))\""))
-    #expect(!dashboardView.contains("value: \"\\(hiddenApplicationCount(snapshot.topProcesses))\""))
+    #expect(!dashboardView.contains("value: \"\\(activeApplicationCount(snapshot.runningApps))\""))
+    #expect(!dashboardView.contains("value: \"\\(hiddenApplicationCount(snapshot.runningApps))\""))
     #expect(!metricSnapshot.contains("public var pid"))
     #expect(!metricSnapshot.contains("?? \"App\""))
     #expect(!metricsStore.contains("application.localizedName ?? \"App\""))
@@ -1787,14 +1820,14 @@ import Testing
     }
     """.utf8))
     var snapshot = MetricSnapshot.placeholder
-    snapshot.topProcesses = [legacyProcess]
+    snapshot.runningApps = [legacyProcess]
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricSnapshot = try String(
         contentsOf: root.appendingPathComponent("Sources/SharedMetrics/MetricSnapshot.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1806,13 +1839,13 @@ import Testing
     #expect(!snapshot.hasRunningAppReport)
     #expect(snapshot.runningAppSummaryText == "未报告")
     #expect(snapshot.runningAppListCountText == "未报告")
-    #expect(ProcessMetric.listSubtitle(for: snapshot.topProcesses, defaultSubtitle: "前台优先 · 按名称排序") == "未报告")
+    #expect(ProcessMetric.listSubtitle(for: snapshot.runningApps, defaultSubtitle: "前台优先 · 按名称排序") == "未报告")
     #expect(metricSnapshot.contains("public var hasInventoryReport: Bool"))
-    #expect(metricSnapshot.contains("topProcesses.contains(where: \\.hasInventoryReport)"))
-    #expect(metricSnapshot.contains("let reportedListCount = topProcesses.filter(\\.hasInventoryReport).count"))
-    #expect(dashboardView.contains("ProcessMetric.listSubtitle(for: snapshot.topProcesses, defaultSubtitle: \"前台优先 · 按名称排序\")"))
+    #expect(metricSnapshot.contains("runningApps.contains(where: \\.hasInventoryReport)"))
+    #expect(metricSnapshot.contains("let reportedListCount = runningApps.filter(\\.hasInventoryReport).count"))
+    #expect(dashboardView.contains("ProcessMetric.listSubtitle(for: snapshot.runningApps, defaultSubtitle: \"前台优先 · 按名称排序\")"))
     #expect(dashboardView.contains("processes.filter(\\.hasInventoryReport).prefix(6)"))
-    #expect(dashboardView.contains("snapshot.topProcesses.filter(\\.hasInventoryReport)"))
+    #expect(dashboardView.contains("snapshot.runningApps.filter(\\.hasInventoryReport)"))
     #expect(audit.contains("Legacy running-app list records with no reported app fields remain not-reported instead of being counted as live app list entries."))
     #expect(audit.contains("Source-level tests prevent legacy running-app list records with only an index from inventing app list counts."))
 }
@@ -1846,7 +1879,7 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1906,7 +1939,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -1952,7 +1985,7 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2004,7 +2037,7 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let sampler = try String(
@@ -2023,7 +2056,7 @@ import Testing
 @Test func runningAppUIAvoidsProcessIdentifiers() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -2050,7 +2083,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2091,11 +2124,11 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2219,7 +2252,7 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let unsupportedPlaceholders = ["temperatureCelsius", "sampleTemperature"]
@@ -2242,11 +2275,11 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let appPrivacyInfo = try String(
@@ -2298,15 +2331,15 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2338,11 +2371,11 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2406,7 +2439,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2502,7 +2535,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -2569,7 +2602,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2710,7 +2743,7 @@ import Testing
     """.utf8))
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2761,7 +2794,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2809,7 +2842,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2845,7 +2878,7 @@ import Testing
     snapshot.displays = [legacyDisplay]
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2872,7 +2905,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -2892,7 +2925,7 @@ import Testing
     fullNetwork.hasNetworkByteCounters = true
 
     var partialApps = MetricSnapshot.placeholder
-    partialApps.topProcesses = [ProcessMetric(index: 0, name: "Finder")]
+    partialApps.runningApps = [ProcessMetric(index: 0, name: "Finder")]
     var fullApps = partialApps
     fullApps.processCount = 1
     fullApps.activeApplicationCount = 1
@@ -2983,7 +3016,7 @@ import Testing
 @Test func settingsDataSourceRowsSurfaceLoadAverageReportedState() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3052,7 +3085,7 @@ import Testing
 @Test func displayPageShowsSampledModeSizeAndRotation() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3118,7 +3151,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3287,11 +3320,11 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3384,7 +3417,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3416,7 +3449,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3445,7 +3478,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3476,7 +3509,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3507,7 +3540,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -3541,7 +3574,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3593,7 +3626,7 @@ import Testing
 @Test func powerPageSummarySurfacesVoltageAndAmperageReadings() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3688,11 +3721,11 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -3722,7 +3755,7 @@ import Testing
     #expect(snapshot.networkInterfaces.isEmpty)
     #expect(snapshot.storageVolumes.isEmpty)
     #expect(snapshot.processCount == 0)
-    #expect(snapshot.topProcesses.isEmpty)
+    #expect(snapshot.runningApps.isEmpty)
     #expect(snapshot.gpuDevices.isEmpty)
     #expect(snapshot.displays.isEmpty)
     #expect(snapshot.uptimeSeconds == 0)
@@ -3731,7 +3764,7 @@ import Testing
 @Test func widgetPlaceholderUsesSkeletonAndTimelineSamplesDirectly() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let blockedPlaceholderCopy = ["等待数据", "等待首次同步", "系统会按时间线刷新"]
@@ -3810,7 +3843,7 @@ import Testing
 @Test func mainAppWarmsDeltaBasedSamplerBeforePublishingInitialSnapshot() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
 
@@ -3832,7 +3865,7 @@ import Testing
 @Test func resumeAfterPauseWarmsSamplerBeforePublishingSnapshot() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
 
@@ -3846,7 +3879,7 @@ import Testing
 @Test func widgetDoesNotShowShortWindowNetworkThroughput() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
 
@@ -3862,7 +3895,7 @@ import Testing
 @Test func mediumWidgetSurfacesDeclaredCoreSignals() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3894,7 +3927,7 @@ import Testing
 @Test func largeWidgetSurfacesLoadAverageSignal() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3917,7 +3950,7 @@ import Testing
 @Test func largeWidgetSurfacesOperatingSystemVersionWithReportedState() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3943,7 +3976,7 @@ import Testing
 @Test func largeWidgetUsesBreathableTwoColumnSections() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3971,7 +4004,7 @@ import Testing
 @Test func mediumWidgetUsesRelaxedFirstVersionSpacingAndDarkModeText() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -3998,7 +4031,7 @@ import Testing
 @Test func mediumWidgetUsesAirierFirstVersionStatusStrip() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4028,7 +4061,7 @@ import Testing
 @Test func widgetsOwnTheirContentMarginsInsteadOfUsingSystemDoubleInsets() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4051,11 +4084,11 @@ import Testing
 @Test func widgetHeadersAvoidTruncatedTitleAndVisibleTimeCrowding() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -4193,7 +4226,7 @@ import Testing
     )
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4285,15 +4318,15 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widgetView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let menuBarPopover = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4327,7 +4360,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4372,7 +4405,7 @@ import Testing
 @Test func overviewPowerCardUsesCurrentPowerStatusText() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -4385,7 +4418,7 @@ import Testing
 @Test func powerTrendValuesUseReportedPowerSourceWhenBatteryPercentIsUnavailable() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4407,7 +4440,7 @@ import Testing
 @Test func powerPageForegroundsCurrentPowerStatusWhenBatteryPercentIsUnavailable() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -4420,7 +4453,7 @@ import Testing
 @Test func statusSignalsUseCurrentPowerStatusWhenBatteryPercentIsUnavailable() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -4434,11 +4467,11 @@ import Testing
 @Test func compactPowerSurfacesUseCurrentPowerStatusText() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widgetView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let menuBarPopover = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
 
@@ -4462,11 +4495,11 @@ import Testing
 @Test func compactInventoryAndUptimeSurfacesUseNeutralTintWhenMissing() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widgetView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let menuBarPopover = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4497,7 +4530,7 @@ import Testing
     let resources = root.appendingPathComponent("Resources")
     let resourceNames = try FileManager.default.contentsOfDirectory(atPath: resources.path)
 
-    #expect(package.contains("name: \"SystemDashboard\""))
+    #expect(package.contains("name: \"PulseDock\""))
     #expect(!package.contains("SystemMonitorWidget"))
     #expect(!resourceNames.contains("Info.plist"))
 }
@@ -4544,15 +4577,15 @@ import Testing
 @Test func widgetsAndMainWindowUseDynamicLightAndDarkAppearance() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4589,7 +4622,7 @@ import Testing
 @Test func dashboardWidgetPreviewUsesDynamicLightAndDarkAppearance() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4620,7 +4653,7 @@ import Testing
 @Test func widgetMetricRingsAndTilesUseDynamicDarkModeColors() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4645,7 +4678,7 @@ import Testing
 @Test func widgetPlaceholderSkeletonUsesDynamicDarkModeColors() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4677,8 +4710,6 @@ import Testing
     let paths = [
         "Resources/AppInfo.plist",
         "Resources/WidgetInfo.plist",
-        "Resources/SystemDashboard.entitlements",
-        "Resources/SystemDashboardWidget.entitlements",
         "scripts/package-app.sh",
         "scripts/generate-xcodeproj.rb"
     ]
@@ -4687,7 +4718,6 @@ import Testing
         let text = try String(contentsOf: root.appendingPathComponent(path), encoding: .utf8)
         #expect(!text.contains("AppGroupIdentifier"))
         #expect(!text.contains("APP_GROUP_IDENTIFIER"))
-        #expect(!text.contains("com.apple.security.application-groups"))
     }
 }
 
@@ -4696,7 +4726,7 @@ import Testing
     let appInfo = try String(contentsOf: root.appendingPathComponent("Resources/AppInfo.plist"), encoding: .utf8)
     let widgetInfo = try String(contentsOf: root.appendingPathComponent("Resources/WidgetInfo.plist"), encoding: .utf8)
     let projectGenerator = try String(contentsOf: root.appendingPathComponent("scripts/generate-xcodeproj.rb"), encoding: .utf8)
-    let xcodeProject = try String(contentsOf: root.appendingPathComponent("SystemDashboard.xcodeproj/project.pbxproj"), encoding: .utf8)
+    let xcodeProject = try String(contentsOf: root.appendingPathComponent("PulseDock.xcodeproj/project.pbxproj"), encoding: .utf8)
     let audit = try String(contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"), encoding: .utf8)
 
     for plist in [appInfo, widgetInfo] {
@@ -4720,7 +4750,7 @@ import Testing
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let projectGenerator = try String(contentsOf: root.appendingPathComponent("scripts/generate-xcodeproj.rb"), encoding: .utf8)
     let packageScript = try String(contentsOf: root.appendingPathComponent("scripts/package-app.sh"), encoding: .utf8)
-    let xcodeProject = try String(contentsOf: root.appendingPathComponent("SystemDashboard.xcodeproj/project.pbxproj"), encoding: .utf8)
+    let xcodeProject = try String(contentsOf: root.appendingPathComponent("PulseDock.xcodeproj/project.pbxproj"), encoding: .utf8)
     let audit = try String(contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"), encoding: .utf8)
 
     #expect(projectGenerator.contains("development_team = ENV.fetch(\"DEVELOPMENT_TEAM\", \"\")"))
@@ -4765,13 +4795,15 @@ import Testing
     #expect(archiveScript.contains("WIDGET_BUNDLE_IDENTIFIER=\"${WIDGET_BUNDLE_IDENTIFIER:-$APP_BUNDLE_IDENTIFIER.widget}\""))
     #expect(archiveScript.contains("MARKETING_VERSION=\"${MARKETING_VERSION:-1.0.0}\""))
     #expect(archiveScript.contains("CURRENT_PROJECT_VERSION=\"${CURRENT_PROJECT_VERSION:-1}\""))
-    #expect(archiveScript.contains("ARCHIVE_PATH=\"${ARCHIVE_PATH:-$ROOT_DIR/dist/SystemDashboard.xcarchive}\""))
+    #expect(archiveScript.contains("ARCHIVE_PATH=\"${ARCHIVE_PATH:-$ROOT_DIR/dist/PulseDock.xcarchive}\""))
     #expect(archiveScript.contains("EXPORT_PATH=\"${EXPORT_PATH:-$ROOT_DIR/dist/AppStore}\""))
     #expect(archiveScript.contains("method"))
     #expect(archiveScript.contains("app-store-connect"))
     #expect(archiveScript.contains("teamID"))
     #expect(archiveScript.contains("<string>$DEVELOPMENT_TEAM</string>"))
     #expect(archiveScript.contains("xcodebuild \\"))
+    #expect(archiveScript.contains("-project PulseDock.xcodeproj"))
+    #expect(archiveScript.contains("-scheme PulseDock"))
     #expect(archiveScript.contains(" archive"))
     #expect(archiveScript.contains("-destination 'generic/platform=macOS'"))
     #expect(archiveScript.contains("-archivePath \"$ARCHIVE_PATH\""))
@@ -4782,10 +4814,42 @@ import Testing
     #expect(audit.contains("Source-level tests require App Store archive/export to stay separate from local ad-hoc packaging."))
 }
 
+@Test func appStoreScreenshotAssetsHaveValidationGate() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let validatorURL = root.appendingPathComponent("scripts/validate-app-store-screenshots.sh")
+    let screenshotDirectoryURL = root.appendingPathComponent("docs/app-store/screenshots")
+    let validator = try String(contentsOf: validatorURL, encoding: .utf8)
+    let releaseChecklist = try String(contentsOf: root.appendingPathComponent("docs/app-store-release-checklist.md"), encoding: .utf8)
+
+    #expect(FileManager.default.fileExists(atPath: screenshotDirectoryURL.path))
+    #expect(FileManager.default.fileExists(atPath: screenshotDirectoryURL.appendingPathComponent(".gitkeep").path))
+    #expect(validator.contains("SCREENSHOT_DIR=\"${SCREENSHOT_DIR:-$ROOT_DIR/docs/app-store/screenshots}\""))
+    #expect(validator.contains("sips -g pixelWidth -g pixelHeight"))
+    #expect(validator.contains("2880x1800"))
+    #expect(validator.contains("2560x1600"))
+    #expect(validator.contains("1440x900"))
+    #expect(validator.contains("1280x800"))
+    #expect(validator.contains("if (( count != ${#expected_files[@]} )); then"))
+    #expect(validator.contains("Expected files: 01-overview.png, 02-cpu-memory.png, 03-network-storage.png, 04-widget-popover.png, 05-settings-history.png."))
+    #expect(releaseChecklist.contains("Place final screenshots in `docs/app-store/screenshots/`."))
+    #expect(releaseChecklist.contains("scripts/validate-app-store-screenshots.sh"))
+}
+
+@Test func appStoreScreenshotsExistWithRequiredNamesAndValidationGate() throws {
+    let script = try fixture("scripts/validate-app-store-screenshots.sh")
+
+    #expect(fileExists("docs/app-store/screenshots/01-overview.png"))
+    #expect(fileExists("docs/app-store/screenshots/02-cpu-memory.png"))
+    #expect(fileExists("docs/app-store/screenshots/03-network-storage.png"))
+    #expect(fileExists("docs/app-store/screenshots/04-widget-popover.png"))
+    #expect(fileExists("docs/app-store/screenshots/05-settings-history.png"))
+    #expect(script.contains("Use one of: 2880x1800, 2560x1600, 1440x900, 1280x800."))
+}
+
 @Test func mainWindowCanBeRestoredAfterCloseOrDockReopen() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
 
@@ -4797,11 +4861,11 @@ import Testing
 @Test func menuPopoverActionsAreInteractive() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
 
@@ -4819,7 +4883,7 @@ import Testing
 @Test func menuPopoverSurfacesLoadAverageInsteadOfDuplicateSampleTile() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4837,7 +4901,7 @@ import Testing
 @Test func menuPopoverSurfacesUptimeAndKernelVersionSignals() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4861,11 +4925,11 @@ import Testing
 @Test func menuPopoverUsesStableFixedSizeBeforeShowing() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4893,11 +4957,11 @@ import Testing
 @Test func menuPopoverChoosesVisibleScreenEdgeAndScrollableContentBeforeShowing() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4942,7 +5006,7 @@ import Testing
     )
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -4967,7 +5031,7 @@ import Testing
 @Test func menuPopoverReservesChromeAndConstrainsActualWindowFrame() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let geometry = try String(
@@ -4995,7 +5059,7 @@ import Testing
 @Test func menuPopoverUsesPreparedPlacementForInitialShowAndFitsClampedContent() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5026,7 +5090,7 @@ import Testing
 @Test func menuPopoverRefitsWindowAfterClampedContentHeightChanges() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5072,7 +5136,7 @@ import Testing
     )
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5093,7 +5157,7 @@ import Testing
 @Test func menuPopoverTreatsStatusBarWindowAsTopAnchoredBeforeShowing() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5111,7 +5175,7 @@ import Testing
 @Test func menuPopoverTreatsStatusBarLevelOrHigherAnchorWindowsAsTopAnchored() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5133,11 +5197,11 @@ import Testing
 @Test func menuPopoverPinsRootViewHeightBeforeShowing() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5159,7 +5223,7 @@ import Testing
 @Test func menuPopoverRebuildsSizedHostingControllerBeforeEachShow() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5183,7 +5247,7 @@ import Testing
 @Test func menuPopoverUsesStableStatusItemLengthWhileCPUTitleRefreshes() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5205,7 +5269,7 @@ import Testing
 @Test func menuPopoverDoesNotActivateAppAfterShowingStatusPopover() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5228,7 +5292,7 @@ import Testing
 @Test func menuPopoverHidesWindowUntilFinalFrameIsConstrained() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5261,7 +5325,7 @@ import Testing
 @Test func menuPopoverHidesContentBeforeInitialShowFrameIsRendered() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5388,7 +5452,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5437,7 +5501,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -5463,7 +5527,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5542,7 +5606,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5596,7 +5660,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5760,9 +5824,9 @@ import Testing
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let paths = [
         "Sources/SharedMetrics/MetricSnapshot.swift",
-        "Sources/SystemDashboardApp/DashboardView.swift",
-        "Sources/SystemDashboardApp/WidgetPanelView.swift",
-        "Sources/SystemDashboardWidget/SystemDashboardWidget.swift"
+        "Sources/PulseDockApp/DashboardView.swift",
+        "Sources/PulseDockApp/WidgetPanelView.swift",
+        "Sources/PulseDockWidget/SystemDashboardWidget.swift"
     ]
     let blockedTerms = ["N/A", "示例数据", "越权", "合规", "无公开", "未知", "等待下一次采样", "等待路径更新"]
 
@@ -5781,15 +5845,15 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5849,7 +5913,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5874,7 +5938,7 @@ import Testing
 @Test func thermalGaugeSuppressesMissingThermalStateInsteadOfDrawingNominalProgress() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -5895,7 +5959,7 @@ import Testing
 @Test func networkUIOnlyNamesImplementedSignals() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let unimplementedNetworkTerms = ["质量", "测速", "延迟", "丢包"]
@@ -5908,7 +5972,7 @@ import Testing
 @Test func networkMetricCardsDoNotShowBaselineProgressAsPercent() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -5945,7 +6009,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -6002,7 +6066,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6079,7 +6143,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6141,7 +6205,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6199,7 +6263,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6306,11 +6370,11 @@ import Testing
 @Test func activeInterfaceProgressIgnoresLegacyInterfacesWithoutStateReports() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6367,7 +6431,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6396,7 +6460,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6458,7 +6522,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6515,7 +6579,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6598,7 +6662,7 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6626,7 +6690,7 @@ import Testing
 @Test func memoryUICopyReflectsUsageNotPressure() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -6646,11 +6710,11 @@ import Testing
         encoding: .utf8
     )
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6683,7 +6747,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6703,7 +6767,7 @@ import Testing
 @Test func widgetCopyDoesNotClaimRealtimeRefresh() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
 
@@ -6714,11 +6778,11 @@ import Testing
 @Test func settingsPageControlsRefreshAndHistoryState() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -6730,16 +6794,86 @@ import Testing
     #expect(metricsStore.contains("func updateHistoryDepth"))
     #expect(metricsStore.contains("Timer.scheduledTimer(withTimeInterval: refreshInterval.seconds"))
     #expect(metricsStore.contains("historyDepth.sampleCount"))
-    #expect(dashboardView.contains("SettingsPage(store: store)"))
+    #expect(dashboardView.contains("SettingsPage(store: store, isCompact: isCompact)"))
     #expect(dashboardView.contains("Picker(\"主窗口刷新\""))
     #expect(dashboardView.contains("Picker(\"本地历史\""))
     #expect(!dashboardView.contains("SettingRow(title: \"主窗口刷新\", detail: \"实时趋势与状态卡片\", control: \"2s\")"))
 }
 
-@Test func settingsPersistenceUsesAppOnlyDefaultsWithPrivacyReason() throws {
+@Test func settingsPageStacksPreviewPanelAtCompactWidth() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let dashboardView = try String(
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
+        encoding: .utf8
+    )
+    let settingsStart = try #require(dashboardView.range(of: "private struct SettingsPage")?.lowerBound)
+    let dashboardPanelStart = try #require(dashboardView.range(of: "private struct DashboardPanel", range: settingsStart..<dashboardView.endIndex)?.lowerBound)
+    let settingsPage = String(dashboardView[settingsStart..<dashboardPanelStart])
+
+    #expect(dashboardView.contains("SettingsPage(store: store, isCompact: isCompact)"))
+    #expect(settingsPage.contains("let isCompact: Bool"))
+    #expect(settingsPage.contains("if isCompact {"))
+    #expect(settingsPage.contains("VStack(alignment: .leading, spacing: 12)"))
+    #expect(settingsPage.contains(".frame(width: 360)"))
+}
+
+@Test func privacyAndSupportLinksAreAccessibleInAppAndMetadata() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let appInfo = try String(contentsOf: root.appendingPathComponent("Resources/AppInfo.plist"), encoding: .utf8)
+    let appDelegate = try String(
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
+        encoding: .utf8
+    )
+    let dashboardView = try String(
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
+        encoding: .utf8
+    )
+    let pulseDockLinks = try String(
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/PulseDockLinks.swift"),
+        encoding: .utf8
+    )
+    let releaseChecklist = try String(contentsOf: root.appendingPathComponent("docs/app-store-release-checklist.md"), encoding: .utf8)
+    let privacyURL = "https://ifonly3.github.io/pulsedock/privacy-policy/"
+    let supportURL = "https://ifonly3.github.io/pulsedock/support/"
+
+    #expect(appInfo.contains("<key>PulseDockPrivacyPolicyURL</key>"))
+    #expect(appInfo.contains("<string>\(privacyURL)</string>"))
+    #expect(appInfo.contains("<key>PulseDockSupportURL</key>"))
+    #expect(appInfo.contains("<string>\(supportURL)</string>"))
+    #expect(appDelegate.contains("NSMenuItem(title: \"隐私政策\", action: #selector(openPrivacyPolicyFromMenu(_:)), keyEquivalent: \"\")"))
+    #expect(appDelegate.contains("NSMenuItem(title: \"支持\", action: #selector(openSupportFromMenu(_:)), keyEquivalent: \"\")"))
+    #expect(appDelegate.contains("@objc private func openPrivacyPolicyFromMenu"))
+    #expect(appDelegate.contains("@objc private func openSupportFromMenu"))
+    #expect(dashboardView.contains("DashboardPanel(title: \"支持与隐私\""))
+    #expect(dashboardView.contains("SettingsLinkRow(title: \"隐私政策\""))
+    #expect(dashboardView.contains("SettingsLinkRow(title: \"支持\""))
+    #expect(dashboardView.contains("PulseDockLinks.openPrivacyPolicy()"))
+    #expect(dashboardView.contains("PulseDockLinks.openSupport()"))
+    #expect(pulseDockLinks.contains("static let privacyPolicyInfoKey = \"PulseDockPrivacyPolicyURL\""))
+    #expect(pulseDockLinks.contains("static let supportInfoKey = \"PulseDockSupportURL\""))
+    #expect(pulseDockLinks.contains("NSWorkspace.shared.open(url)"))
+    #expect(releaseChecklist.contains("- Support URL: `\(supportURL)`"))
+    #expect(releaseChecklist.contains("- Privacy policy URL: `\(privacyURL)`"))
+}
+
+@Test func privacyAndSupportUrlsUseStablePublicPages() throws {
+    let appInfo = try fixture("Resources/AppInfo.plist")
+    let readme = try fixture("README.md")
+    let releaseChecklist = try fixture("docs/app-store-release-checklist.md")
+    let audit = try fixture("docs/data-capability-audit.md")
+    let releaseCriticalFiles = [appInfo, readme, releaseChecklist, audit]
+
+    for file in releaseCriticalFiles {
+        #expect(file.contains("https://ifonly3.github.io/pulsedock/privacy-policy/"))
+        #expect(file.contains("https://ifonly3.github.io/pulsedock/support/"))
+        #expect(!file.contains("github.com/ifonly3/pulsedock/blob/main/docs/app-store"))
+    }
+}
+
+@Test func defaultsUsageHasPrivacyReasonsForAppSettingsAndWidgetSharedSnapshot() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let appPrivacyInfo = try String(
@@ -6770,10 +6904,10 @@ import Testing
     #expect(appPrivacyInfo.contains("35F9.1"))
     #expect(widgetPrivacyInfo.contains("NSPrivacyAccessedAPICategoryDiskSpace"))
     #expect(widgetPrivacyInfo.contains("85F4.1"))
+    #expect(widgetPrivacyInfo.contains("NSPrivacyAccessedAPICategoryUserDefaults"))
+    #expect(widgetPrivacyInfo.contains("CA92.1"))
     #expect(widgetPrivacyInfo.contains("NSPrivacyAccessedAPICategorySystemBootTime"))
     #expect(widgetPrivacyInfo.contains("35F9.1"))
-    #expect(!widgetPrivacyInfo.contains("NSPrivacyAccessedAPICategoryUserDefaults"))
-    #expect(!widgetPrivacyInfo.contains("CA92.1"))
     #expect(xcodeProjectGenerator.contains("Resources/App/PrivacyInfo.xcprivacy"))
     #expect(xcodeProjectGenerator.contains("Resources/Widget/PrivacyInfo.xcprivacy"))
 }
@@ -6781,11 +6915,11 @@ import Testing
 @Test func statusThresholdsAreConfigurableAndPersisted() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -6810,11 +6944,11 @@ import Testing
 @Test func diskThresholdAppliesAcrossOverviewAndStoragePages() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
-    #expect(dashboardView.contains("OverviewPage(store: store, history: history)"))
+    #expect(dashboardView.contains("OverviewPage(store: store, history: history, metricColumns: metricColumns, isCompact: isCompact)"))
     #expect(dashboardView.contains("StoragePage(store: store, history: history)"))
     #expect(dashboardView.contains("usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold)"))
     #expect(dashboardView.contains("thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold"))
@@ -6824,7 +6958,7 @@ import Testing
 @Test func overviewStatusUsesCPUAndMemoryThresholds() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -6839,7 +6973,7 @@ import Testing
 @Test func overviewTrendSurfacesLoadAverageHistory() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6859,7 +6993,7 @@ import Testing
 @Test func overviewRunningAppSummarySurfacesWorkspaceStateCounts() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6882,7 +7016,7 @@ import Testing
 @Test func statusPageUsesConfiguredThresholdRules() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -6900,7 +7034,7 @@ import Testing
 @Test func statusPageSurfacesLoadAverageSignal() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6921,7 +7055,7 @@ import Testing
 @Test func statusPageSurfacesGPUInventorySignal() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6942,7 +7076,7 @@ import Testing
 @Test func statusPageSurfacesStorageVolumeSignal() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -6963,15 +7097,15 @@ import Testing
 @Test func menuBarCPUDisplayCanBeToggledAndPersisted() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
 
@@ -6991,7 +7125,7 @@ import Testing
 @Test func historyPersistenceUsesSanitizedTrendSnapshots() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -7010,7 +7144,7 @@ import Testing
     #expect(metricsStore.contains("kernelRelease: MetricSnapshot.placeholder.kernelRelease"))
     #expect(!metricsStore.contains("osVersion: \"macOS\""))
     #expect(metricsStore.contains("processCount: 0"))
-    #expect(metricsStore.contains("topProcesses: []"))
+    #expect(metricsStore.contains("runningApps: []"))
     #expect(metricsStore.contains("storageVolumes: []"))
     #expect(metricsStore.contains("networkInterfaces: []"))
     #expect(!metricsStore.contains("defaults.set(recentSnapshots"))
@@ -7022,7 +7156,7 @@ import Testing
 @Test func historyPersistencePreservesSampledActiveProcessorCountForLoadTrends() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -7042,7 +7176,7 @@ import Testing
         encoding: .utf8
     )
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -7087,7 +7221,7 @@ import Testing
 @Test func sparklinesDoNotInventTrendSamples() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -7098,7 +7232,7 @@ import Testing
 @Test func historyPageCopyReflectsPersistedHistory() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
 
@@ -7109,7 +7243,7 @@ import Testing
 @Test func historySampleCountLabelsOnlyCountReportedSamples() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -7132,7 +7266,7 @@ import Testing
 @Test func historyPageSurfacesPersistedDiskTrend() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -7152,7 +7286,7 @@ import Testing
 @Test func historyPageSurfacesPersistedLoadTrend() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -7174,7 +7308,7 @@ import Testing
 @Test func historyPageSurfacesPersistedThermalTrend() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -7197,7 +7331,7 @@ import Testing
 @Test func historyPageSurfacesPersistedUptimeTrend() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let audit = try String(
@@ -7331,37 +7465,172 @@ import Testing
 }
 
 @Test func widgetTimelineUsesCompactSnapshotWithoutUnusedInventoryLists() throws {
-    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-    let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
-        encoding: .utf8
-    )
+    let compact = try fixture("Sources/SharedMetrics/MetricSnapshot+WidgetCompact.swift")
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
     let audit = try String(
-        contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"),
+        contentsOf: URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("docs/data-capability-audit.md"),
         encoding: .utf8
     )
 
-    #expect(widget.contains("private func compactWidgetSnapshot(from snapshot: MetricSnapshot) -> MetricSnapshot"))
-    #expect(widget.contains("networkInterfaces: compactWidgetInterfaces(from: snapshot.networkInterfaces)"))
-    #expect(widget.contains("storageVolumes: []"))
-    #expect(widget.contains("topProcesses: []"))
-    #expect(widget.contains("gpuDevices: []"))
-    #expect(widget.contains("displays: []"))
+    #expect(widget.contains("Self.samplerCache.sample().widgetCompactSnapshot()"))
+    #expect(!widget.contains("private func compactWidgetSnapshot"))
+    #expect(compact.contains("networkInterfaces: compactWidgetInterfaces()"))
+    #expect(compact.contains("storageVolumes: []"))
+    #expect(compact.contains("runningApps: []"))
+    #expect(compact.contains("gpuDevices: []"))
+    #expect(compact.contains("displays: []"))
     #expect(audit.contains("Widget timeline entries store compact snapshots that strip unused process, storage, GPU, and display inventory lists."))
+}
+
+@Test func appGroupEntitlementsAreDeclaredForAppAndWidget() throws {
+    let appEntitlements = try fixture("Resources/PulseDock.entitlements")
+    let widgetEntitlements = try fixture("Resources/PulseDockWidgetExtension.entitlements")
+
+    #expect(appEntitlements.contains("<key>com.apple.security.application-groups</key>"))
+    #expect(widgetEntitlements.contains("<key>com.apple.security.application-groups</key>"))
+    #expect(appEntitlements.contains("<string>group.com.ifonly3.pulsedock</string>"))
+    #expect(widgetEntitlements.contains("<string>group.com.ifonly3.pulsedock</string>"))
+}
+
+@Test func sharedSnapshotUsesSingleWidgetCompactHelper() throws {
+    let compact = try fixture("Sources/SharedMetrics/MetricSnapshot+WidgetCompact.swift")
+    let sharedStore = try fixture("Sources/SharedMetrics/SharedSnapshotStore.swift")
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+
+    #expect(compact.contains("public func widgetCompactSnapshot() -> MetricSnapshot"))
+    #expect(sharedStore.contains("snapshot.widgetCompactSnapshot()"))
+    #expect(widget.contains("Self.samplerCache.sample().widgetCompactSnapshot()"))
+    #expect(!widget.contains("private func compactWidgetSnapshot"))
+}
+
+@Test func appWritesSharedSnapshotsWithThrottleAndWidgetReadsSharedDataFirst() throws {
+    let appGroup = try fixture("Sources/SharedMetrics/PulseDockAppGroup.swift")
+    let sharedStore = try fixture("Sources/SharedMetrics/SharedSnapshotStore.swift")
+    let metricsStore = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(appGroup.contains("static let suiteName = \"group.com.ifonly3.pulsedock\""))
+    #expect(sharedStore.contains("UserDefaults(suiteName: PulseDockAppGroup.suiteName)"))
+    #expect(sharedStore.contains("func saveLatestSnapshot(_ snapshot: MetricSnapshot)"))
+    #expect(sharedStore.contains("func loadLatestSnapshot(maxAge: TimeInterval"))
+    #expect(metricsStore.contains("private let sharedSnapshotWriteInterval: TimeInterval = 60"))
+    #expect(metricsStore.contains("private var lastSharedSnapshotWriteDate: Date?"))
+    #expect(metricsStore.contains("saveSharedSnapshotIfNeeded(nextSnapshot)"))
+    #expect(metricsStore.contains("let elapsed = snapshot.timestamp.timeIntervalSince(lastSharedSnapshotWriteDate)"))
+    #expect(metricsStore.contains("if elapsed >= 0 && elapsed < sharedSnapshotWriteInterval"))
+    #expect(widget.contains("sharedSnapshotStore.loadLatestSnapshot(maxAge:"))
+    #expect(widget.contains("?? Self.samplerCache.sample().widgetCompactSnapshot()"))
+    #expect(audit.contains("Compact local timeline snapshot shared from the main app through App Group UserDefaults"))
+    #expect(audit.contains("The main app writes a compact latest snapshot to App Group UserDefaults on a 60-second throttled cadence"))
+    #expect(audit.contains("The Widget extension reads the shared compact snapshot first"))
+    #expect(!audit.contains("The main app does not write App Group files for widget updates."))
+}
+
+@Test func sharedSnapshotStoreRoundTripsCompactSnapshotThroughDefaults() throws {
+    let suiteName = "SharedSnapshotStoreTests.\(UUID().uuidString)"
+    let defaults = try #require(UserDefaults(suiteName: suiteName))
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    let store = SharedSnapshotStore(defaults: defaults)
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.42,
+        hasCPUUsageReport: true,
+        cpuBrandName: "Private CPU",
+        memoryUsedBytes: 4_096,
+        memoryTotalBytes: 8_192,
+        loadAverage: 1.2,
+        hasLoadAverageReport: true,
+        thermalState: "Nominal",
+        batteryPercent: 0.8,
+        batteryIsCharging: true,
+        networkBytesPerSecond: 12_345,
+        hasNetworkByteCounters: true,
+        networkInBytesPerSecond: 6_000,
+        networkOutBytesPerSecond: 6_345,
+        diskFreeBytes: 2_048,
+        diskTotalBytes: 4_096,
+        processCount: 42,
+        runningApps: [
+            ProcessMetric(index: 0, name: "Private App", hasStateReport: true)
+        ],
+        timestamp: Date(timeIntervalSince1970: 1_000)
+    )
+
+    store.saveLatestSnapshot(snapshot)
+    let loaded = try #require(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_030)))
+
+    #expect(loaded.cpuUsage == snapshot.cpuUsage)
+    #expect(loaded.cpuBrandName == nil)
+    #expect(loaded.networkBytesPerSecond == 0)
+    #expect(!loaded.hasNetworkByteCounters)
+    #expect(loaded.networkInBytesPerSecond == 0)
+    #expect(loaded.networkOutBytesPerSecond == 0)
+    #expect(loaded.processCount == 0)
+    #expect(loaded.runningApps.isEmpty)
+    #expect(loaded.timestamp == snapshot.timestamp)
+}
+
+@Test func sharedSnapshotStoreRejectsStaleAndFutureSnapshots() throws {
+    let suiteName = "SharedSnapshotStoreTests.\(UUID().uuidString)"
+    let defaults = try #require(UserDefaults(suiteName: suiteName))
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    let store = SharedSnapshotStore(defaults: defaults)
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.2,
+        memoryUsedBytes: 1_024,
+        memoryTotalBytes: 2_048,
+        loadAverage: 0.4,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
+        timestamp: Date(timeIntervalSince1970: 1_000)
+    )
+
+    store.saveLatestSnapshot(snapshot)
+
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_061)) == nil)
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 999)) == nil)
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_060)) != nil)
+}
+
+@Test func xcodeProjectIncludesSharedSnapshotFoundationFiles() throws {
+    let project = try fixture("PulseDock.xcodeproj/project.pbxproj")
+
+    #expect(project.contains("PulseDockAppGroup.swift"))
+    #expect(project.contains("MetricSnapshot+WidgetCompact.swift"))
+    #expect(project.contains("SharedSnapshotStore.swift"))
+}
+
+@Test func mainWindowSupportsThirteenInchFriendlyMinimumSize() throws {
+    let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+
+    #expect(appDelegate.contains("window.minSize = NSSize(width: 960, height: 640)"))
+    #expect(!appDelegate.contains("window.minSize = NSSize(width: 1180, height: 760)"))
+}
+
+@Test func dashboardUsesAdaptiveColumnsForCompactWindows() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+
+    #expect(dashboard.contains("private func adaptiveMetricColumns(for width: CGFloat) -> [GridItem]"))
+    #expect(dashboard.contains("GeometryReader { proxy in"))
+    #expect(dashboard.contains("adaptiveMetricColumns(for: proxy.size.width)"))
+    #expect(dashboard.contains("if proxy.size.width < 1080"))
 }
 
 @Test func progressBarsDoNotDrawFilledMinimumForTrueZeroValues() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
     let widgetPanel = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
 
@@ -7423,7 +7692,21 @@ import Testing
     #expect(checklist.contains("- [x] 为主窗口启用 frame autosave 记住用户窗口位置"))
     #expect(checklist.contains("- [x] 将内存分段条从固定宽度改为自适应可用宽度"))
     #expect(checklist.contains("- [x] 为核心自绘仪表、趋势图和状态点补基础 accessibility 语义"))
-    #expect(checklist.contains("- [ ] 评估 App Group 共享最近一次样本"))
+    #expect(checklist.contains("- [x] 将内部 Xcode project/target/scheme/archive 统一为 PulseDock"))
+    #expect(checklist.contains("- [x] 在应用菜单和设置页补隐私政策与支持入口"))
+    #expect(checklist.contains("- [x] 为 Mac App Store 截图资产补校验脚本和固定目录"))
+    #expect(checklist.contains("- [x] App Store screenshots prepared and validated"))
+    #expect(checklist.contains("- [x] Core custom UI accessibility labels completed"))
+    #expect(checklist.contains("- [x] Widget reads shared latest app snapshot through App Group with self-sampling fallback"))
+    #expect(checklist.contains("- [x] App Group provisioning prerequisite documented for production signing"))
+    #expect(checklist.contains("- [x] Window minimum size lowered and compact layouts verified"))
+    #expect(checklist.contains("- [x] Disk fallback no longer uses NSHomeDirectory string path"))
+    #expect(checklist.contains("- [x] Running app naming replaces top-process wording at user-facing boundaries"))
+    #expect(checklist.contains("Source folders were renamed to `Sources/PulseDockApp` and `Sources/PulseDockWidget`."))
+    #expect(!checklist.contains("- [ ] 评估 App Group 共享最近一次样本"))
+    #expect(checklist.contains("- [ ] External: publish GitHub Pages privacy/support URLs and verify both return HTTP 200 before App Store submission."))
+    #expect(checklist.contains("- [ ] External: verify App Group sharing with production provisioning, TestFlight, or an App Store-signed archive."))
+    #expect(!checklist.contains("- [ ] 评估是否将内部 Xcode target/scheme 从 SystemDashboard 迁移为 PulseDock"))
 }
 
 @Test func publicOpenSourceRepositoryIncludesReadmeAndMITLicense() throws {
@@ -7443,14 +7726,17 @@ import Testing
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appInfo = try String(contentsOf: root.appendingPathComponent("Resources/AppInfo.plist"), encoding: .utf8)
     let widgetInfo = try String(contentsOf: root.appendingPathComponent("Resources/WidgetInfo.plist"), encoding: .utf8)
-    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
-    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
-    let widgetPanel = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/WidgetPanelView.swift"), encoding: .utf8)
-    let widget = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"), encoding: .utf8)
+    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"), encoding: .utf8)
+    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"), encoding: .utf8)
+    let widgetPanel = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"), encoding: .utf8)
+    let widget = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"), encoding: .utf8)
+    let packageManifest = try String(contentsOf: root.appendingPathComponent("Package.swift"), encoding: .utf8)
     let packageScript = try String(contentsOf: root.appendingPathComponent("scripts/package-app.sh"), encoding: .utf8)
+    let archiveScript = try String(contentsOf: root.appendingPathComponent("scripts/archive-app-store.sh"), encoding: .utf8)
     let installScript = try String(contentsOf: root.appendingPathComponent("scripts/install-system-widget.sh"), encoding: .utf8)
     let projectGenerator = try String(contentsOf: root.appendingPathComponent("scripts/generate-xcodeproj.rb"), encoding: .utf8)
-    let xcodeProject = try String(contentsOf: root.appendingPathComponent("SystemDashboard.xcodeproj/project.pbxproj"), encoding: .utf8)
+    let xcodeProject = try String(contentsOf: root.appendingPathComponent("PulseDock.xcodeproj/project.pbxproj"), encoding: .utf8)
+    let sharedScheme = try String(contentsOf: root.appendingPathComponent("PulseDock.xcodeproj/xcshareddata/xcschemes/PulseDock.xcscheme"), encoding: .utf8)
 
     #expect(appInfo.contains("<string>Pulse Dock</string>"))
     #expect(widgetInfo.contains("<string>Pulse Dock Widget</string>"))
@@ -7462,15 +7748,41 @@ import Testing
     #expect(widget.contains("WidgetHeader(title: \"Pulse Dock\""))
     #expect(widget.contains("CompactWidgetHeader(title: \"Pulse Dock\""))
     #expect(widget.contains("Text(\"Pulse Dock\")"))
+    #expect(packageManifest.contains("name: \"PulseDock\""))
+    #expect(packageManifest.contains(".executable(name: \"PulseDockApp\", targets: [\"PulseDockApp\"])"))
+    #expect(packageManifest.contains("name: \"PulseDockApp\""))
+    #expect(packageManifest.contains("path: \"Sources/PulseDockApp\""))
     #expect(packageScript.contains("APP_DIR=\"$ROOT_DIR/dist/Pulse Dock.app\""))
     #expect(packageScript.contains("APP_BUNDLE_IDENTIFIER=\"${APP_BUNDLE_IDENTIFIER:-local.pulsedock}\""))
     #expect(packageScript.contains("BUILT_APP=\"$PACKAGE_DERIVED_DATA_PATH/Build/Products/$PACKAGE_CONFIGURATION/Pulse Dock.app\""))
+    #expect(packageScript.contains("-project PulseDock.xcodeproj"))
+    #expect(packageScript.contains("-scheme PulseDock"))
+    #expect(archiveScript.contains("ARCHIVE_PATH=\"${ARCHIVE_PATH:-$ROOT_DIR/dist/PulseDock.xcarchive}\""))
+    #expect(archiveScript.contains("-project PulseDock.xcodeproj"))
+    #expect(archiveScript.contains("-scheme PulseDock"))
     #expect(installScript.contains("SOURCE_APP=\"$ROOT_DIR/dist/Pulse Dock.app\""))
     #expect(installScript.contains("INSTALLED_APP=\"$INSTALL_DIR/Pulse Dock.app\""))
     #expect(installScript.contains("APP_BUNDLE_IDENTIFIER=\"${APP_BUNDLE_IDENTIFIER:-local.pulsedock}\""))
+    #expect(projectGenerator.contains("project_path = File.join(root, \"PulseDock.xcodeproj\")"))
+    #expect(projectGenerator.contains("legacy_project_path = File.join(root, \"SystemDashboard.xcodeproj\")"))
     #expect(projectGenerator.contains("app_bundle_identifier = ENV.fetch(\"APP_BUNDLE_IDENTIFIER\", \"com.ifonly3.pulsedock\")"))
+    #expect(projectGenerator.contains("app_target = project.new_target(:application, \"PulseDock\""))
+    #expect(projectGenerator.contains("widget_target = project.new_target(:app_extension, \"PulseDockWidgetExtension\""))
+    #expect(projectGenerator.contains("app_target.product_reference.path = \"Pulse Dock.app\""))
+    #expect(projectGenerator.contains("Resources/PulseDock.entitlements"))
+    #expect(projectGenerator.contains("Resources/PulseDockWidgetExtension.entitlements"))
     #expect(projectGenerator.contains("settings[\"PRODUCT_NAME\"] = target == app_target ? \"Pulse Dock\" : \"PulseDockWidgetExtension\""))
+    #expect(packageScript.contains("--entitlements \"$ROOT_DIR/Resources/PulseDock.entitlements\""))
+    #expect(packageScript.contains("--entitlements \"$ROOT_DIR/Resources/PulseDockWidgetExtension.entitlements\""))
+    #expect(projectGenerator.contains("scheme.save_as(project.path, \"PulseDock\", true)"))
     #expect(xcodeProject.contains("PRODUCT_NAME = \"Pulse Dock\";"))
+    #expect(xcodeProject.contains("name = PulseDock;"))
+    #expect(xcodeProject.contains("PulseDockWidgetExtension"))
+    #expect(!xcodeProject.contains("name = SystemDashboard;"))
+    #expect(!xcodeProject.contains("SystemDashboardWidgetExtension"))
+    #expect(sharedScheme.contains("BuildableName = \"Pulse Dock.app\""))
+    #expect(sharedScheme.contains("BlueprintName = \"PulseDock\""))
+    #expect(sharedScheme.contains("ReferencedContainer = \"container:PulseDock.xcodeproj\""))
     #expect(![appInfo, widgetInfo, appDelegate, dashboardView, widgetPanel, widget, packageScript, installScript, projectGenerator].contains { text in
         text.contains("System Pulse") || text.contains("System Dashboard")
     })
@@ -7479,7 +7791,7 @@ import Testing
 @Test func appDelegateInstallsStandardMainMenuAndRestorableStateHooks() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"),
         encoding: .utf8
     )
 
@@ -7491,6 +7803,8 @@ import Testing
     #expect(appDelegate.contains("private func makeWindowMenu() -> NSMenuItem"))
     #expect(appDelegate.contains("@objc private func showAboutPanel"))
     #expect(appDelegate.contains("@objc private func openSettingsFromMenu"))
+    #expect(appDelegate.contains("@objc private func openPrivacyPolicyFromMenu"))
+    #expect(appDelegate.contains("@objc private func openSupportFromMenu"))
     #expect(appDelegate.contains("NSApp.orderFrontStandardAboutPanel"))
     #expect(appDelegate.contains("settingsItem.keyEquivalent = \",\""))
     #expect(appDelegate.contains("func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool"))
@@ -7504,7 +7818,7 @@ import Testing
     let appInfo = try String(contentsOf: root.appendingPathComponent("Resources/AppInfo.plist"), encoding: .utf8)
     let widgetInfo = try String(contentsOf: root.appendingPathComponent("Resources/WidgetInfo.plist"), encoding: .utf8)
     let projectGenerator = try String(contentsOf: root.appendingPathComponent("scripts/generate-xcodeproj.rb"), encoding: .utf8)
-    let xcodeProject = try String(contentsOf: root.appendingPathComponent("SystemDashboard.xcodeproj/project.pbxproj"), encoding: .utf8)
+    let xcodeProject = try String(contentsOf: root.appendingPathComponent("PulseDock.xcodeproj/project.pbxproj"), encoding: .utf8)
 
     for plist in [appInfo, widgetInfo] {
         #expect(plist.contains("<key>CFBundleDevelopmentRegion</key>"))
@@ -7514,6 +7828,8 @@ import Testing
 
     #expect(appInfo.contains("<key>LSApplicationCategoryType</key>"))
     #expect(appInfo.contains("<string>public.app-category.utilities</string>"))
+    #expect(appInfo.contains("<key>ITSAppUsesNonExemptEncryption</key>"))
+    #expect(appInfo.contains("<false/>"))
     #expect(!projectGenerator.contains("ASSETCATALOG_COMPILER_APPICON_NAME"))
     #expect(!projectGenerator.contains("ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME"))
     #expect(!xcodeProject.contains("ASSETCATALOG_COMPILER_APPICON_NAME"))
@@ -7523,11 +7839,11 @@ import Testing
 @Test func appRefreshAndWidgetTimelineAvoidUnnecessaryWakeups() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
         encoding: .utf8
     )
     let widget = try String(
-        contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"),
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
 
@@ -7598,8 +7914,8 @@ import Testing
 @Test func widgetTimelineKindUsesPulseDockSharedConstant() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widgetKind = (try? String(contentsOf: root.appendingPathComponent("Sources/SharedMetrics/WidgetTimelineKind.swift"), encoding: .utf8)) ?? ""
-    let metricsStore = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"), encoding: .utf8)
-    let widget = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardWidget/SystemDashboardWidget.swift"), encoding: .utf8)
+    let metricsStore = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"), encoding: .utf8)
+    let widget = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"), encoding: .utf8)
 
     #expect(widgetKind.contains("public enum WidgetTimelineKind"))
     #expect(widgetKind.contains("public static let pulseDock = \"PulseDockWidget\""))
@@ -7612,7 +7928,7 @@ import Testing
 @Test func pauseResumeResetsNetworkBaselinesAndRejectsStaleRefreshResults() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let sampler = try String(contentsOf: root.appendingPathComponent("Sources/SharedMetrics/SystemSampler.swift"), encoding: .utf8)
-    let metricsStore = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/MetricsStore.swift"), encoding: .utf8)
+    let metricsStore = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"), encoding: .utf8)
 
     #expect(sampler.contains("public func resetNetworkBaselines()"))
     #expect(sampler.contains("previousNetworkInBytes = nil"))
@@ -7627,8 +7943,8 @@ import Testing
 
 @Test func appKitPolishCoversAboutStatusItemAndReadOnlyWidgetRefreshSetting() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
-    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
+    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"), encoding: .utf8)
+    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"), encoding: .utf8)
 
     #expect(!appDelegate.contains("NSApplication.AboutPanelOptionKey(rawValue: \"Copyright\")"))
     #expect(appDelegate.contains("if let statusItem {"))
@@ -7652,7 +7968,7 @@ import Testing
 @Test func aboutPanelUsesInfoPlistCopyrightAndLicenseMatchesOwner() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appInfo = try String(contentsOf: root.appendingPathComponent("Resources/AppInfo.plist"), encoding: .utf8)
-    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
+    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"), encoding: .utf8)
     let license = try String(contentsOf: root.appendingPathComponent("LICENSE"), encoding: .utf8)
 
     #expect(appInfo.contains("<key>NSHumanReadableCopyright</key>"))
@@ -7664,7 +7980,7 @@ import Testing
 
 @Test func mainWindowPersistsUserFrameAcrossLaunches() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/AppDelegate.swift"), encoding: .utf8)
+    let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"), encoding: .utf8)
     let autosavePosition = appDelegate.range(of: "window.setFrameAutosaveName(\"PulseDockMainWindow\")")?.lowerBound
     let centerPosition = appDelegate.range(of: "window.center()")?.lowerBound
 
@@ -7678,7 +7994,7 @@ import Testing
 
 @Test func memorySegmentBarUsesAvailableWidthInsteadOfMagicConstant() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
+    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"), encoding: .utf8)
     let start = try #require(dashboardView.range(of: "private struct MemorySegmentBar")?.lowerBound)
     let end = dashboardView.range(of: "private struct CapacitySegment")?.lowerBound ?? dashboardView.endIndex
     let memorySegmentBar = String(dashboardView[start..<end])
@@ -7691,7 +8007,7 @@ import Testing
 
 @Test func customDashboardVisualControlsExposeAccessibilitySemantics() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/SystemDashboardApp/DashboardView.swift"), encoding: .utf8)
+    let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"), encoding: .utf8)
 
     #expect(dashboardView.contains(".accessibilityElement(children: .combine)"))
     #expect(dashboardView.contains(".accessibilityLabel(\"\\(title), \\(value)\""))
@@ -7699,4 +8015,127 @@ import Testing
     #expect(dashboardView.contains(".accessibilityLabel(\"趋势图\""))
     #expect(dashboardView.contains(".accessibilityValue(sparklineAccessibilityValue)"))
     #expect(dashboardView.contains(".accessibilityHidden(true)"))
+}
+
+@Test func dashboardRowsAndCardsExposeAccessibilitySemantics() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+
+    #expect(componentBody(named: "SummaryCard", in: dashboard).contains(".accessibilityElement(children: .combine)"))
+    #expect(componentBody(named: "SummaryCard", in: dashboard).contains(".accessibilityLabel(\"\\(title), \\(value)\")"))
+    #expect(componentBody(named: "StatusSummaryRow", in: dashboard).contains(".accessibilityLabel(\"\\(title), \\(value), \\(status.text)\")"))
+    #expect(componentBody(named: "SourceCapabilityCard", in: dashboard).contains(".accessibilityLabel(\"\\(title), \\(value), \\(source)\")"))
+    #expect(componentBody(named: "TableRow", in: dashboard).contains(".accessibilityLabel(values.joined(separator: \", \"))"))
+    #expect(componentBody(named: "StatLine", in: dashboard).contains(".accessibilityValue(progress.map(MetricFormatting.percentage) ?? \"未报告\")"))
+    #expect(componentBody(named: "CoreUsageTile", in: dashboard).contains(".accessibilityLabel(\"Core \\(index), \\(MetricFormatting.percentage(value))\")"))
+}
+
+@Test func popoverAndWidgetMetricsExposeAccessibilitySemantics() throws {
+    let popover = try fixture("Sources/PulseDockApp/WidgetPanelView.swift")
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+
+    #expect(componentBody(named: "PopoverMetricRow", in: popover).contains(".accessibilityLabel(\"\\(title), \\(value), \\(detail)\")"))
+    #expect(componentBody(named: "PopoverSmallStat", in: popover).contains(".accessibilityLabel(\"\\(title), \\(value)\")"))
+    #expect(componentBody(named: "RingMetric", in: widget).contains(".accessibilityLabel(\"\\(title), \\(value)\")"))
+    #expect(componentBody(named: "WidgetRow", in: widget).contains(".accessibilityLabel(\"\\(title), \\(value)\")"))
+    #expect(componentBody(named: "MiniStatus", in: widget).contains(".accessibilityLabel(\"\\(title), \\(value)\")"))
+    #expect(componentBody(named: "StatTile", in: widget).contains(".accessibilityLabel(\"\\(title), \\(value)\")"))
+}
+
+@Test func thresholdFeatureUsesJudgmentCopyAndDoesNotAddNotificationPermissionInV1() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+    let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+    let metricsStore = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+    let appPrivacy = try fixture("Resources/App/PrivacyInfo.xcprivacy")
+    let audit = try fixture("docs/data-capability-audit.md")
+    let readinessChecklist = try fixture("docs/app-store-readiness-checklist.md")
+    let releaseChecklist = try fixture("docs/app-store-release-checklist.md")
+
+    #expect(dashboard.contains("本地采样历史与阈值判断"))
+    #expect(dashboard.contains("DashboardPanel(title: \"状态判断\", subtitle: \"当前采样的本地结果\""))
+    #expect(!dashboard.contains("本地采样历史与告警"))
+    #expect(!dashboard.contains("Toggle(\"系统通知\""))
+    #expect(!appDelegate.contains("UNUserNotificationCenter"))
+    #expect(!metricsStore.contains("AlertNotificationController"))
+    #expect(!appPrivacy.contains("UserNotifications"))
+    #expect(audit.contains("Status thresholds are dashboard-only for v1."))
+    #expect(readinessChecklist.contains("Local notifications are deferred to a future opt-in feature."))
+    #expect(releaseChecklist.contains("Local notifications are deferred to a future opt-in feature."))
+}
+
+@Test func localizationGatePreventsPartialEnglishSupport() throws {
+    let appInfo = try fixture("Resources/AppInfo.plist")
+    let widgetInfo = try fixture("Resources/WidgetInfo.plist")
+    let readiness = try fixture("docs/app-store-readiness-checklist.md")
+    let release = try fixture("docs/app-store-release-checklist.md")
+
+    #expect(appInfo.contains("<string>zh-Hans</string>"))
+    #expect(widgetInfo.contains("<string>zh-Hans</string>"))
+    #expect(!appInfo.contains("<string>en</string>"))
+    #expect(!widgetInfo.contains("<string>en</string>"))
+    #expect(readiness.contains("v1 localization decision: zh-Hans only unless full localization audit passes."))
+    #expect(release.contains("Do not submit as a global English-localized app until scripts/audit-localization.sh reports zero Swift Chinese string findings."))
+    #expect(readiness.contains("Source folders were renamed to `Sources/PulseDockApp` and `Sources/PulseDockWidget`."))
+    #expect(release.contains("Source folders: `Sources/PulseDockApp` and `Sources/PulseDockWidget`"))
+}
+
+@Test func localizationAuditScriptExistsForFutureGlobalRelease() throws {
+    let script = try fixture("scripts/audit-localization.sh")
+
+    #expect(script.contains("rg --pcre2"))
+    #expect(script.contains("[\\p{Han}]"))
+    #expect(script.contains("Sources/PulseDockApp"))
+    #expect(script.contains("Sources/PulseDockWidget"))
+    #expect(script.contains("Sources/SharedMetrics"))
+    #expect(script.contains("command -v rg"))
+    #expect(script.contains("rgStatus=$?"))
+    #expect(script.contains("if [[ $rgStatus -gt 1 ]]"))
+    #expect(script.contains("exit \"$rgStatus\""))
+    #expect(!script.contains("|| true"))
+}
+
+@Test func sourceLayoutUsesPulseDockNamesInsteadOfSystemDashboardResidue() throws {
+    let package = try fixture("Package.swift")
+    let generator = try fixture("scripts/generate-xcodeproj.rb")
+
+    #expect(directoryExists("Sources/PulseDockApp"))
+    #expect(directoryExists("Sources/PulseDockWidget"))
+    #expect(!directoryExists("Sources/SystemDashboardApp"))
+    #expect(!directoryExists("Sources/SystemDashboardWidget"))
+    #expect(package.contains("path: \"Sources/PulseDockApp\""))
+    #expect(generator.contains("\"Sources/PulseDockApp/*.swift\""))
+    #expect(generator.contains("\"Sources/PulseDockWidget/*.swift\""))
+}
+
+private func fixture(_ path: String) throws -> String {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    return try String(contentsOf: root.appendingPathComponent(path), encoding: .utf8)
+}
+
+private func fileExists(_ relativePath: String) -> Bool {
+    FileManager.default.fileExists(atPath: URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .appendingPathComponent(relativePath)
+        .path)
+}
+
+private func directoryExists(_ relativePath: String) -> Bool {
+    var isDirectory: ObjCBool = false
+    let exists = FileManager.default.fileExists(atPath: URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .appendingPathComponent(relativePath)
+        .path, isDirectory: &isDirectory)
+    return exists && isDirectory.boolValue
+}
+
+private func componentBody(named name: String, in source: String) -> String {
+    guard let start = source.range(of: "private struct \(name)")?.lowerBound else { return "" }
+    let remainder = source[start...]
+    if let next = remainder.dropFirst().range(of: "\nprivate struct ")?.lowerBound {
+        return String(remainder[..<next])
+    }
+    return String(remainder)
 }

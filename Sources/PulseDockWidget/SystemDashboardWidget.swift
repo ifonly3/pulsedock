@@ -30,6 +30,8 @@ private final class WidgetSamplerCache: @unchecked Sendable {
 
 struct SystemProvider: TimelineProvider {
     private static let samplerCache = WidgetSamplerCache()
+    private static let sharedSnapshotStore = SharedSnapshotStore()
+    private let sharedSnapshotMaxAge: TimeInterval = 600
 
     func placeholder(in context: Context) -> SystemEntry {
         SystemEntry(date: Date(), snapshot: nil)
@@ -47,84 +49,9 @@ struct SystemProvider: TimelineProvider {
     }
 
     private func sampledSnapshot() -> MetricSnapshot {
-        compactWidgetSnapshot(from: Self.samplerCache.sample())
+        Self.sharedSnapshotStore.loadLatestSnapshot(maxAge: sharedSnapshotMaxAge)
+            ?? Self.samplerCache.sample().widgetCompactSnapshot()
     }
-}
-
-private func compactWidgetSnapshot(from snapshot: MetricSnapshot) -> MetricSnapshot {
-    MetricSnapshot(
-        cpuUsage: snapshot.cpuUsage,
-        cpuCoreUsages: snapshot.cpuCoreUsages,
-        hasCPUUsageReport: snapshot.hasCPUUsageReport,
-        physicalCoreCount: snapshot.physicalCoreCount,
-        logicalCoreCount: snapshot.logicalCoreCount,
-        activeProcessorCount: snapshot.activeProcessorCount,
-        cpuBrandName: nil,
-        memoryUsedBytes: snapshot.memoryUsedBytes,
-        memoryTotalBytes: snapshot.memoryTotalBytes,
-        memorySwapUsedBytes: snapshot.memorySwapUsedBytes,
-        memorySwapTotalBytes: snapshot.memorySwapTotalBytes,
-        memorySwapAvailableBytes: snapshot.memorySwapAvailableBytes,
-        loadAverage: snapshot.loadAverage,
-        loadAverage5: snapshot.loadAverage5,
-        loadAverage15: snapshot.loadAverage15,
-        hasLoadAverageReport: snapshot.hasLoadAverageReport,
-        thermalState: snapshot.thermalState,
-        batteryPercent: snapshot.batteryPercent,
-        batteryIsCharging: snapshot.batteryIsCharging,
-        batteryPowerSource: snapshot.batteryPowerSource,
-        batteryTimeRemainingMinutes: snapshot.batteryTimeRemainingMinutes,
-        batteryCurrentCapacity: snapshot.batteryCurrentCapacity,
-        batteryMaxCapacity: snapshot.batteryMaxCapacity,
-        hasNetworkByteCounters: false,
-        hasNetworkDirectionByteCounters: false,
-        networkPathStatus: snapshot.networkPathStatus,
-        networkPathIsExpensive: snapshot.networkPathIsExpensive,
-        networkPathIsConstrained: snapshot.networkPathIsConstrained,
-        hasNetworkPathCostReport: snapshot.hasNetworkPathCostReport,
-        networkPathSupportsDNS: snapshot.networkPathSupportsDNS,
-        networkPathSupportsIPv4: snapshot.networkPathSupportsIPv4,
-        networkPathSupportsIPv6: snapshot.networkPathSupportsIPv6,
-        hasNetworkPathSupportReport: snapshot.hasNetworkPathSupportReport,
-        networkPathInterfaceKinds: snapshot.networkPathInterfaceKinds,
-        networkInBytesPerSecond: 0,
-        networkOutBytesPerSecond: 0,
-        networkInterfaces: compactWidgetInterfaces(from: snapshot.networkInterfaces),
-        diskFreeBytes: snapshot.diskFreeBytes,
-        diskTotalBytes: snapshot.diskTotalBytes,
-        storageVolumes: [],
-        processCount: 0,
-        activeApplicationCount: 0,
-        hiddenApplicationCount: 0,
-        hasRunningAppCountReport: false,
-        topProcesses: [],
-        gpuDevices: [],
-        displays: [],
-        uptimeSeconds: snapshot.uptimeSeconds,
-        hasUptimeReport: snapshot.hasUptimeReport,
-        osVersion: snapshot.osVersion,
-        kernelRelease: snapshot.kernelRelease,
-        timestamp: snapshot.timestamp
-    )
-}
-
-private func compactWidgetInterfaces(from interfaces: [NetworkInterfaceMetric]) -> [NetworkInterfaceMetric] {
-    interfaces
-        .filter(\.hasInterfaceStateReport)
-        .enumerated()
-        .map { index, interface in
-            NetworkInterfaceMetric(
-                index: index,
-                displayName: "未报告",
-                kind: "未报告",
-                isUp: interface.isUp,
-                isLoopback: interface.isLoopback,
-                hasInterfaceStateReport: true,
-                bytesReceived: 0,
-                bytesSent: 0,
-                hasByteCounters: false
-            )
-        }
 }
 
 struct SystemDashboardWidgetView: View {
@@ -507,6 +434,9 @@ private struct RingMetric: View {
                 .foregroundStyle(widgetSecondaryText(for: colorScheme))
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
     }
 }
 
@@ -542,6 +472,9 @@ private struct WidgetRow: View {
             }
             .frame(height: 5)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
     }
 }
 
@@ -554,6 +487,7 @@ private struct MiniStatus: View {
     var body: some View {
         HStack(spacing: 5) {
             Circle().fill(tint).frame(width: 6, height: 6)
+                .accessibilityHidden(true)
             Text(title)
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(widgetSecondaryText(for: colorScheme))
@@ -563,6 +497,8 @@ private struct MiniStatus: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.64)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
     }
 }
 
@@ -575,6 +511,7 @@ private struct StatTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Circle().fill(tint).frame(width: 6, height: 6)
+                .accessibilityHidden(true)
             Text(title)
                 .font(.system(size: 9, weight: .medium))
                 .foregroundStyle(widgetSecondaryText(for: colorScheme))
@@ -591,6 +528,8 @@ private struct StatTile: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .stroke(widgetPanelStroke(for: colorScheme), lineWidth: 0.6)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
     }
 }
 

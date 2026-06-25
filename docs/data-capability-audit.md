@@ -26,7 +26,7 @@ This file is an internal product and App Store readiness audit. It should not be
 | System uptime and version | Time elapsed since system boot, OS version string, and Darwin kernel release, formatted on-device | System boot time via `ProcessInfo.systemUptime`, OS version via `ProcessInfo`, and Darwin kernel release via `uname.release` | Overview, Status page, History page, Settings page, widgets, menu bar popover |
 | GPU and display | GPU device inventory, low-power/removable GPU capability, unified memory capability, recommended working set, public threadgroup memory and size limits, active displays, pixel size, display mode size, backing scale factor, color space model and component count, physical screen size, refresh rate, rotation state, mirror/extension state when reported | Metal, CoreGraphics display configuration, AppKit `NSScreen` display metadata, AppKit `NSScreen` fallback, and `NSScreen.maximumFramesPerSecond` when CoreGraphics omits refresh rate | GPU/Display page, Status page, Settings page |
 | Running apps | Foreground-session app count, full-list active/hidden counts, ranked display list, activation policy, executable architecture, and launch time when reported | Workspace running applications in the main app | Overview, Memory page, App page |
-| Widget data | Timeline snapshot sampled inside the Widget extension, with CPU, memory, disk, connection, interface count, battery, and thermal state | Same public sampler used by the main app | Small, medium, large WidgetKit widgets |
+| Widget data | Compact local timeline snapshot shared from the main app through App Group UserDefaults, with Widget extension self-sampling fallback when shared data is unavailable or stale | Main app writes a compact snapshot with the shared sampler; Widget extension reads the shared snapshot first and otherwise uses the same public sampler | Small, medium, large WidgetKit widgets |
 | Menu bar monitor | Optional live CPU title, compact popover, open dashboard, pause/resume refresh, open settings | Main app store and AppKit status item | Menu bar popover |
 | Settings | Main-window refresh interval, persisted trend history depth, menu bar CPU title, and local thresholds | App-only UserDefaults with privacy reason `CA92.1` | Settings page, top bar, History page |
 | Status thresholds | CPU, memory, and disk local alert thresholds | App-only UserDefaults and current live samples | History, Overview, Status, and Storage pages |
@@ -125,7 +125,8 @@ This file is an internal product and App Store readiness audit. It should not be
 - Medium widget layout follows the roomier first-version composition with wider left content, larger CPU type, and relaxed supporting row spacing.
 - Medium widget left column uses a first-version-style CPU block with core summary and a compact status strip instead of stacking network detail text.
 - Dashboard widget preview adapts its background, stroke, shadow, and secondary text to light and dark appearances.
-- The main app does not write App Group files for widget updates. It only asks WidgetKit to reload timelines on a throttled cadence while the app is running.
+- The main app writes a compact latest snapshot to App Group UserDefaults on a 60-second throttled cadence and asks WidgetKit to reload its timeline kind after shared writes.
+- The Widget extension reads the shared compact snapshot first, rejects stale or future-dated records, and falls back to extension-local public API self-sampling when shared data is unavailable.
 - User-facing fallback text says when the system did not report a value instead of using generic unknown-state wording.
 - Thermal display text is centralized on the shared snapshot model, so dashboard, menu bar, and widget surfaces use the same reported-state fallback.
 - Thermal reported state is centralized on the shared snapshot model instead of being inferred from user-facing text.
@@ -263,7 +264,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - The History page surfaces persisted load-average trend while filtering samples whose load averages were not reported.
 - The History page surfaces persisted thermal-state trend while filtering samples whose thermal state was not reported.
 - The History page surfaces persisted uptime trend while filtering samples whose uptime was not reported.
-- Status thresholds are dashboard-only for now. The app does not request notification permissions or badge privileges.
+- Status thresholds are dashboard-only for v1. The app does not request notification permissions or badge privileges.
 - Settings data-source rows use sampled reported-state text instead of hard-coded availability labels, so missing or partial inventories remain visible as not-reported or partial data.
 - Settings data-source display text is centralized on the shared snapshot model.
 - Settings data-source rows include load-average reported state, matching the implemented Load surfaces.
@@ -490,15 +491,17 @@ This file is an internal product and App Store readiness audit. It should not be
 
 - Main app refresh: user-selectable 1/2/5 seconds with timer tolerance.
 - Widget timeline: 5 minutes.
-- Widget reload request from app: throttled to 60 seconds.
+- Shared widget snapshot write and Widget reload request from app: throttled to 60 seconds.
 - Trend history persistence: throttled to 15 seconds, with forced writes when sampling stops or history depth changes.
 - Rationale: WidgetKit is system-scheduled, so the widget should be glanceable and power-friendly rather than pretending to be a real-time monitor.
 
 ## Privacy Manifest Scope
 
 - Main app: Disk Space `85F4.1`, UserDefaults `CA92.1`, and System Boot Time `35F9.1`.
-- Widget extension: Disk Space `85F4.1` and System Boot Time `35F9.1`.
+- Widget extension: Disk Space `85F4.1`, UserDefaults `CA92.1`, and System Boot Time `35F9.1`.
 - Both targets declare no collected data and no tracking.
+- The app Info.plist carries stable public privacy and support URLs used by the app menu and Settings page: `https://ifonly3.github.io/pulsedock/privacy-policy/` and `https://ifonly3.github.io/pulsedock/support/`.
+- `ITSAppUsesNonExemptEncryption` is set to `false` for the current build because the app does not include custom cryptography.
 
 ## Build And Signing Readiness
 
@@ -506,6 +509,8 @@ This file is an internal product and App Store readiness audit. It should not be
 - Local packaging uses a deterministic derived-data directory so built app discovery does not depend on user-specific Xcode DerivedData hashes.
 - App Store signing should use the generated Xcode project with Apple-managed signing, production bundle identifiers, and an App Store Connect archive/export workflow.
 - App Store archive/export uses a dedicated script that requires production bundle identifiers and DEVELOPMENT_TEAM, then runs Xcode archive and export with App Store Connect export options.
+- Generated Xcode projects, targets, shared scheme, and archive path use `PulseDock`, while the installed app product name remains `Pulse Dock`.
+- Mac App Store screenshots live in `docs/app-store/screenshots` and are validated by `scripts/validate-app-store-screenshots.sh` before upload.
 - Generated Xcode projects and local packaging accept DEVELOPMENT_TEAM from the environment for Apple-managed signing while keeping the default unset for local unsigned builds.
 - Local packaging forwards bundle identifiers, version metadata, and DEVELOPMENT_TEAM to both Xcode project generation and xcodebuild, keeping generated project files and archive build settings aligned.
 - `PACKAGE_SIGNING_MODE=xcode` keeps Xcode signing intact so the package script does not replace Apple-managed signatures with local ad-hoc signatures.
@@ -515,6 +520,8 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require App Store signing metadata to be parameterized through DEVELOPMENT_TEAM instead of being fixed in scripts.
 - Source-level tests require local packaging to pass App Store archive metadata through both project generation and xcodebuild.
 - Source-level tests require App Store archive/export to stay separate from local ad-hoc packaging.
+- Source-level tests require PulseDock naming across project generation, shared schemes, archive scripts, and package metadata.
+- Source-level tests require in-app privacy/support links and Mac App Store screenshot validation to remain wired.
 
 ## Next Implementation Targets
 

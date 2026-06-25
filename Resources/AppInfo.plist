@@ -25,6 +25,8 @@
   <string>$(MARKETING_VERSION)</string>
   <key>CFBundleVersion</key>
   <string>$(CURRENT_PROJECT_VERSION)</string>
+  <key>ITSAppUsesNonExemptEncryption</key>
+  <false/>
   <key>LSMinimumSystemVersion</key>
   <string>14.0</string>
   <key>LSApplicationCategoryType</key>
@@ -33,5 +35,9 @@
   <true/>
   <key>NSHumanReadableCopyright</key>
   <string>© 2026 乔尼的铃角</string>
+  <key>PulseDockPrivacyPolicyURL</key>
+  <string>https://ifonly3.github.io/pulsedock/privacy-policy/</string>
+  <key>PulseDockSupportURL</key>
+  <string>https://ifonly3.github.io/pulsedock/support/</string>
 </dict>
 </plist>

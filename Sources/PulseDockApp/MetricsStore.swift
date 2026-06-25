@@ -53,22 +53,27 @@ final class MetricsStore: ObservableObject {
 
     private let sampler: SystemSampler
     private let defaults: UserDefaults
+    private let sharedSnapshotStore: SharedSnapshotStore
     private var timer: Timer?
     private var initialRefreshTask: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
     private var refreshGeneration = 0
     private var lastWidgetReloadDate: Date?
     private var lastHistoryPersistenceDate: Date?
+    private var lastSharedSnapshotWriteDate: Date?
     private let initialSampleWarmUpDelayNanoseconds: UInt64 = 150_000_000
     private let widgetReloadInterval: TimeInterval = 60
     private let historyPersistenceInterval: TimeInterval = 15
+    private let sharedSnapshotWriteInterval: TimeInterval = 60
 
     init(
         sampler: SystemSampler = SystemSampler(),
-        defaults: UserDefaults = UserDefaults.standard
+        defaults: UserDefaults = UserDefaults.standard,
+        sharedSnapshotStore: SharedSnapshotStore = SharedSnapshotStore()
     ) {
         self.sampler = sampler
         self.defaults = defaults
+        self.sharedSnapshotStore = sharedSnapshotStore
         self.refreshInterval = RefreshIntervalOption(rawValue: defaults.double(forKey: DefaultsKeys.refreshInterval)) ?? .balanced
         self.historyDepth = HistoryDepthOption(rawValue: defaults.integer(forKey: DefaultsKeys.historyDepth)) ?? .standard
         self.cpuAlertThreshold = Self.savedThreshold(defaults, key: DefaultsKeys.cpuAlertThreshold, defaultValue: 0.9)
@@ -243,7 +248,7 @@ final class MetricsStore: ObservableObject {
             processCount: 0,
             activeApplicationCount: 0,
             hiddenApplicationCount: 0,
-            topProcesses: [],
+            runningApps: [],
             gpuDevices: [],
             displays: [],
             uptimeSeconds: snapshot.uptimeSeconds,
@@ -308,11 +313,24 @@ final class MetricsStore: ObservableObject {
             var nextSnapshot = sampledSnapshot
             applyVisibleApplicationSummary(to: &nextSnapshot)
             snapshot = nextSnapshot
+            saveSharedSnapshotIfNeeded(nextSnapshot)
             appendHistorySnapshot(nextSnapshot)
             trimHistoryIfNeeded()
             persistHistoryIfNeeded(at: nextSnapshot.timestamp)
             reloadWidgetsIfNeeded(at: nextSnapshot.timestamp)
         }
+    }
+
+    private func saveSharedSnapshotIfNeeded(_ snapshot: MetricSnapshot) {
+        if let lastSharedSnapshotWriteDate {
+            let elapsed = snapshot.timestamp.timeIntervalSince(lastSharedSnapshotWriteDate)
+            if elapsed >= 0 && elapsed < sharedSnapshotWriteInterval {
+                return
+            }
+        }
+
+        lastSharedSnapshotWriteDate = snapshot.timestamp
+        sharedSnapshotStore.saveLatestSnapshot(snapshot)
     }
 
     private func appendHistorySnapshot(_ snapshot: MetricSnapshot) {
@@ -361,7 +379,7 @@ final class MetricsStore: ObservableObject {
             && snapshot.cpuCoreUsages.isEmpty
             && snapshot.storageVolumes.isEmpty
             && snapshot.networkInterfaces.isEmpty
-            && snapshot.topProcesses.isEmpty
+            && snapshot.runningApps.isEmpty
     }
 
     private func reloadWidgetsIfNeeded(at date: Date) {
@@ -378,7 +396,7 @@ final class MetricsStore: ObservableObject {
     }
 
     private func applyVisibleApplicationSummary(to snapshot: inout MetricSnapshot) {
-        guard snapshot.processCount == 0, snapshot.topProcesses.isEmpty else { return }
+        guard snapshot.processCount == 0, snapshot.runningApps.isEmpty else { return }
 
         let applications = NSWorkspace.shared.runningApplications
             .filter { !$0.isTerminated }
@@ -401,7 +419,7 @@ final class MetricsStore: ObservableObject {
                 .localizedStandardCompare(reportedApplicationName(rhs.localizedName)) == .orderedAscending
         }
 
-        snapshot.topProcesses = visibleApplications.prefix(8).enumerated().map { index, application in
+        snapshot.runningApps = visibleApplications.prefix(8).enumerated().map { index, application in
             ProcessMetric(
                 index: index,
                 name: reportedApplicationName(application.localizedName),

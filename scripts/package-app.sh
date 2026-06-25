@@ -48,8 +48,8 @@ if [[ "$PACKAGE_SIGNING_MODE" == "adhoc" ]]; then
 fi
 
 xcodebuild \
-  -project SystemDashboard.xcodeproj \
-  -scheme SystemDashboard \
+  -project PulseDock.xcodeproj \
+  -scheme PulseDock \
   -configuration "$PACKAGE_CONFIGURATION" \
   -destination 'platform=macOS' \
   -derivedDataPath "$PACKAGE_DERIVED_DATA_PATH" \
@@ -68,11 +68,11 @@ cp -R "$BUILT_APP" "$APP_DIR"
 
 if [[ "$PACKAGE_SIGNING_MODE" == "adhoc" ]]; then
   codesign --force --sign - \
-    --entitlements "$ROOT_DIR/Resources/SystemDashboardWidget.entitlements" \
+    --entitlements "$ROOT_DIR/Resources/PulseDockWidgetExtension.entitlements" \
     "$APP_DIR/Contents/PlugIns/PulseDockWidgetExtension.appex"
 
   codesign --force --sign - \
-    --entitlements "$ROOT_DIR/Resources/SystemDashboard.entitlements" \
+    --entitlements "$ROOT_DIR/Resources/PulseDock.entitlements" \
     "$APP_DIR"
 fi
 

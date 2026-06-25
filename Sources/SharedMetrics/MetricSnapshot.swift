@@ -801,7 +801,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     public var activeApplicationCount: Int
     public var hiddenApplicationCount: Int
     public var hasRunningAppCountReport: Bool
-    public var topProcesses: [ProcessMetric]
+    public var runningApps: [ProcessMetric]
     public var gpuDevices: [GPUDeviceMetric]
     public var displays: [DisplayMetric]
     public var uptimeSeconds: TimeInterval
@@ -866,7 +866,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         activeApplicationCount: Int = 0,
         hiddenApplicationCount: Int = 0,
         hasRunningAppCountReport: Bool = false,
-        topProcesses: [ProcessMetric] = [],
+        runningApps: [ProcessMetric] = [],
         gpuDevices: [GPUDeviceMetric] = [],
         displays: [DisplayMetric] = [],
         uptimeSeconds: TimeInterval = 0,
@@ -945,7 +945,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
             || processCount > 0
             || activeApplicationCount > 0
             || hiddenApplicationCount > 0
-        self.topProcesses = topProcesses
+        self.runningApps = runningApps
         self.gpuDevices = gpuDevices
         self.displays = displays
         self.uptimeSeconds = uptimeSeconds
@@ -1004,7 +1004,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         processCount: 0,
         activeApplicationCount: 0,
         hiddenApplicationCount: 0,
-        topProcesses: [],
+        runningApps: [],
         gpuDevices: [],
         displays: [],
         uptimeSeconds: 0,
@@ -1148,12 +1148,12 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
     public var runningAppsSourceStatusText: String {
         sourceStatusText(
-            hasAnyReport: hasReportedRunningAppCounts || topProcesses.contains(where: \.hasInventoryReport),
-            hasFullReport: hasReportedRunningAppCounts && topProcesses.contains(where: \.hasInventoryReport)
+            hasAnyReport: hasReportedRunningAppCounts || runningApps.contains(where: \.hasInventoryReport),
+            hasFullReport: hasReportedRunningAppCounts && runningApps.contains(where: \.hasInventoryReport)
         )
     }
     public var hasRunningAppReport: Bool {
-        hasReportedRunningAppCounts || topProcesses.contains(where: \.hasInventoryReport)
+        hasReportedRunningAppCounts || runningApps.contains(where: \.hasInventoryReport)
     }
     private var hasReportedRunningAppCounts: Bool {
         hasRunningAppCountReport
@@ -1161,7 +1161,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     public var runningAppSummaryText: String {
         guard hasRunningAppReport else { return "未报告" }
         guard hasReportedRunningAppCounts else {
-            let reportedListCount = topProcesses.filter(\.hasInventoryReport).count
+            let reportedListCount = runningApps.filter(\.hasInventoryReport).count
             return "列表 \(reportedListCount) · 总数未报告"
         }
         return "\(processCount) 个 · 前台 \(activeApplicationCount) · 隐藏 \(hiddenApplicationCount)"
@@ -1170,7 +1170,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         runningAppCountText(processCount)
     }
     public var runningAppListCountText: String {
-        let reportedListCount = topProcesses.filter(\.hasInventoryReport).count
+        let reportedListCount = runningApps.filter(\.hasInventoryReport).count
         return runningAppListCountText(reportedListCount)
     }
     public var activeApplicationCountText: String {
@@ -1649,7 +1649,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         case activeApplicationCount
         case hiddenApplicationCount
         case hasRunningAppCountReport
-        case topProcesses
+        case runningApps = "topProcesses"
         case gpuDevices
         case displays
         case uptimeSeconds
@@ -1741,7 +1741,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         hiddenApplicationCount = try values.decodeIfPresent(Int.self, forKey: .hiddenApplicationCount) ?? 0
         hasRunningAppCountReport = try values.decodeIfPresent(Bool.self, forKey: .hasRunningAppCountReport)
             ?? (hasProcessCountKey && hasActiveApplicationCountKey && hasHiddenApplicationCountKey)
-        topProcesses = try values.decodeIfPresent([ProcessMetric].self, forKey: .topProcesses) ?? []
+        runningApps = try values.decodeIfPresent([ProcessMetric].self, forKey: .runningApps) ?? []
         gpuDevices = try values.decodeIfPresent([GPUDeviceMetric].self, forKey: .gpuDevices) ?? []
         displays = try values.decodeIfPresent([DisplayMetric].self, forKey: .displays) ?? []
         uptimeSeconds = try values.decodeIfPresent(TimeInterval.self, forKey: .uptimeSeconds) ?? 0

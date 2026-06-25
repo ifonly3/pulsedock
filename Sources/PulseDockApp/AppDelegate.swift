@@ -94,6 +94,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appMenu.addItem(settingsItem)
         appMenu.addItem(NSMenuItem.separator())
 
+        appMenu.addItem(NSMenuItem(title: "隐私政策", action: #selector(openPrivacyPolicyFromMenu(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem(title: "支持", action: #selector(openSupportFromMenu(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem.separator())
+
         let servicesItem = NSMenuItem(title: "服务", action: nil, keyEquivalent: "")
         let servicesMenu = NSMenu(title: "服务")
         servicesItem.submenu = servicesMenu
@@ -167,6 +171,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         router.selectedPage = .settings
     }
 
+    @objc private func openPrivacyPolicyFromMenu(_ sender: Any?) {
+        PulseDockLinks.openPrivacyPolicy()
+    }
+
+    @objc private func openSupportFromMenu(_ sender: Any?) {
+        PulseDockLinks.openSupport()
+    }
+
     @objc private func showDashboardFromMenu(_ sender: Any?) {
         showDashboardWindow(activating: true)
         router.selectedPage = .overview
@@ -192,7 +204,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
         window.title = "Pulse Dock"
         window.setFrameAutosaveName("PulseDockMainWindow")
-        window.minSize = NSSize(width: 1180, height: 760)
+        window.minSize = NSSize(width: 960, height: 640)
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: DashboardView(store: store, router: router))
         window.center()

@@ -6,8 +6,9 @@ The app is designed for a quiet macOS utility workflow: a dashboard window for d
 
 ## Status
 
-- Native macOS app target: `SystemDashboard`
-- Widget extension target: `SystemDashboardWidgetExtension`
+- Native macOS app target: `PulseDock`
+- Widget extension target: `PulseDockWidgetExtension`
+- SwiftPM package: `PulseDock`
 - Minimum macOS version: `14.0`
 - Intended production bundle IDs:
   - App: `APP_BUNDLE_IDENTIFIER=com.ifonly3.pulsedock`
@@ -27,6 +28,8 @@ Generate the Xcode project used for local packaging and App Store archive flows:
 ```bash
 scripts/generate-xcodeproj.rb
 ```
+
+This creates `PulseDock.xcodeproj` with a shared `PulseDock` scheme.
 
 Create a local test app bundle:
 
@@ -56,6 +59,9 @@ scripts/archive-app-store.sh
 ## Privacy
 
 Pulse Dock samples local system metrics on device. It does not create accounts, collect personal data, track users, run analytics, or send remote probes. Release privacy details live in `docs/data-capability-audit.md` and `docs/app-store-release-checklist.md`.
+
+- Privacy policy URL: `https://ifonly3.github.io/pulsedock/privacy-policy/`
+- Support URL: `https://ifonly3.github.io/pulsedock/support/`
 
 ## License
 

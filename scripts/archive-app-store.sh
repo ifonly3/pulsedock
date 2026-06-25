@@ -32,7 +32,7 @@ MARKETING_VERSION="${MARKETING_VERSION:-1.0.0}"
 CURRENT_PROJECT_VERSION="${CURRENT_PROJECT_VERSION:-1}"
 ARCHIVE_CONFIGURATION="${ARCHIVE_CONFIGURATION:-Release}"
 ARCHIVE_DERIVED_DATA_PATH="${ARCHIVE_DERIVED_DATA_PATH:-$ROOT_DIR/.build/archive-derived-data}"
-ARCHIVE_PATH="${ARCHIVE_PATH:-$ROOT_DIR/dist/SystemDashboard.xcarchive}"
+ARCHIVE_PATH="${ARCHIVE_PATH:-$ROOT_DIR/dist/PulseDock.xcarchive}"
 EXPORT_PATH="${EXPORT_PATH:-$ROOT_DIR/dist/AppStore}"
 EXPORT_OPTIONS_PLIST="${EXPORT_OPTIONS_PLIST:-}"
 ALLOW_PROVISIONING_UPDATES="${ALLOW_PROVISIONING_UPDATES:-YES}"
@@ -92,8 +92,8 @@ ARCHIVE_BUILD_SETTINGS=(
 mkdir -p "$(dirname "$ARCHIVE_PATH")" "$EXPORT_PATH"
 
 xcodebuild \
-  -project SystemDashboard.xcodeproj \
-  -scheme SystemDashboard \
+  -project PulseDock.xcodeproj \
+  -scheme PulseDock \
   -configuration "$ARCHIVE_CONFIGURATION" \
   -destination 'generic/platform=macOS' \
   -derivedDataPath "$ARCHIVE_DERIVED_DATA_PATH" \

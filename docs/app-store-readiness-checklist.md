@@ -1,6 +1,6 @@
 # Pulse Dock App Store Readiness Checklist
 
-> Updated 2026-06-19. This is an internal engineering checklist for App Store readiness and should not be surfaced verbatim in the product UI.
+> Updated 2026-06-25. This is an internal engineering checklist for App Store readiness and should not be surfaced verbatim in the product UI.
 
 ## Fixed In This Pass
 
@@ -22,14 +22,32 @@
 - [x] 将小组件刷新设置改为只读视觉样式
 - [x] 移除未使用的菜单栏 popover helper
 - [x] 补 Widget extension attributes 元数据
+- [x] 将内部 Xcode project/target/scheme/archive 统一为 PulseDock
+- [x] 在应用菜单和设置页补隐私政策与支持入口
+- [x] 为 Mac App Store 截图资产补校验脚本和固定目录
+- [x] App Store screenshots prepared and validated
+- [x] Core custom UI accessibility labels completed
+- [x] Widget reads shared latest app snapshot through App Group with self-sampling fallback
+- [x] App Group provisioning prerequisite documented for production signing
+- [x] Threshold copy says "阈值判断" / "状态判断" for v1 and does not imply system notifications.
+- [x] Local notifications are deferred to a future opt-in feature.
+- [x] v1 localization decision: zh-Hans only unless full localization audit passes.
+- [x] Window minimum size lowered and compact layouts verified
+- [x] Disk fallback no longer uses NSHomeDirectory string path
+- [x] Running app naming replaces top-process wording at user-facing boundaries
+- [x] Source folders were renamed to `Sources/PulseDockApp` and `Sources/PulseDockWidget`.
 
 ## Still Open
 
-- [ ] 评估 App Group 共享最近一次样本
-- [ ] 评估是否将内部 Xcode target/scheme 从 SystemDashboard 迁移为 PulseDock
+- [ ] Future: design opt-in local threshold notifications in a separate v1.1 feature plan.
+- [ ] If shipping v1 globally, complete a separate full localization sprint before App Store submission.
+- [ ] If shipping v1 without full localization, limit App Store Connect availability to Chinese-language storefronts.
+- [ ] External: publish GitHub Pages privacy/support URLs and verify both return HTTP 200 before App Store submission.
+- [ ] External: verify App Group sharing with production provisioning, TestFlight, or an App Store-signed archive.
 
 ## Notes
 
-- 当前 Widget 仍通过公开 API 自采样，符合沙盒与隐私边界；App Group 不是合规阻塞项，但能提升主 app 和桌面 widget 的数据一致性。
-- `scripts/archive-app-store.sh` 是上架归档入口；SwiftPM 只验证主可执行和共享逻辑，不会构建 Widget Extension。
+- Widget 优先读取 App Group 中的最近一次主 app 采样快照，若共享数据不可用或过期则回退到 Widget 扩展内公开 API 自采样。
+- `scripts/archive-app-store.sh` 是上架归档入口；它使用 `PulseDock.xcodeproj` / `PulseDock` scheme。SwiftPM 只验证主可执行和共享逻辑，不会构建 Widget Extension。
 - 根目录 README 和 MIT LICENSE 已补齐，方便开源仓库首页和许可证识别。
+- Source layout now uses `Sources/PulseDockApp` and `Sources/PulseDockWidget`; old `Sources/SystemDashboard*` source-folder names should not return in release-critical build metadata.
