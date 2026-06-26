@@ -4853,9 +4853,13 @@ import Testing
     #expect(packageScript.contains("CURRENT_PROJECT_VERSION=\"$CURRENT_PROJECT_VERSION\" \\"))
     #expect(packageScript.contains("DEVELOPMENT_TEAM=\"$DEVELOPMENT_TEAM\" \\"))
     #expect(packageScript.contains("scripts/generate-xcodeproj.rb"))
+    #expect(packageScript.contains("restore_default_project()"))
+    #expect(packageScript.contains("trap restore_default_project EXIT"))
+    #expect(packageScript.contains("APP_BUNDLE_IDENTIFIER=\"com.ifonly3.pulsedock\" \\"))
     #expect(packageScript.contains("BUILD_SETTINGS+=(MARKETING_VERSION=\"$MARKETING_VERSION\")"))
     #expect(packageScript.contains("BUILD_SETTINGS+=(CURRENT_PROJECT_VERSION=\"$CURRENT_PROJECT_VERSION\")"))
     #expect(audit.contains("Local packaging forwards bundle identifiers, version metadata, and DEVELOPMENT_TEAM to both Xcode project generation and xcodebuild, keeping generated project files and archive build settings aligned."))
+    #expect(audit.contains("Local packaging restores the tracked Xcode project to default production bundle identifiers after local bundle-id builds."))
     #expect(audit.contains("Source-level tests require local packaging to pass App Store archive metadata through both project generation and xcodebuild."))
 }
 

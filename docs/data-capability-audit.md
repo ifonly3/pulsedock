@@ -528,6 +528,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Mac App Store screenshots live in `docs/app-store/screenshots` and are validated by `scripts/validate-app-store-screenshots.sh` before upload.
 - Generated Xcode projects and local packaging accept DEVELOPMENT_TEAM from the environment for Apple-managed signing while keeping the default unset for local unsigned builds.
 - Local packaging forwards bundle identifiers, version metadata, and DEVELOPMENT_TEAM to both Xcode project generation and xcodebuild, keeping generated project files and archive build settings aligned.
+- Local packaging restores the tracked Xcode project to default production bundle identifiers after local bundle-id builds.
 - `PACKAGE_SIGNING_MODE=xcode` keeps Xcode signing intact so the package script does not replace Apple-managed signatures with local ad-hoc signatures.
 - App and Widget version metadata use shared Xcode build settings so App Store archives keep matching marketing and build versions.
 - Source-level tests require App Store version metadata to come from archive build settings instead of hard-coded plist literals.

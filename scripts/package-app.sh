@@ -23,6 +23,20 @@ case "$PACKAGE_SIGNING_MODE" in
 esac
 
 cd "$ROOT_DIR"
+
+restore_default_project() {
+  local status=$?
+  APP_BUNDLE_IDENTIFIER="com.ifonly3.pulsedock" \
+  WIDGET_BUNDLE_IDENTIFIER="com.ifonly3.pulsedock.widget" \
+  MARKETING_VERSION="1.0.0" \
+  CURRENT_PROJECT_VERSION="1" \
+  DEVELOPMENT_TEAM="" \
+    scripts/generate-xcodeproj.rb >/dev/null || true
+  exit "$status"
+}
+
+trap restore_default_project EXIT
+
 swift scripts/generate-app-icon.swift
 APP_BUNDLE_IDENTIFIER="$APP_BUNDLE_IDENTIFIER" \
 WIDGET_BUNDLE_IDENTIFIER="$WIDGET_BUNDLE_IDENTIFIER" \
