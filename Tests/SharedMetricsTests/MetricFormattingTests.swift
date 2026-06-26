@@ -7026,6 +7026,13 @@ import Testing
     }
 }
 
+@Test func pulseDockLinksOnlyAllowHTTPSURLs() throws {
+    let links = try fixture("Sources/PulseDockApp/PulseDockLinks.swift")
+
+    #expect(links.contains("components.scheme?.lowercased() == \"https\""))
+    #expect(!links.contains("scheme == \"https\" || scheme == \"http\""))
+}
+
 @Test func defaultsUsageHasPrivacyReasonsForAppSettingsAndWidgetSharedSnapshot() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
@@ -8335,6 +8342,17 @@ import Testing
     #expect(release.contains("Do not submit as a global English-localized app until scripts/audit-localization.sh reports zero Swift Chinese string findings."))
     #expect(readiness.contains("Source folders were renamed to `Sources/PulseDockApp` and `Sources/PulseDockWidget`."))
     #expect(release.contains("Source folders: `Sources/PulseDockApp` and `Sources/PulseDockWidget`"))
+}
+
+@Test func appAndWidgetInfoPlistsContainStoreMetadata() throws {
+    let appInfo = try fixture("Resources/AppInfo.plist")
+    let widgetInfo = try fixture("Resources/WidgetInfo.plist")
+
+    #expect(appInfo.contains("<key>CFBundleDisplayName</key>"))
+    #expect(appInfo.contains("<string>Pulse Dock</string>"))
+    #expect(appInfo.contains("<key>ITSAppUsesNonExemptEncryption</key>"))
+    #expect(widgetInfo.contains("<key>ITSAppUsesNonExemptEncryption</key>"))
+    #expect(widgetInfo.contains("<false/>"))
 }
 
 @Test func localizationAuditScriptExistsForFutureGlobalRelease() throws {

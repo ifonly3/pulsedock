@@ -36,9 +36,10 @@ enum PulseDockLinks {
     private static func url(forInfoKey key: String) -> URL? {
         guard
             let rawValue = Bundle.main.object(forInfoDictionaryKey: key) as? String,
-            let url = URL(string: rawValue),
-            let scheme = url.scheme?.lowercased(),
-            scheme == "https" || scheme == "http"
+            let components = URLComponents(string: rawValue),
+            components.scheme?.lowercased() == "https",
+            components.host?.isEmpty == false,
+            let url = components.url
         else {
             return nil
         }

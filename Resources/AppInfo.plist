@@ -19,6 +19,8 @@
   <string>6.0</string>
   <key>CFBundleName</key>
   <string>Pulse Dock</string>
+  <key>CFBundleDisplayName</key>
+  <string>Pulse Dock</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
