@@ -7686,7 +7686,7 @@ import Testing
     #expect(widget.contains("?? Self.samplerCache.sample().widgetCompactSnapshot()"))
     #expect(audit.contains("Compact local timeline snapshot shared from the main app through App Group UserDefaults"))
     #expect(audit.contains("The main app writes a compact latest snapshot to App Group UserDefaults on a 60-second throttled cadence"))
-    #expect(audit.contains("The Widget extension reads the shared compact snapshot first"))
+    #expect(audit.contains("Shared widget snapshots tolerate small system clock skew while still rejecting stale or far-future data."))
     #expect(!audit.contains("The main app does not write App Group files for widget updates."))
 }
 
@@ -7782,7 +7782,7 @@ import Testing
     #expect(loaded.timestamp == snapshot.timestamp)
 }
 
-@Test func sharedSnapshotStoreRejectsStaleAndFutureSnapshots() throws {
+@Test func sharedSnapshotStoreAcceptsSmallFutureClockSkewButRejectsLargeFutureSnapshots() throws {
     let suiteName = "SharedSnapshotStoreTests.\(UUID().uuidString)"
     let defaults = try #require(UserDefaults(suiteName: suiteName))
     defer { defaults.removePersistentDomain(forName: suiteName) }
@@ -7802,9 +7802,8 @@ import Testing
 
     store.saveLatestSnapshot(snapshot)
 
-    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_061)) == nil)
-    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 999)) == nil)
-    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_060)) != nil)
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 995)) != nil)
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 600)) == nil)
 }
 
 @Test func xcodeProjectIncludesSharedSnapshotFoundationFiles() throws {

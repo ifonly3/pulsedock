@@ -6,16 +6,21 @@ public struct SharedSnapshotStore: @unchecked Sendable {
     }
 
     private let defaults: UserDefaults?
+    private let acceptedFutureSkew: TimeInterval
 
-    public init(defaults: UserDefaults?) {
+    public init(defaults: UserDefaults?, acceptedFutureSkew: TimeInterval = 300) {
         self.defaults = defaults
+        self.acceptedFutureSkew = acceptedFutureSkew
     }
 
     public init(
         suiteName: String = PulseDockAppGroup.suiteName,
         fileManager: FileManager = .default,
-        bundleIdentifier: String? = Bundle.main.bundleIdentifier
+        bundleIdentifier: String? = Bundle.main.bundleIdentifier,
+        acceptedFutureSkew: TimeInterval = 300
     ) {
+        self.acceptedFutureSkew = acceptedFutureSkew
+
         guard PulseDockAppGroup.supportsAppGroup(bundleIdentifier: bundleIdentifier) else {
             self.defaults = nil
             return
@@ -39,9 +44,12 @@ public struct SharedSnapshotStore: @unchecked Sendable {
     public func loadLatestSnapshot(maxAge: TimeInterval, now: Date = Date()) -> MetricSnapshot? {
         guard let defaults,
               let data = defaults.data(forKey: Keys.latestSnapshot),
-              let snapshot = try? JSONDecoder().decode(MetricSnapshot.self, from: data),
-              now.timeIntervalSince(snapshot.timestamp) >= 0,
-              now.timeIntervalSince(snapshot.timestamp) <= maxAge else {
+              let snapshot = try? JSONDecoder().decode(MetricSnapshot.self, from: data) else {
+            return nil
+        }
+
+        let age = now.timeIntervalSince(snapshot.timestamp)
+        guard age <= maxAge, age >= -acceptedFutureSkew else {
             return nil
         }
         return snapshot

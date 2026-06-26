@@ -126,7 +126,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Medium widget left column uses a first-version-style CPU block with core summary and a compact status strip instead of stacking network detail text.
 - Dashboard widget preview adapts its background, stroke, shadow, and secondary text to light and dark appearances.
 - The main app writes a compact latest snapshot to App Group UserDefaults on a 60-second throttled cadence and asks WidgetKit to reload its timeline kind after shared writes.
-- The Widget extension reads the shared compact snapshot first, rejects stale or future-dated records, and falls back to extension-local public API self-sampling when shared data is unavailable.
+- Shared widget snapshots tolerate small system clock skew while still rejecting stale or far-future data.
 - User-facing fallback text says when the system did not report a value instead of using generic unknown-state wording.
 - Thermal display text is centralized on the shared snapshot model, so dashboard, menu bar, and widget surfaces use the same reported-state fallback.
 - Thermal reported state is centralized on the shared snapshot model instead of being inferred from user-facing text.
