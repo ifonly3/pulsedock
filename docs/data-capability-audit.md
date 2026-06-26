@@ -176,6 +176,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - StorageVolumeMetric initializer defaults kind and access to not-reported when only volume capacity is provided.
 - Storage file-system display text reports missing or legacy unknown values as not-reported.
 - Display sampling uses CoreGraphics first and falls back to `NSScreen.screens` when the sandboxed app cannot resolve an active display list. The fallback exposes ordinal display information only.
+- NSScreen fallback sampling is guarded to run only on the main thread.
 - Display refresh rate uses CoreGraphics display mode first, then `NSScreen.maximumFramesPerSecond` when macOS omits refresh rate from the active display mode.
 - Display backing scale factor uses `NSScreen.backingScaleFactor` mapped by display number. It does not store raw display identifiers in snapshots.
 - Display color information uses `NSScreen.colorSpace` only for generic model and component count. It does not store color profile names.
@@ -211,6 +212,8 @@ This file is an internal product and App Store readiness audit. It should not be
 - Network path flag display text is centralized on the shared snapshot model.
 - Network path other-interface labels use localized product text instead of leaking internal enum wording.
 - Network path reported state is centralized on the shared snapshot model instead of being inferred from user-facing text.
+- Network interface kind falls back to a generic interface label when SystemConfiguration cannot identify en* devices.
+- Network byte counters prefer sysctl interface statistics and do not mark legacy getifaddrs fallback counters as authoritative.
 - Unknown network path state keeps detail and progress in a not-reported state instead of borrowing online details or positive progress.
 - Unknown network path state keeps dashboard status neutral instead of warning, so missing path data is not treated as a network issue.
 - Network path detail suppresses low-data and metered qualifiers when path status itself is not reported.

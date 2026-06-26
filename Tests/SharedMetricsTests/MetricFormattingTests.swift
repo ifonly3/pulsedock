@@ -45,6 +45,25 @@ import Testing
     #expect(audit.contains("64-bit interface counters"))
 }
 
+@Test func networkInterfaceFallbackDoesNotAssumeEn0IsWifi() throws {
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(!sampler.contains("if name.hasPrefix(\"en\") { return name == \"en0\" ? \"Wi-Fi\" : \"Ethernet\" }"))
+    #expect(sampler.contains("if name.hasPrefix(\"en\") { return \"网络接口\" }"))
+    #expect(audit.contains("Network interface kind falls back to a generic interface label when SystemConfiguration cannot identify en* devices."))
+}
+
+@Test func networkFallbackDoesNotTrustIfDataByteCounters() throws {
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(!sampler.contains("record.bytesReceived = UInt64(interfaceData.ifi_ibytes)"))
+    #expect(!sampler.contains("record.bytesSent = UInt64(interfaceData.ifi_obytes)"))
+    #expect(sampler.contains("record.hasByteCounters = false"))
+    #expect(audit.contains("Network byte counters prefer sysctl interface statistics and do not mark legacy getifaddrs fallback counters as authoritative."))
+}
+
 @Test func networkPathStatusUsesUserReadableLabels() {
     let online = MetricSnapshot(
         cpuUsage: 0.1,
@@ -3137,6 +3156,15 @@ import Testing
     #expect(sampler.contains("NSScreenNumber"))
     #expect(sampler.contains("screen.maximumFramesPerSecond"))
     #expect(sampler.contains("refreshRate: screenRefreshRate(screen)"))
+}
+
+@Test func displaySamplerOnlyUsesNSScreenOnMainThread() throws {
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(sampler.contains("Thread.isMainThread"))
+    #expect(sampler.contains("guard Thread.isMainThread else { return [] }"))
+    #expect(audit.contains("NSScreen fallback sampling is guarded to run only on the main thread."))
 }
 
 @Test func displayPageShowsSampledModeSizeAndRotation() throws {

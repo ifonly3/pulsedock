@@ -607,9 +607,7 @@ public final class SystemSampler: @unchecked Sendable {
                     record.mtu = stats.mtu
                 } else {
                     let interfaceData = data.assumingMemoryBound(to: if_data.self).pointee
-                    record.bytesReceived = UInt64(interfaceData.ifi_ibytes)
-                    record.bytesSent = UInt64(interfaceData.ifi_obytes)
-                    record.hasByteCounters = true
+                    record.hasByteCounters = false
                     record.packetsReceived = UInt64(interfaceData.ifi_ipackets)
                     record.packetsSent = UInt64(interfaceData.ifi_opackets)
                     record.receiveErrors = UInt64(interfaceData.ifi_ierrors)
@@ -955,6 +953,7 @@ public final class SystemSampler: @unchecked Sendable {
 
     private func fallbackDisplaysFromScreens() -> [DisplayMetric] {
 #if canImport(AppKit)
+        guard Thread.isMainThread else { return [] }
         let mainScreen = NSScreen.main
         return NSScreen.screens.enumerated().map { index, screen in
             let scale = screen.backingScaleFactor
@@ -993,6 +992,7 @@ public final class SystemSampler: @unchecked Sendable {
 
     private func screenRefreshRatesByDisplayID() -> [CGDirectDisplayID: Double] {
 #if canImport(AppKit)
+        guard Thread.isMainThread else { return [:] }
         var rates: [CGDirectDisplayID: Double] = [:]
         for screen in NSScreen.screens {
             guard let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber else {
@@ -1012,6 +1012,7 @@ public final class SystemSampler: @unchecked Sendable {
 
     private func screenScalesByDisplayID() -> [CGDirectDisplayID: Double] {
 #if canImport(AppKit)
+        guard Thread.isMainThread else { return [:] }
         var scales: [CGDirectDisplayID: Double] = [:]
         for screen in NSScreen.screens {
             guard let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber else {
@@ -1029,6 +1030,7 @@ public final class SystemSampler: @unchecked Sendable {
 
     private func screenColorSpacesByDisplayID() -> [CGDirectDisplayID: DisplayColorSpaceSample] {
 #if canImport(AppKit)
+        guard Thread.isMainThread else { return [:] }
         var colorSpaces: [CGDirectDisplayID: DisplayColorSpaceSample] = [:]
         for screen in NSScreen.screens {
             guard let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber,
@@ -1177,7 +1179,7 @@ public final class SystemSampler: @unchecked Sendable {
         if name.hasPrefix("utun") || name.hasPrefix("ipsec") || name.hasPrefix("ppp") { return "VPN" }
         if name.hasPrefix("bridge") { return "Bridge" }
         if name.hasPrefix("awdl") || name.hasPrefix("llw") { return "AWDL" }
-        if name.hasPrefix("en") { return name == "en0" ? "Wi-Fi" : "Ethernet" }
+        if name.hasPrefix("en") { return "网络接口" }
         if name.hasPrefix("thunderbolt") { return "Thunderbolt" }
         return "其他"
     }
