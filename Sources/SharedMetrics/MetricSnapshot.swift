@@ -814,7 +814,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         cpuUsage: Double,
         cpuCoreUsages: [Double] = [],
         hasCPUUsageReport: Bool = false,
-        physicalCoreCount: Int = ProcessInfo.processInfo.processorCount,
+        physicalCoreCount: Int = 0,
         logicalCoreCount: Int = ProcessInfo.processInfo.activeProcessorCount,
         activeProcessorCount: Int = ProcessInfo.processInfo.activeProcessorCount,
         cpuBrandName: String? = nil,
@@ -1047,10 +1047,10 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
 
     public var memoryActiveBytes: UInt64 {
-        guard hasMemoryCompositionReport else { return 0 }
-        return memoryUsedBytes > memoryWiredBytes + memoryCompressedBytes
-            ? memoryUsedBytes - memoryWiredBytes - memoryCompressedBytes
-            : memoryUsedBytes
+        guard memoryUsedBytes >= memoryWiredBytes + memoryCompressedBytes else {
+            return 0
+        }
+        return memoryUsedBytes - memoryWiredBytes - memoryCompressedBytes
     }
 
     private func reportedMemoryText(_ bytes: UInt64) -> String {
@@ -1270,22 +1270,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         batteryPercent != nil || batteryPowerSource != nil
     }
     public var powerStatusProgress: Double? {
-        if let batteryPercent {
-            return batteryPercent
-        }
-
-        switch batteryPowerSource?.lowercased() {
-        case "ac power":
-            return 1
-        case "battery power":
-            return 0.45
-        case "ups power":
-            return 0.7
-        case .some(let value) where !value.isEmpty:
-            return 0.55
-        default:
-            return nil
-        }
+        batteryPercent
     }
     public var powerStatusTone: MetricStatusTone {
         if let batteryPercent {

@@ -1096,7 +1096,6 @@ import Testing
     #expect(snapshot.memoryCompressedText == "未报告")
     #expect(snapshot.memoryCachedText == "未报告")
     #expect(snapshot.memoryActiveText == "未报告")
-    #expect(snapshot.memoryActiveBytes == 0)
     #expect(metricSnapshot.contains("public var hasMemoryCompositionReport: Bool"))
     #expect(metricSnapshot.contains("private func reportedMemoryCompositionText(_ bytes: UInt64) -> String"))
     #expect(metricSnapshot.contains("guard hasMemoryCompositionReport else { return \"未报告\" }"))
@@ -1104,6 +1103,25 @@ import Testing
     #expect(dashboardView.contains("reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryActiveBytes, total: snapshot.memoryTotalBytes))"))
     #expect(audit.contains("Legacy memory snapshots missing composition fields keep free, wired, compressed, cached, and active memory as not-reported instead of zero bytes."))
     #expect(audit.contains("Source-level tests prevent legacy memory composition snapshots from inventing zero-byte detail rows."))
+}
+
+@Test func memoryActiveBytesDoesNotOverstateWhenCompositionIsInvalid() {
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.1,
+        memoryUsedBytes: 1_000,
+        memoryTotalBytes: 2_000,
+        memoryWiredBytes: 700,
+        memoryCompressedBytes: 500,
+        loadAverage: 0.1,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
+        timestamp: Date(timeIntervalSince1970: 0)
+    )
+
+    #expect(snapshot.memoryActiveBytes == 0)
 }
 
 @Test func initializerMemoryCapacityOnlyDoesNotInventZeroByteComposition() throws {
@@ -2201,6 +2219,24 @@ import Testing
     #expect(!metricSnapshot.contains("logicalCoreCount = try values.decodeIfPresent(Int.self, forKey: .logicalCoreCount) ?? ProcessInfo.processInfo.activeProcessorCount"))
     #expect(audit.contains("Legacy snapshots missing physical or logical CPU counts remain not-reported instead of borrowing the current machine counts during decode."))
     #expect(audit.contains("Source-level tests prevent legacy decoded snapshots without CPU count fields from inventing physical or logical core counts."))
+}
+
+@Test func metricSnapshotDefaultsDoNotInventPhysicalCoreCount() {
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.1,
+        memoryUsedBytes: 1_024,
+        memoryTotalBytes: 2_048,
+        loadAverage: 0.1,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
+        timestamp: Date(timeIntervalSince1970: 0)
+    )
+
+    #expect(snapshot.physicalCoreCount == 0)
+    #expect(snapshot.physicalCoreCountText == "未报告")
 }
 
 @Test func cpuSamplerDoesNotReportSyntheticZeroCoreUsagesWhilePriming() throws {
@@ -4172,7 +4208,7 @@ import Testing
     #expect(portableBattery.powerStatusText == "86%")
 }
 
-@Test func powerStatusProgressUsesReportedPowerSourceWhenBatteryPercentIsUnavailable() throws {
+@Test func powerStatusProgressOnlyUsesMeasuredBatteryPercent() throws {
     let acPower = MetricSnapshot(
         cpuUsage: 0.1,
         memoryUsedBytes: 1_024,
@@ -4182,34 +4218,8 @@ import Testing
         batteryPercent: nil,
         batteryIsCharging: false,
         batteryPowerSource: "AC Power",
-        networkBytesPerSecond: 0,
         diskFreeBytes: 1_024,
-        timestamp: Date(timeIntervalSince1970: 0)
-    )
-    let batteryPower = MetricSnapshot(
-        cpuUsage: 0.1,
-        memoryUsedBytes: 1_024,
-        memoryTotalBytes: 2_048,
-        loadAverage: 0.1,
-        thermalState: "Nominal",
-        batteryPercent: nil,
-        batteryIsCharging: false,
-        batteryPowerSource: "Battery Power",
-        networkBytesPerSecond: 0,
-        diskFreeBytes: 1_024,
-        timestamp: Date(timeIntervalSince1970: 0)
-    )
-    let upsPower = MetricSnapshot(
-        cpuUsage: 0.1,
-        memoryUsedBytes: 1_024,
-        memoryTotalBytes: 2_048,
-        loadAverage: 0.1,
-        thermalState: "Nominal",
-        batteryPercent: nil,
-        batteryIsCharging: false,
-        batteryPowerSource: "UPS Power",
-        networkBytesPerSecond: 0,
-        diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
         timestamp: Date(timeIntervalSince1970: 0)
     )
     let batteryPercent = MetricSnapshot(
@@ -4221,30 +4231,14 @@ import Testing
         batteryPercent: 0.42,
         batteryIsCharging: false,
         batteryPowerSource: "Battery Power",
-        networkBytesPerSecond: 0,
         diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
         timestamp: Date(timeIntervalSince1970: 0)
     )
-    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-    let dashboardView = try String(
-        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
-        encoding: .utf8
-    )
-    let audit = try String(
-        contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"),
-        encoding: .utf8
-    )
 
-    #expect(acPower.powerStatusProgress == 1)
-    #expect(batteryPower.powerStatusProgress == 0.45)
-    #expect(upsPower.powerStatusProgress == 0.7)
+    #expect(acPower.powerStatusProgress == nil)
     #expect(batteryPercent.powerStatusProgress == 0.42)
     #expect(MetricSnapshot.placeholder.powerStatusProgress == nil)
-    #expect(dashboardView.contains("private func powerGaugeProgress(_ snapshot: MetricSnapshot) -> Double?"))
-    #expect(dashboardView.contains("snapshot.powerStatusProgress"))
-    #expect(!dashboardView.contains("guard snapshot.hasPowerStatusReport else { return nil }\n    return 1"))
-    #expect(audit.contains("Power gauge progress uses the shared power-source state mapping instead of drawing every reported source without a battery percent as full."))
-    #expect(audit.contains("Source-level tests require power gauges to use shared power-source progress instead of fixed full progress for non-battery-percent states."))
 }
 
 @Test func powerStatusToneUsesReportedPowerSourceWhenBatteryPercentIsUnavailable() throws {
@@ -4416,7 +4410,7 @@ import Testing
     #expect(!dashboardView.contains("progress: snapshot.batteryPercent ?? 0"))
 }
 
-@Test func powerTrendValuesUseReportedPowerSourceWhenBatteryPercentIsUnavailable() throws {
+@Test func powerTrendValuesUseMeasuredBatteryPercentOnly() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let dashboardView = try String(
         contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
@@ -4434,8 +4428,10 @@ import Testing
     #expect(dashboardView.contains("MetricCard(title: \"电源状态\", value: snapshot.powerStatusText, detail: snapshot.powerSourceText, icon: \"battery.75percent\", tint: powerTint(snapshot), badgeText: snapshot.batteryPercent.map { MetricFormatting.percentage($0) }, progress: powerGaugeProgress(snapshot), values: powerTrendValues(from: history))"))
     #expect(dashboardView.contains("TrendRow(title: powerTrendTitle(snapshot), value: snapshot.powerStatusText, tint: powerTint(snapshot), values: powerTrendValues(from: history))"))
     #expect(!dashboardView.contains("values: history.compactMap(\\.batteryPercent)"))
-    #expect(audit.contains("Power trend values use reported power-source state when battery percentage is unavailable, so desktop and UPS histories do not disappear."))
-    #expect(audit.contains("Source-level tests require power trend charts to use reported power-source states when battery percentage is unavailable."))
+    #expect(audit.contains("Power progress uses measured battery percent only; AC/UPS/source-only states are displayed as text without invented gauge fill."))
+    #expect(audit.contains("Source-level tests require power trend charts and gauges to use measured battery percent only, leaving source-only AC/UPS states without invented fill."))
+    #expect(!audit.contains("Power trend values use reported power-source state when battery percentage is unavailable, so desktop and UPS histories do not disappear."))
+    #expect(!audit.contains("Power gauge progress uses the shared power-source state mapping instead of drawing every reported source without a battery percent as full."))
 }
 
 @Test func powerPageForegroundsCurrentPowerStatusWhenBatteryPercentIsUnavailable() throws {

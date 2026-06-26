@@ -81,6 +81,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Widget placeholder skeletons use shared light/dark track and fill helpers so widget gallery previews do not retain fixed light-mode colors.
 - CPU active processor count uses `ProcessInfo.activeProcessorCount` for load normalization and display; it is separate from the hardware logical-core count.
 - CPU core-count surfaces use shared reported-state text, so placeholder or failed count samples do not appear as zero-core hardware.
+- MetricSnapshot defaults do not invent physical core counts when the sampler has not reported them.
 - Legacy snapshots missing physical or logical CPU counts remain not-reported instead of borrowing the current machine counts during decode.
 - CPU usage text reports the system-not-reported state when Mach CPU counters have not produced a delta sample, instead of formatting an unprimed counter baseline as zero percent.
 - MetricSnapshot initializer defaults CPU usage to not-reported unless a sampler explicitly reports a Mach CPU delta sample.
@@ -146,8 +147,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Missing power-source samples display as not-reported instead of being inferred as no battery.
 - Missing power-source indicators use neutral tint instead of healthy or warning colors.
 - History power trend uses the current power-status label and neutral tint when power-source data is missing.
-- Power trend values use reported power-source state when battery percentage is unavailable, so desktop and UPS histories do not disappear.
-- Power gauge progress uses the shared power-source state mapping instead of drawing every reported source without a battery percent as full.
+- Power progress uses measured battery percent only; AC/UPS/source-only states are displayed as text without invented gauge fill.
 - Power indicator tint uses the shared power-source tone mapping so battery or UPS power without a percent is warning-colored instead of green.
 - Compact power surfaces show the current providing power source when no battery percentage exists, while battery-specific rows still say that no battery is present.
 - Overview and Status power surfaces use the same current power status fallback instead of treating missing battery percentage as zero battery.
@@ -351,8 +351,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests prevent missing power-source state from using fixed healthy or warning tint.
 - Source-level tests prevent the shared snapshot model from exposing the old batteryText alias.
 - Source-level tests require power reported-state checks to use an explicit snapshot flag instead of user-facing text comparisons.
-- Source-level tests require power trend charts to use reported power-source states when battery percentage is unavailable.
-- Source-level tests require power gauges to use shared power-source progress instead of fixed full progress for non-battery-percent states.
+- Source-level tests require power trend charts and gauges to use measured battery percent only, leaving source-only AC/UPS states without invented fill.
 - Source-level tests require app, widget, and menu bar power tints to use shared power-source tone mapping.
 - Source-level tests require overview, menu bar, and widget power surfaces to use the current power status instead of always foregrounding battery percentage text.
 - Source-level tests require Overview and Status page power rows to use the current power status when battery percentage is unavailable.
