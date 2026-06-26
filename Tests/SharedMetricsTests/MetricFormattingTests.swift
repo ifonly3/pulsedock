@@ -6953,7 +6953,6 @@ import Testing
     #expect(dashboardView.contains("SettingsPage(store: store, isCompact: isCompact)"))
     #expect(dashboardView.contains("Picker(\"主窗口刷新\""))
     #expect(dashboardView.contains("Picker(\"本地历史\""))
-    #expect(!dashboardView.contains("SettingRow(title: \"主窗口刷新\", detail: \"实时趋势与状态卡片\", control: \"2s\")"))
 }
 
 @Test func settingsPageStacksPreviewPanelAtCompactWidth() throws {
@@ -7279,7 +7278,6 @@ import Testing
     #expect(dashboardView.contains("Toggle(\"菜单栏 CPU\", isOn: Binding("))
     #expect(dashboardView.contains("store.showsMenuBarCPU"))
     #expect(dashboardView.contains("store.updateShowsMenuBarCPU"))
-    #expect(!dashboardView.contains("SettingRow(title: \"菜单栏状态\", detail: \"显示当前 CPU 占用\", control: \"开\")"))
     #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$showsMenuBarCPU)"))
     #expect(appDelegate.contains("updateStatusButtonTitle()"))
     #expect(appDelegate.contains("private var statusButtonCPUText: String?"))
@@ -7830,13 +7828,48 @@ import Testing
     #expect(!appDelegate.contains("window.minSize = NSSize(width: 1180, height: 760)"))
 }
 
+@Test func mainKeepsAppDelegateStrongForRunLoopLifetime() throws {
+    let main = try fixture("Sources/PulseDockApp/main.swift")
+
+    #expect(main.contains("final class PulseDockApplication"))
+    #expect(main.contains("private let delegate = AppDelegate()"))
+    #expect(main.contains("PulseDockApplication().run()"))
+}
+
 @Test func dashboardUsesAdaptiveColumnsForCompactWindows() throws {
     let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
 
     #expect(dashboard.contains("private func adaptiveMetricColumns(for width: CGFloat) -> [GridItem]"))
     #expect(dashboard.contains("GeometryReader { proxy in"))
     #expect(dashboard.contains("adaptiveMetricColumns(for: proxy.size.width)"))
-    #expect(dashboard.contains("if proxy.size.width < 1080"))
+    #expect(dashboard.contains("let isCompact = proxy.size.width < 1080"))
+}
+
+@Test func dashboardUsesStableTableColumnIDsAndNoDeadSettingRow() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+
+    #expect(!dashboard.contains("ForEach(columns, id: \\.self)"))
+    #expect(dashboard.contains("Array(columns.enumerated())"))
+    #expect(!dashboard.contains("private struct SettingRow: View"))
+}
+
+@Test func dashboardAvoidsDuplicatedCompactRegularPageBranch() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+
+    #expect(dashboard.contains("let isCompact = proxy.size.width < 1080"))
+    #expect(dashboard.contains("metricColumns: adaptiveMetricColumns(for: proxy.size.width)"))
+    #expect(dashboard.contains("summaryColumns: adaptiveSummaryColumns(for: proxy.size.width)"))
+    #expect(!dashboard.contains("if proxy.size.width < 1080 {\n                            pageContent("))
+}
+
+@Test func dashboardPanelModifierDoesNotApplyRepeatedHeavyShadows() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+    let panelStart = try #require(dashboard.range(of: "func panel(cornerRadius: CGFloat) -> some View")?.lowerBound)
+    let panelEnd = dashboard.range(of: "private func normalizedRate", range: panelStart..<dashboard.endIndex)?.lowerBound ?? dashboard.endIndex
+    let panelBody = String(dashboard[panelStart..<panelEnd])
+
+    #expect(!panelBody.contains(".shadow(color: .black.opacity(0.035), radius: 16, x: 0, y: 8)"))
+    #expect(!panelBody.contains(".shadow(color: .black.opacity"))
 }
 
 @Test func progressBarsDoNotDrawFilledMinimumForTrueZeroValues() throws {

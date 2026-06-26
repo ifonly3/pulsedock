@@ -28,25 +28,15 @@ struct DashboardView: View {
 
                 GeometryReader { proxy in
                     ScrollView {
-                        if proxy.size.width < 1080 {
-                            pageContent(
-                                metricColumns: adaptiveMetricColumns(for: proxy.size.width),
-                                summaryColumns: adaptiveSummaryColumns(for: proxy.size.width),
-                                isCompact: true
-                            )
-                            .padding(.horizontal, 24)
-                            .padding(.top, 18)
-                            .padding(.bottom, 28)
-                        } else {
-                            pageContent(
-                                metricColumns: adaptiveMetricColumns(for: proxy.size.width),
-                                summaryColumns: adaptiveSummaryColumns(for: proxy.size.width),
-                                isCompact: false
-                            )
-                            .padding(.horizontal, 24)
-                            .padding(.top, 18)
-                            .padding(.bottom, 28)
-                        }
+                        let isCompact = proxy.size.width < 1080
+                        pageContent(
+                            metricColumns: adaptiveMetricColumns(for: proxy.size.width),
+                            summaryColumns: adaptiveSummaryColumns(for: proxy.size.width),
+                            isCompact: isCompact
+                        )
+                        .padding(.horizontal, 24)
+                        .padding(.top, 18)
+                        .padding(.bottom, 28)
                     }
                     .background(DashboardColor.canvas)
                 }
@@ -1693,32 +1683,6 @@ private struct DataChip: View {
     }
 }
 
-private struct SettingRow: View {
-    let title: String
-    let detail: String
-    let control: String
-
-    var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.system(size: 13, weight: .semibold))
-                Text(detail)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(DashboardColor.muted)
-            }
-            Spacer()
-            Text(control)
-                .font(.system(size: 12, weight: .semibold))
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(.quaternary.opacity(0.72), in: Capsule())
-        }
-        .padding(12)
-        .background(DashboardColor.panelAlt, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-    }
-}
-
 private struct SettingReadOnlyRow: View {
     let title: String
     let detail: String
@@ -1829,7 +1793,7 @@ private struct TableHeader: View {
 
     var body: some View {
         HStack {
-            ForEach(columns, id: \.self) { column in
+            ForEach(Array(columns.enumerated()), id: \.offset) { _, column in
                 Text(column)
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(DashboardColor.muted)
@@ -1907,7 +1871,6 @@ private extension View {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .strokeBorder(DashboardColor.border, lineWidth: 1)
             }
-            .shadow(color: .black.opacity(0.035), radius: 16, x: 0, y: 8)
     }
 }
 

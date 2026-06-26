@@ -494,6 +494,9 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests prevent missing network link speed from being formatted as 0 bps.
 - Source-level tests prevent Settings data-source rows from hard-coding availability when snapshot fields are missing.
 - Source-level tests require Settings data-source labels to come from the shared snapshot model.
+- Main app delegate lifetime is held strongly for the run loop.
+- Dashboard table headers use stable index IDs and unused settings-row code was removed.
+- Dashboard panels avoid repeated default shadows from the shared panel modifier.
 
 ## Refresh Policy
 
