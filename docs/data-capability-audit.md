@@ -57,7 +57,7 @@ This file is an internal product and App Store readiness audit. It should not be
 
 - `MetricSnapshot.placeholder` is intentionally empty or unknown. It must not contain realistic CPU, memory, network, process, GPU, display, or storage sample values.
 - Widget timelines use direct public-API sampling through a small in-extension sampler cache and then store compact timeline snapshots. The placeholder view is a visual skeleton with a short waiting label only; it must not contain demo values or explanatory waiting-state copy.
-- Widget timeline entries store compact snapshots that strip unused process, storage, GPU, and display inventory lists.
+- Widget timeline entries store compact snapshots that preserve visible network summary signals while stripping detailed process, network interface, storage, GPU, and display inventory lists.
 - Main app and widget snapshots warm the sampler before publishing delta-based CPU/network readings, so the first visible sample and resume-after-pause sample are not unprimed or stale counter baselines.
 - Sample timestamp display text reports the system-not-reported state for placeholder or missing timestamp snapshots.
 - Widget headers use minute-level sampled time text so narrow widget families stay readable.
@@ -230,13 +230,14 @@ This file is an internal product and App Store readiness audit. It should not be
 - Network interface summary text reports the system-not-reported state when the interface inventory is missing, instead of formatting missing inventory as 0 active interfaces.
 - Network interface reported state is centralized on the shared snapshot model instead of being inferred from user-facing text.
 - Network data-source status ignores legacy interface rows without reported state, while still allowing byte counters to report interface traffic.
-- App and widget active-interface progress normalizes by reported interface state rows, so legacy interface records do not dilute live interface progress.
+- Dashboard active-interface progress normalizes by reported interface state rows, so legacy interface records do not dilute live interface progress.
 - Network interface detail table filters legacy rows without reported fields and shows an explicit not-reported row instead of an empty table.
-- Widget active-interface progress normalizes by the sampled interface count instead of a fixed baseline.
+- Widget interface rows use network path detail text so compact timeline snapshots do not need detailed interface inventory rows.
 - The Network page summary surfaces sampled active interface count alongside throughput and path state.
 - Network interface byte counters prefer public `NET_RT_IFLIST2` 64-bit interface counters and remain not-reported when route sysctl byte counters are unavailable; legacy `getifaddrs` data is used only for non-byte metadata such as packets, errors, link speed, and MTU.
 - Network interface byte count display text reports the system-not-reported state when counters are unavailable, instead of formatting missing byte counters as zero.
 - Aggregate network rate display text reports the system-not-reported state when byte counters are unavailable, instead of formatting missing aggregate throughput as zero.
+- Network formatting distinguishes byte-per-second throughput (`B/s`, `KB/s`) from bit-per-second aggregate and link rates (`Kbps`, `Mbps`, `Gbps`).
 - The Network page trend panel surfaces aggregate throughput alongside download and upload history.
 - The Network page trend panel surfaces connection status history from the public network path monitor.
 - Network interface MTU uses public route interface statistics and `getifaddrs` interface data fallback, without storing raw interface names in snapshots.

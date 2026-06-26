@@ -205,7 +205,7 @@ private struct LargeWidget: View {
                     LargeWidgetSection {
                         WidgetRow(title: "连接", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
                         WidgetRow(title: "路径", value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
-                        WidgetRow(title: "接口", value: snapshot.networkInterfaceSummary, progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
+                        WidgetRow(title: "接口", value: snapshot.networkPathDetailText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
                     }
 
                     LargeInfoGrid(snapshot: snapshot)
@@ -715,13 +715,6 @@ private func powerTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme)
     case .neutral:
         return WidgetColor.cyan(for: colorScheme)
     }
-}
-
-private func activeInterfaceProgress(_ snapshot: MetricSnapshot) -> Double {
-    let reportedInterfaces = snapshot.networkInterfaces.filter(\.hasInterfaceStateReport)
-    guard !reportedInterfaces.isEmpty else { return 0 }
-    let activeCount = reportedInterfaces.filter { $0.isUp && !$0.isLoopback }.count
-    return min(Double(activeCount) / Double(reportedInterfaces.count), 1)
 }
 
 private func compactPowerStatusText(_ snapshot: MetricSnapshot) -> String {

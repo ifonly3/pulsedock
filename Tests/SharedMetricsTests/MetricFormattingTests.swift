@@ -23,6 +23,13 @@ import Testing
     #expect(MetricFormatting.bitRate(bitsPerSecond: 1_200_000_000) == "1.2 Gbps")
 }
 
+@Test func networkRateFormattingLabelsBytesAndBitsExplicitly() {
+    #expect(MetricFormatting.byteRate(bytesPerSecond: 1_024) == "1 KB/s")
+    #expect(MetricFormatting.bitRate(bitsPerSecond: 1_000) == "1 Kbps")
+    #expect(MetricFormatting.bitRate(bitsPerSecond: 1_000_000) == "1 Mbps")
+    #expect(MetricFormatting.networkRate(bytesPerSecond: 125_000) == "1 Mbps")
+}
+
 @Test func networkSamplerUsesPublic64BitInterfaceCountersWhenAvailable() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let sampler = try String(
@@ -1548,16 +1555,13 @@ import Testing
     #expect(reportedLoopbackOnly.hasNetworkInterfaceReport == true)
     #expect(metricSnapshot.contains("public var hasNetworkInterfaceReport: Bool"))
     #expect(metricSnapshot.contains("guard hasNetworkInterfaceReport else { return \"未报告\" }"))
-    #expect(widget.contains("WidgetRow(title: \"接口\", value: snapshot.networkInterfaceSummary, progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))"))
-    #expect(widget.contains("private func activeInterfaceProgress(_ snapshot: MetricSnapshot) -> Double"))
-    #expect(widget.contains("let reportedInterfaces = snapshot.networkInterfaces.filter(\\.hasInterfaceStateReport)"))
-    #expect(widget.contains("guard !reportedInterfaces.isEmpty else { return 0 }"))
-    #expect(widget.contains("Double(reportedInterfaces.count)"))
+    #expect(widget.contains("WidgetRow(title: \"接口\", value: snapshot.networkPathDetailText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))"))
+    #expect(!widget.contains("private func activeInterfaceProgress(_ snapshot: MetricSnapshot) -> Double"))
     #expect(!widget.contains("Double(snapshot.networkInterfaces.count)"))
     #expect(!widget.contains("Double(activeCount) / 4"))
     #expect(audit.contains("Network interface summary text reports the system-not-reported state when the interface inventory is missing, instead of formatting missing inventory as 0 active interfaces."))
     #expect(audit.contains("Network interface reported state is centralized on the shared snapshot model instead of being inferred from user-facing text."))
-    #expect(audit.contains("Widget active-interface progress normalizes by the sampled interface count instead of a fixed baseline."))
+    #expect(audit.contains("Widget interface rows use network path detail text so compact timeline snapshots do not need detailed interface inventory rows."))
     #expect(audit.contains("Source-level tests prevent missing network interface inventory from being formatted as 0 active interfaces."))
     #expect(audit.contains("Source-level tests require network interface reported-state checks to use an explicit snapshot flag instead of user-facing text comparisons."))
 }
@@ -3973,7 +3977,7 @@ import Testing
 
     #expect(widget.contains("WidgetRow(title: \"连接\""))
     #expect(widget.contains("snapshot.networkPathText"))
-    #expect(widget.contains("snapshot.networkInterfaceSummary"))
+    #expect(widget.contains("snapshot.networkPathDetailText"))
     #expect(!widget.contains("snapshot.networkText"))
     #expect(!widget.contains("snapshot.networkInText"))
     #expect(!widget.contains("snapshot.networkOutText"))
@@ -6539,14 +6543,14 @@ import Testing
     )
 
     #expect(dashboardView.contains("let reportedInterfaces = snapshot.networkInterfaces.filter(\\.hasInterfaceStateReport)"))
-    #expect(widget.contains("let reportedInterfaces = snapshot.networkInterfaces.filter(\\.hasInterfaceStateReport)"))
     #expect(dashboardView.contains("let activeCount = reportedInterfaces.filter { $0.isUp && !$0.isLoopback }.count"))
-    #expect(widget.contains("let activeCount = reportedInterfaces.filter { $0.isUp && !$0.isLoopback }.count"))
     #expect(dashboardView.contains("Double(reportedInterfaces.count)"))
-    #expect(widget.contains("Double(reportedInterfaces.count)"))
     #expect(!dashboardView.contains("Double(snapshot.networkInterfaces.count)"))
     #expect(!widget.contains("Double(snapshot.networkInterfaces.count)"))
-    #expect(audit.contains("App and widget active-interface progress normalizes by reported interface state rows, so legacy interface records do not dilute live interface progress."))
+    #expect(!widget.contains("private func activeInterfaceProgress(_ snapshot: MetricSnapshot) -> Double"))
+    #expect(widget.contains("WidgetRow(title: \"接口\", value: snapshot.networkPathDetailText"))
+    #expect(audit.contains("Dashboard active-interface progress normalizes by reported interface state rows, so legacy interface records do not dilute live interface progress."))
+    #expect(audit.contains("Widget interface rows use network path detail text so compact timeline snapshots do not need detailed interface inventory rows."))
     #expect(audit.contains("Source-level tests require active-interface progress to filter by reported interface state before normalizing."))
 }
 
@@ -7636,12 +7640,87 @@ import Testing
 
     #expect(widget.contains("Self.samplerCache.sample().widgetCompactSnapshot()"))
     #expect(!widget.contains("private func compactWidgetSnapshot"))
-    #expect(compact.contains("networkInterfaces: compactWidgetInterfaces()"))
+    #expect(compact.contains("networkBytesPerSecond: networkBytesPerSecond"))
+    #expect(compact.contains("hasNetworkByteCounters: hasNetworkByteCounters"))
+    #expect(compact.contains("hasNetworkDirectionByteCounters: hasNetworkDirectionByteCounters"))
+    #expect(compact.contains("networkInBytesPerSecond: networkInBytesPerSecond"))
+    #expect(compact.contains("networkOutBytesPerSecond: networkOutBytesPerSecond"))
+    #expect(compact.contains("networkInterfaces: []"))
     #expect(compact.contains("storageVolumes: []"))
     #expect(compact.contains("runningApps: []"))
     #expect(compact.contains("gpuDevices: []"))
     #expect(compact.contains("displays: []"))
-    #expect(audit.contains("Widget timeline entries store compact snapshots that strip unused process, storage, GPU, and display inventory lists."))
+    #expect(audit.contains("Widget timeline entries store compact snapshots that preserve visible network summary signals while stripping detailed process, network interface, storage, GPU, and display inventory lists."))
+}
+
+@Test func widgetCompactSnapshotPreservesSummarySignalsAndDropsPrivateLists() {
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.42,
+        hasCPUUsageReport: true,
+        memoryUsedBytes: 4_096,
+        memoryTotalBytes: 8_192,
+        loadAverage: 1.2,
+        hasLoadAverageReport: true,
+        thermalState: "Nominal",
+        batteryPercent: 0.8,
+        batteryIsCharging: true,
+        networkBytesPerSecond: 12_345,
+        hasNetworkByteCounters: true,
+        hasNetworkDirectionByteCounters: true,
+        networkPathStatus: "satisfied",
+        networkPathIsExpensive: true,
+        networkPathIsConstrained: true,
+        hasNetworkPathCostReport: true,
+        networkPathSupportsDNS: true,
+        networkPathSupportsIPv4: true,
+        networkPathSupportsIPv6: false,
+        hasNetworkPathSupportReport: true,
+        networkPathInterfaceKinds: ["Wi-Fi"],
+        networkInBytesPerSecond: 6_000,
+        networkOutBytesPerSecond: 6_345,
+        networkInterfaces: [
+            NetworkInterfaceMetric(
+                index: 0,
+                displayName: "Private Interface",
+                kind: "Wi-Fi",
+                isUp: true,
+                isLoopback: false,
+                hasInterfaceStateReport: true,
+                bytesReceived: 10_000,
+                bytesSent: 8_000,
+                hasByteCounters: true
+            )
+        ],
+        diskFreeBytes: 2_048,
+        diskTotalBytes: 4_096,
+        processCount: 42,
+        runningApps: [
+            ProcessMetric(index: 0, name: "Private App", hasStateReport: true)
+        ],
+        timestamp: Date(timeIntervalSince1970: 1_000)
+    )
+
+    let compact = snapshot.widgetCompactSnapshot()
+
+    #expect(compact.cpuUsage == snapshot.cpuUsage)
+    #expect(compact.networkPathStatus == "satisfied")
+    #expect(compact.networkPathIsExpensive)
+    #expect(compact.networkPathIsConstrained)
+    #expect(compact.hasNetworkPathCostReport)
+    #expect(compact.networkPathSupportsDNS)
+    #expect(compact.networkPathSupportsIPv4)
+    #expect(!compact.networkPathSupportsIPv6)
+    #expect(compact.hasNetworkPathSupportReport)
+    #expect(compact.networkPathInterfaceKinds == ["Wi-Fi"])
+    #expect(compact.networkBytesPerSecond == snapshot.networkBytesPerSecond)
+    #expect(compact.hasNetworkByteCounters)
+    #expect(compact.hasNetworkDirectionByteCounters)
+    #expect(compact.networkInBytesPerSecond == snapshot.networkInBytesPerSecond)
+    #expect(compact.networkOutBytesPerSecond == snapshot.networkOutBytesPerSecond)
+    #expect(compact.networkInterfaces.isEmpty)
+    #expect(compact.runningApps.isEmpty)
+    #expect(compact.gpuDevices.isEmpty)
+    #expect(compact.displays.isEmpty)
 }
 
 @Test func appGroupEntitlementsAreDeclaredForAppAndWidget() throws {
@@ -7778,10 +7857,10 @@ import Testing
 
     #expect(loaded.cpuUsage == snapshot.cpuUsage)
     #expect(loaded.cpuBrandName == nil)
-    #expect(loaded.networkBytesPerSecond == 0)
-    #expect(!loaded.hasNetworkByteCounters)
-    #expect(loaded.networkInBytesPerSecond == 0)
-    #expect(loaded.networkOutBytesPerSecond == 0)
+    #expect(loaded.networkBytesPerSecond == snapshot.networkBytesPerSecond)
+    #expect(loaded.hasNetworkByteCounters)
+    #expect(loaded.networkInBytesPerSecond == snapshot.networkInBytesPerSecond)
+    #expect(loaded.networkOutBytesPerSecond == snapshot.networkOutBytesPerSecond)
     #expect(loaded.processCount == 0)
     #expect(loaded.runningApps.isEmpty)
     #expect(loaded.timestamp == snapshot.timestamp)

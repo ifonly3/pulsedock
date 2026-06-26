@@ -26,8 +26,9 @@ extension MetricSnapshot {
             batteryTimeRemainingMinutes: batteryTimeRemainingMinutes,
             batteryCurrentCapacity: batteryCurrentCapacity,
             batteryMaxCapacity: batteryMaxCapacity,
-            hasNetworkByteCounters: false,
-            hasNetworkDirectionByteCounters: false,
+            networkBytesPerSecond: networkBytesPerSecond,
+            hasNetworkByteCounters: hasNetworkByteCounters,
+            hasNetworkDirectionByteCounters: hasNetworkDirectionByteCounters,
             networkPathStatus: networkPathStatus,
             networkPathIsExpensive: networkPathIsExpensive,
             networkPathIsConstrained: networkPathIsConstrained,
@@ -37,9 +38,9 @@ extension MetricSnapshot {
             networkPathSupportsIPv6: networkPathSupportsIPv6,
             hasNetworkPathSupportReport: hasNetworkPathSupportReport,
             networkPathInterfaceKinds: networkPathInterfaceKinds,
-            networkInBytesPerSecond: 0,
-            networkOutBytesPerSecond: 0,
-            networkInterfaces: compactWidgetInterfaces(),
+            networkInBytesPerSecond: networkInBytesPerSecond,
+            networkOutBytesPerSecond: networkOutBytesPerSecond,
+            networkInterfaces: [],
             diskFreeBytes: diskFreeBytes,
             diskTotalBytes: diskTotalBytes,
             storageVolumes: [],
@@ -56,24 +57,5 @@ extension MetricSnapshot {
             kernelRelease: kernelRelease,
             timestamp: timestamp
         )
-    }
-
-    private func compactWidgetInterfaces() -> [NetworkInterfaceMetric] {
-        networkInterfaces
-            .filter(\.hasInterfaceStateReport)
-            .enumerated()
-            .map { index, interface in
-                NetworkInterfaceMetric(
-                    index: index,
-                    displayName: "未报告",
-                    kind: "未报告",
-                    isUp: interface.isUp,
-                    isLoopback: interface.isLoopback,
-                    hasInterfaceStateReport: true,
-                    bytesReceived: 0,
-                    bytesSent: 0,
-                    hasByteCounters: false
-                )
-            }
     }
 }
