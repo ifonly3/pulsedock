@@ -7804,6 +7804,8 @@ import Testing
 
     #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 995)) != nil)
     #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 600)) == nil)
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_060)) != nil)
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_061)) == nil)
 }
 
 @Test func xcodeProjectIncludesSharedSnapshotFoundationFiles() throws {
