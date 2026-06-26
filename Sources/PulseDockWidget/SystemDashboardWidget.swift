@@ -262,20 +262,10 @@ private struct EmptyDataWidget: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: family == .systemSmall ? 12 : 14) {
-            HStack(spacing: 7) {
-                Image(systemName: "waveform.path.ecg.rectangle")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(WidgetColor.green(for: colorScheme))
-                Text("Pulse Dock")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(widgetPrimaryText(for: colorScheme))
-                Circle()
-                    .fill(WidgetColor.amber(for: colorScheme))
-                    .frame(width: 6, height: 6)
-                Spacer()
-                if shouldInlineLoadingLabel {
-                    loadingLabel
-                }
+            if shouldInlineLoadingLabel {
+                compactLoadingHeader
+            } else {
+                normalHeader
             }
             if !shouldInlineLoadingLabel {
                 loadingLabel
@@ -318,6 +308,33 @@ private struct EmptyDataWidget: View {
         Text("等待数据")
             .font(.system(size: 13, weight: .semibold))
             .foregroundStyle(widgetSecondaryText(for: colorScheme))
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+    }
+
+    private var compactLoadingHeader: some View {
+        HStack(spacing: 7) {
+            Image(systemName: "waveform.path.ecg.rectangle")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(WidgetColor.green(for: colorScheme))
+            loadingLabel
+            Spacer(minLength: 0)
+        }
+    }
+
+    private var normalHeader: some View {
+        HStack(spacing: 7) {
+            Image(systemName: "waveform.path.ecg.rectangle")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(WidgetColor.green(for: colorScheme))
+            Text("Pulse Dock")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(widgetPrimaryText(for: colorScheme))
+            Circle()
+                .fill(WidgetColor.amber(for: colorScheme))
+                .frame(width: 6, height: 6)
+            Spacer()
+        }
     }
 }
 

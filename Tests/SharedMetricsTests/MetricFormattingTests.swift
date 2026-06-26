@@ -8337,8 +8337,12 @@ import Testing
     #expect(widget.contains(".accessibilityLabel(\"等待系统监控数据\")"))
     #expect(widget.contains("private var shouldInlineLoadingLabel: Bool { family == .systemSmall }"))
     #expect(widget.contains("if shouldInlineLoadingLabel {"))
+    #expect(widget.contains("compactLoadingHeader"))
+    #expect(widget.contains("} else {\n                normalHeader"))
     #expect(widget.contains("if !shouldInlineLoadingLabel {"))
     #expect(widget.contains("if family != .systemSmall {"))
+    #expect(widget.contains(".lineLimit(1)"))
+    #expect(widget.contains(".minimumScaleFactor(0.75)"))
 }
 
 @Test func widgetColorHelpersReceiveColorSchemeExplicitly() throws {
