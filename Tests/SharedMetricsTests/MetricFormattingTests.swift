@@ -3875,6 +3875,15 @@ import Testing
     }
 }
 
+@Test func widgetSamplerCacheAvoidsImmediateSecondSampleAfterPrime() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(widget.contains("private var primedSnapshot: MetricSnapshot?"))
+    #expect(!widget.contains("_ = systemSampler.sample()\n            isPrimed = true\n            return systemSampler.sample()"))
+    #expect(audit.contains("Widget sampler fallback returns the priming sample instead of taking an immediate second sample with near-zero deltas."))
+}
+
 @Test func systemSamplerCachesStaticInventoryBetweenLiveRefreshes() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let sampler = try String(

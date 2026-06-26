@@ -14,17 +14,22 @@ private final class WidgetSamplerCache: @unchecked Sendable {
     private let systemSampler = SystemSampler()
     private let lock = NSLock()
     private var isPrimed = false
+    private var primedSnapshot: MetricSnapshot?
 
     func sample() -> MetricSnapshot {
         lock.lock()
         defer { lock.unlock() }
 
         if !isPrimed {
-            _ = systemSampler.sample()
+            let snapshot = systemSampler.sample()
+            primedSnapshot = snapshot
             isPrimed = true
+            return snapshot
         }
 
-        return systemSampler.sample()
+        let snapshot = systemSampler.sample()
+        primedSnapshot = snapshot
+        return snapshot
     }
 }
 

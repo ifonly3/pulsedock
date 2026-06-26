@@ -58,6 +58,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - `MetricSnapshot.placeholder` is intentionally empty or unknown. It must not contain realistic CPU, memory, network, process, GPU, display, or storage sample values.
 - Widget timelines use direct public-API sampling through a small in-extension sampler cache and then store compact timeline snapshots. The placeholder view is a visual skeleton with a short waiting label only; it must not contain demo values or explanatory waiting-state copy.
 - Widget timeline entries store compact snapshots that preserve visible network summary signals while stripping detailed process, network interface, storage, GPU, and display inventory lists.
+- Widget sampler fallback returns the priming sample instead of taking an immediate second sample with near-zero deltas.
 - Main app and widget snapshots warm the sampler before publishing delta-based CPU/network readings, so the first visible sample and resume-after-pause sample are not unprimed or stale counter baselines.
 - Sample timestamp display text reports the system-not-reported state for placeholder or missing timestamp snapshots.
 - Widget headers use minute-level sampled time text so narrow widget families stay readable.
