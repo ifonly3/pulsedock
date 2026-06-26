@@ -748,7 +748,7 @@ import Testing
     #expect(dashboardView.contains("progress: snapshot.loadAverageProgress"))
     #expect(dashboardView.contains("progress: snapshot.loadAverage5Progress"))
     #expect(dashboardView.contains("progress: snapshot.loadAverage15Progress"))
-    #expect(widget.contains("RingMetric(title: \"负载\", value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: WidgetColor.green)"))
+    #expect(widget.contains("RingMetric(title: \"负载\", value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: WidgetColor.green(for: colorScheme))"))
     #expect(!dashboardView.contains("Double(max(snapshot.activeProcessorCount, 1))"))
     #expect(!widget.contains("Double(max(snapshot.activeProcessorCount, 1))"))
     #expect(audit.contains("Current load-average progress requires both reported load averages and a sampled active processor count, so widgets and CPU page bars do not invent a one-core denominator."))
@@ -1398,11 +1398,11 @@ import Testing
     #expect(dashboardView.contains("if snapshot.hasMemoryUsageReport && snapshot.hasMemoryCompositionReport {"))
     #expect(widget.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
     #expect(!widget.contains("private func reportedProgress(valueText: String, progress: Double) -> Double?"))
-    #expect(widget.contains("RingMetric(title: \"CPU\", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green)"))
-    #expect(widget.contains("RingMetric(title: \"内存\", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue)"))
-    #expect(widget.contains("RingMetric(title: \"磁盘\", value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber)"))
-    #expect(widget.contains("WidgetRow(title: \"连接\", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot))"))
-    #expect(widget.contains("WidgetRow(title: \"路径\", value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan)"))
+    #expect(widget.contains("RingMetric(title: \"CPU\", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))"))
+    #expect(widget.contains("RingMetric(title: \"内存\", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))"))
+    #expect(widget.contains("RingMetric(title: \"磁盘\", value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))"))
+    #expect(widget.contains("WidgetRow(title: \"连接\", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))"))
+    #expect(widget.contains("WidgetRow(title: \"路径\", value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))"))
     #expect(!widget.contains("reportedProgress(valueText: snapshot.cpuText"))
     #expect(!widget.contains("reportedProgress(valueText: snapshot.memoryUsageText"))
     #expect(!widget.contains("reportedProgress(valueText: snapshot.diskUsageText"))
@@ -1488,7 +1488,7 @@ import Testing
     #expect(reportedLoopbackOnly.hasNetworkInterfaceReport == true)
     #expect(metricSnapshot.contains("public var hasNetworkInterfaceReport: Bool"))
     #expect(metricSnapshot.contains("guard hasNetworkInterfaceReport else { return \"未报告\" }"))
-    #expect(widget.contains("WidgetRow(title: \"接口\", value: snapshot.networkInterfaceSummary, progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), tint: WidgetColor.cyan)"))
+    #expect(widget.contains("WidgetRow(title: \"接口\", value: snapshot.networkInterfaceSummary, progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))"))
     #expect(widget.contains("private func activeInterfaceProgress(_ snapshot: MetricSnapshot) -> Double"))
     #expect(widget.contains("let reportedInterfaces = snapshot.networkInterfaces.filter(\\.hasInterfaceStateReport)"))
     #expect(widget.contains("guard !reportedInterfaces.isEmpty else { return 0 }"))
@@ -3767,7 +3767,7 @@ import Testing
         contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
-    let blockedPlaceholderCopy = ["等待数据", "等待首次同步", "系统会按时间线刷新"]
+    let blockedPlaceholderCopy = ["等待首次同步", "系统会按时间线刷新"]
 
     #expect(widget.contains("completion(SystemEntry(date: Date(), snapshot: sampledSnapshot()))"))
     #expect(widget.contains("let entry = SystemEntry(date: now, snapshot: sampledSnapshot())"))
@@ -3778,6 +3778,7 @@ import Testing
     #expect(widget.contains("if !isPrimed"))
     #expect(!widget.contains("let sampler = SystemSampler()"))
     #expect(widget.contains("PlaceholderMetricSkeleton"))
+    #expect(widget.contains("Text(\"等待数据\")"))
     for term in blockedPlaceholderCopy {
         #expect(!widget.contains(term))
     }
@@ -3962,10 +3963,10 @@ import Testing
     let nextStart = try #require(widget.range(of: "private struct EmptyDataWidget")?.lowerBound)
     let largeWidget = String(widget[largeStart..<nextStart])
 
-    #expect(largeWidget.contains("StatTile(title: \"运行\", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: WidgetColor.amber))"))
-    #expect(largeWidget.contains("StatTile(title: \"系统\", value: snapshot.osVersionText, tint: reportedTint(hasReport: snapshot.hasOSVersionReport, fallback: WidgetColor.blue))"))
-    #expect(largeWidget.contains("StatTile(title: \"内核\", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: WidgetColor.cyan))"))
-    #expect(widget.contains("private func reportedTint(hasReport: Bool, fallback: Color) -> Color"))
+    #expect(largeWidget.contains("StatTile(title: \"运行\", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: WidgetColor.amber(for: colorScheme), for: colorScheme))"))
+    #expect(largeWidget.contains("StatTile(title: \"系统\", value: snapshot.osVersionText, tint: reportedTint(hasReport: snapshot.hasOSVersionReport, fallback: WidgetColor.blue(for: colorScheme), for: colorScheme))"))
+    #expect(largeWidget.contains("StatTile(title: \"内核\", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: WidgetColor.cyan(for: colorScheme), for: colorScheme))"))
+    #expect(widget.contains("private func reportedTint(hasReport: Bool, fallback: Color, for colorScheme: ColorScheme) -> Color"))
     #expect(!largeWidget.contains("StatTile(title: \"系统\", value: snapshot.osVersionText, tint: reportedTint(valueText: snapshot.osVersionText, fallback: WidgetColor.blue))"))
     #expect(!largeWidget.contains("StatTile(title: \"内核\", value: snapshot.kernelText, tint: reportedTint(valueText: snapshot.kernelText, fallback: WidgetColor.cyan))"))
     #expect(!largeWidget.contains("StatTile(title: \"内核\", value: snapshot.kernelText, tint: WidgetColor.cyan)"))
@@ -4052,8 +4053,8 @@ import Testing
     #expect(mediumWidget.contains("VStack(spacing: 18)"))
     #expect(!mediumWidget.contains("Text(\"\\(snapshot.networkPathText) · \\(snapshot.networkPathDetailText)\")"))
     #expect(widget.contains("private struct MediumStatusStrip: View"))
-    #expect(widget.contains("MiniStatus(title: \"热\", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState))"))
-    #expect(widget.contains("MiniStatus(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot))"))
+    #expect(widget.contains("MiniStatus(title: \"热\", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))"))
+    #expect(widget.contains("MiniStatus(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))"))
     #expect(audit.contains("Medium widget left column uses a first-version-style CPU block with core summary and a compact status strip instead of stacking network detail text."))
     #expect(audit.contains("Source-level tests keep the medium widget from reintroducing crowded left-column network detail copy."))
 }
@@ -4476,11 +4477,11 @@ import Testing
     )
 
     #expect(widgetView.contains("MiniStatus(title: \"电\", value: compactPowerStatusText(snapshot)"))
-    #expect(widgetView.contains("MiniStatus(title: \"电\", value: compactPowerStatusText(snapshot), tint: powerTint(snapshot))"))
+    #expect(widgetView.contains("MiniStatus(title: \"电\", value: compactPowerStatusText(snapshot), tint: powerTint(snapshot, for: colorScheme))"))
     #expect(widgetView.contains("StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText"))
-    #expect(widgetView.contains("StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot))"))
+    #expect(widgetView.contains("StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))"))
     #expect(widgetView.contains("private func compactPowerStatusText(_ snapshot: MetricSnapshot) -> String"))
-    #expect(widgetView.contains("private func powerTint(_ snapshot: MetricSnapshot) -> Color"))
+    #expect(widgetView.contains("private func powerTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color"))
     #expect(widgetView.contains("switch snapshot.powerStatusTone"))
     #expect(!widgetView.contains("MiniStatus(title: \"电\", value: snapshot.powerStatusText, tint: WidgetColor.amber)"))
     #expect(!widgetView.contains("StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: WidgetColor.green)"))
@@ -4515,8 +4516,8 @@ import Testing
     #expect(!menuBarPopover.contains("guard valueText != \"未报告\" else { return Palette.cyan }"))
     #expect(!menuBarPopover.contains("PopoverSmallStat(title: \"显示器\", value: snapshot.displaySummaryText, tint: Palette.amber)"))
     #expect(!menuBarPopover.contains("PopoverSmallStat(title: \"卷\", value: snapshot.storageVolumeSummaryText, tint: Palette.blue)"))
-    #expect(widgetView.contains("StatTile(title: \"运行\", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: WidgetColor.amber))"))
-    #expect(widgetView.contains("private func reportedTint(hasReport: Bool, fallback: Color) -> Color"))
+    #expect(widgetView.contains("StatTile(title: \"运行\", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: WidgetColor.amber(for: colorScheme), for: colorScheme))"))
+    #expect(widgetView.contains("private func reportedTint(hasReport: Bool, fallback: Color, for colorScheme: ColorScheme) -> Color"))
     #expect(!widgetView.contains("private func reportedTint(valueText: String, fallback: Color) -> Color"))
     #expect(!widgetView.contains("guard valueText != \"未报告\" else { return WidgetColor.cyan }"))
     #expect(!widgetView.contains("StatTile(title: \"运行\", value: snapshot.uptimeText, tint: WidgetColor.amber)"))
@@ -5984,8 +5985,8 @@ import Testing
     #expect(!widgetPanel.contains("default: Palette.green"))
     #expect(!widgetPanel.contains("thermalText(snapshot.thermalState)"))
     #expect(widget.contains("value: snapshot.thermalText"))
-    #expect(widget.contains("case \"unknown\": WidgetColor.cyan"))
-    #expect(widget.contains("default: WidgetColor.cyan"))
+    #expect(widget.contains("case \"unknown\": WidgetColor.cyan(for: colorScheme)"))
+    #expect(widget.contains("default: WidgetColor.cyan(for: colorScheme)"))
     #expect(!widget.contains("default: WidgetColor.green"))
     #expect(!widget.contains("thermalText(snapshot.thermalState)"))
     #expect(audit.contains("Thermal display text is centralized on the shared snapshot model"))
@@ -8314,6 +8315,44 @@ import Testing
     #expect(package.contains("path: \"Sources/PulseDockApp\""))
     #expect(generator.contains("\"Sources/PulseDockApp/*.swift\""))
     #expect(generator.contains("\"Sources/PulseDockWidget/*.swift\""))
+}
+
+@Test func widgetDarkPaletteAvoidsBrownBackgroundStops() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(widget.contains("private func widgetBackgroundColors(for colorScheme: ColorScheme) -> [Color]"))
+    #expect(!widget.contains("Color(red: 0.17, green: 0.13, blue: 0.08).opacity(0.82)"))
+    #expect(widget.contains("Color(red: 0.06, green: 0.09, blue: 0.11).opacity(0.82)"))
+    #expect(widget.contains("private enum WidgetColor"))
+    #expect(widget.contains("static func green(for colorScheme: ColorScheme) -> Color"))
+    #expect(audit.contains("Widget dark-mode palette uses cool neutral stops and color-scheme-aware accents."))
+}
+
+@Test func emptyWidgetStateHasAccessibleLoadingLabel() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+
+    #expect(widget.contains("private struct EmptyDataWidget: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
+    #expect(widget.contains("Text(\"等待数据\")"))
+    #expect(widget.contains(".accessibilityLabel(\"等待系统监控数据\")"))
+}
+
+@Test func widgetColorHelpersReceiveColorSchemeExplicitly() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+
+    #expect(widget.contains("private struct SmallWidget: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
+    #expect(widget.contains("private struct LargeWidget: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
+    #expect(widget.contains("private struct MediumStatusStrip: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
+    #expect(widget.contains("private struct LargeInfoGrid: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
+    #expect(widget.contains("private func thermalTint(_ state: String, for colorScheme: ColorScheme) -> Color"))
+    #expect(widget.contains("private func networkTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color"))
+    #expect(widget.contains("private func reportedTint(hasReport: Bool, fallback: Color, for colorScheme: ColorScheme) -> Color"))
+    #expect(widget.contains("private func powerTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color"))
+    #expect(!widget.contains("WidgetColor.green)"))
+    #expect(!widget.contains("WidgetColor.blue)"))
+    #expect(!widget.contains("WidgetColor.amber)"))
+    #expect(!widget.contains("WidgetColor.cyan)"))
+    #expect(!widget.contains("WidgetColor.red)"))
 }
 
 private func fixture(_ path: String) throws -> String {

@@ -56,7 +56,7 @@ This file is an internal product and App Store readiness audit. It should not be
 ## Internal Fallbacks
 
 - `MetricSnapshot.placeholder` is intentionally empty or unknown. It must not contain realistic CPU, memory, network, process, GPU, display, or storage sample values.
-- Widget timelines use direct public-API sampling through a small in-extension sampler cache and then store compact timeline snapshots. The placeholder view is a visual skeleton only; it must not contain demo values or waiting-state copy.
+- Widget timelines use direct public-API sampling through a small in-extension sampler cache and then store compact timeline snapshots. The placeholder view is a visual skeleton with a short waiting label only; it must not contain demo values or explanatory waiting-state copy.
 - Widget timeline entries store compact snapshots that strip unused process, storage, GPU, and display inventory lists.
 - Main app and widget snapshots warm the sampler before publishing delta-based CPU/network readings, so the first visible sample and resume-after-pause sample are not unprimed or stale counter baselines.
 - Sample timestamp display text reports the system-not-reported state for placeholder or missing timestamp snapshots.
@@ -76,6 +76,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Large widgets surface OS version, Darwin kernel release, and uptime with explicit snapshot reported-state tinting. Smaller widget families keep to glanceable live status values.
 - Large widgets surface Darwin kernel release alongside OS version and uptime.
 - Large widget layout uses two breathable columns with grouped rings and signal sections instead of stacking every row and tile vertically.
+- Widget dark-mode palette uses cool neutral stops and color-scheme-aware accents.
 - Widget metric rings and stat tiles use the shared light/dark track and secondary text helpers, so dark-mode contrast stays consistent across widget families.
 - Widget placeholder skeletons use shared light/dark track and fill helpers so widget gallery previews do not retain fixed light-mode colors.
 - CPU active processor count uses `ProcessInfo.activeProcessorCount` for load normalization and display; it is separate from the hardware logical-core count.

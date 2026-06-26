@@ -104,6 +104,7 @@ private let largeRingColumns = [
 ]
 
 private struct SmallWidget: View {
+    @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
 
     var body: some View {
@@ -113,16 +114,16 @@ private struct SmallWidget: View {
             Spacer(minLength: 4)
 
             HStack(spacing: 12) {
-                RingMetric(title: "CPU", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green)
-                RingMetric(title: "MEM", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue)
+                RingMetric(title: "CPU", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
+                RingMetric(title: "MEM", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
             }
 
             HStack(spacing: 8) {
-                MiniStatus(title: "热", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState))
+                MiniStatus(title: "热", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
                 Spacer()
-                MiniStatus(title: "网", value: snapshot.networkPathText, tint: networkTint(snapshot))
+                MiniStatus(title: "网", value: snapshot.networkPathText, tint: networkTint(snapshot, for: colorScheme))
                 Spacer()
-                MiniStatus(title: "电", value: compactPowerStatusText(snapshot), tint: powerTint(snapshot))
+                MiniStatus(title: "电", value: compactPowerStatusText(snapshot), tint: powerTint(snapshot, for: colorScheme))
             }
         }
         .padding(14)
@@ -153,9 +154,9 @@ private struct MediumWidget: View {
             .frame(width: 166, alignment: .leading)
 
             VStack(spacing: 18) {
-                WidgetRow(title: "内存", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue)
-                WidgetRow(title: "连接", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot))
-                WidgetRow(title: "磁盘", value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber)
+                WidgetRow(title: "内存", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
+                WidgetRow(title: "连接", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
+                WidgetRow(title: "磁盘", value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
             }
             .frame(maxWidth: .infinity)
         }
@@ -165,17 +166,19 @@ private struct MediumWidget: View {
 }
 
 private struct MediumStatusStrip: View {
+    @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
 
     var body: some View {
         HStack(spacing: 10) {
-            MiniStatus(title: "热", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState))
-            MiniStatus(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot))
+            MiniStatus(title: "热", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
+            MiniStatus(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))
         }
     }
 }
 
 private struct LargeWidget: View {
+    @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
 
     var body: some View {
@@ -185,24 +188,24 @@ private struct LargeWidget: View {
             HStack(alignment: .top, spacing: 18) {
                 VStack(alignment: .leading, spacing: 14) {
                     LazyVGrid(columns: largeRingColumns, spacing: 12) {
-                        RingMetric(title: "CPU", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green)
-                        RingMetric(title: "内存", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue)
-                        RingMetric(title: "磁盘", value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber)
-                        RingMetric(title: "负载", value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: WidgetColor.green)
+                        RingMetric(title: "CPU", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
+                        RingMetric(title: "内存", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
+                        RingMetric(title: "磁盘", value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
+                        RingMetric(title: "负载", value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: WidgetColor.green(for: colorScheme))
                     }
 
                     HStack(spacing: 10) {
-                        StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot))
-                        StatTile(title: "热状态", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState))
+                        StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))
+                        StatTile(title: "热状态", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
                     }
                 }
                 .frame(width: 148, alignment: .topLeading)
 
                 VStack(alignment: .leading, spacing: 12) {
                     LargeWidgetSection {
-                        WidgetRow(title: "连接", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot))
-                        WidgetRow(title: "路径", value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan)
-                        WidgetRow(title: "接口", value: snapshot.networkInterfaceSummary, progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), tint: WidgetColor.cyan)
+                        WidgetRow(title: "连接", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
+                        WidgetRow(title: "路径", value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
+                        WidgetRow(title: "接口", value: snapshot.networkInterfaceSummary, progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
                     }
 
                     LargeInfoGrid(snapshot: snapshot)
@@ -215,16 +218,17 @@ private struct LargeWidget: View {
 }
 
 private struct LargeInfoGrid: View {
+    @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
 
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
-                StatTile(title: "运行", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: WidgetColor.amber))
-                StatTile(title: "系统", value: snapshot.osVersionText, tint: reportedTint(hasReport: snapshot.hasOSVersionReport, fallback: WidgetColor.blue))
+                StatTile(title: "运行", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: WidgetColor.amber(for: colorScheme), for: colorScheme))
+                StatTile(title: "系统", value: snapshot.osVersionText, tint: reportedTint(hasReport: snapshot.hasOSVersionReport, fallback: WidgetColor.blue(for: colorScheme), for: colorScheme))
             }
 
-            StatTile(title: "内核", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: WidgetColor.cyan))
+            StatTile(title: "内核", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: WidgetColor.cyan(for: colorScheme), for: colorScheme))
         }
     }
 }
@@ -251,6 +255,7 @@ private struct LargeWidgetSection<Content: View>: View {
 }
 
 private struct EmptyDataWidget: View {
+    @Environment(\.colorScheme) private var colorScheme
     let family: WidgetFamily
 
     var body: some View {
@@ -258,42 +263,48 @@ private struct EmptyDataWidget: View {
             HStack(spacing: 7) {
                 Image(systemName: "waveform.path.ecg.rectangle")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(WidgetColor.green)
+                    .foregroundStyle(WidgetColor.green(for: colorScheme))
                 Text("Pulse Dock")
                     .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(widgetPrimaryText(for: colorScheme))
                 Circle()
-                    .fill(WidgetColor.amber)
+                    .fill(WidgetColor.amber(for: colorScheme))
                     .frame(width: 6, height: 6)
                 Spacer()
             }
+            Text("等待数据")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(widgetSecondaryText(for: colorScheme))
 
             if family == .systemSmall {
                 HStack(spacing: 12) {
-                    PlaceholderMetricSkeleton(tint: WidgetColor.green)
-                    PlaceholderMetricSkeleton(tint: WidgetColor.blue)
+                    PlaceholderMetricSkeleton(tint: WidgetColor.green(for: colorScheme))
+                    PlaceholderMetricSkeleton(tint: WidgetColor.blue(for: colorScheme))
                 }
                 Spacer(minLength: 0)
                 HStack(spacing: 8) {
-                    PlaceholderDot(tint: WidgetColor.green)
-                    PlaceholderDot(tint: WidgetColor.cyan)
-                    PlaceholderDot(tint: WidgetColor.amber)
+                    PlaceholderDot(tint: WidgetColor.green(for: colorScheme))
+                    PlaceholderDot(tint: WidgetColor.cyan(for: colorScheme))
+                    PlaceholderDot(tint: WidgetColor.amber(for: colorScheme))
                 }
             } else {
                 HStack(spacing: 14) {
-                    PlaceholderMetricSkeleton(tint: WidgetColor.green)
-                    PlaceholderMetricSkeleton(tint: WidgetColor.blue)
+                    PlaceholderMetricSkeleton(tint: WidgetColor.green(for: colorScheme))
+                    PlaceholderMetricSkeleton(tint: WidgetColor.blue(for: colorScheme))
                     if family == .systemLarge {
-                        PlaceholderMetricSkeleton(tint: WidgetColor.amber)
+                        PlaceholderMetricSkeleton(tint: WidgetColor.amber(for: colorScheme))
                     }
                 }
                 VStack(spacing: 10) {
-                    PlaceholderBar(tint: WidgetColor.blue, widthRatio: 0.74)
-                    PlaceholderBar(tint: WidgetColor.green, widthRatio: 0.46)
-                    PlaceholderBar(tint: WidgetColor.cyan, widthRatio: 0.58)
+                    PlaceholderBar(tint: WidgetColor.blue(for: colorScheme), widthRatio: 0.74)
+                    PlaceholderBar(tint: WidgetColor.green(for: colorScheme), widthRatio: 0.46)
+                    PlaceholderBar(tint: WidgetColor.cyan(for: colorScheme), widthRatio: 0.58)
                 }
             }
         }
         .padding(16)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("等待系统监控数据")
     }
 }
 
@@ -361,13 +372,13 @@ private struct WidgetHeader: View {
         HStack(spacing: 7) {
             Image(systemName: "waveform.path.ecg.rectangle")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(WidgetColor.green)
+                .foregroundStyle(WidgetColor.green(for: colorScheme))
             Text(title)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
                 .lineLimit(1)
             Circle()
-                .fill(WidgetColor.green)
+                .fill(WidgetColor.green(for: colorScheme))
                 .frame(width: 6, height: 6)
             Spacer()
             if hasTimeReport {
@@ -389,14 +400,14 @@ private struct CompactWidgetHeader: View {
         HStack(spacing: 7) {
             Image(systemName: "waveform.path.ecg.rectangle")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(WidgetColor.green)
+                .foregroundStyle(WidgetColor.green(for: colorScheme))
             Text(title)
                 .font(.system(size: 14, weight: .semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
             Circle()
-                .fill(WidgetColor.green)
+                .fill(WidgetColor.green(for: colorScheme))
                 .frame(width: 6, height: 6)
         }
         .accessibilityLabel(hasTimeReport ? "\(title), \(timeText)" : title)
@@ -552,9 +563,9 @@ private struct WidgetBackground: View {
 private func widgetBackgroundColors(for colorScheme: ColorScheme) -> [Color] {
     if colorScheme == .dark {
         return [
-            Color(red: 0.10, green: 0.12, blue: 0.12).opacity(0.96),
-            Color(red: 0.08, green: 0.18, blue: 0.17).opacity(0.90),
-            Color(red: 0.17, green: 0.13, blue: 0.08).opacity(0.82)
+            Color(red: 0.09, green: 0.11, blue: 0.12).opacity(0.96),
+            Color(red: 0.07, green: 0.16, blue: 0.16).opacity(0.90),
+            Color(red: 0.06, green: 0.09, blue: 0.11).opacity(0.82)
         ]
     }
 
@@ -590,33 +601,47 @@ private func widgetPlaceholderFill(for colorScheme: ColorScheme) -> Color {
 }
 
 private enum WidgetColor {
-    static let blue = Color(red: 0.14, green: 0.43, blue: 0.95)
-    static let green = Color(red: 0.04, green: 0.62, blue: 0.39)
-    static let amber = Color(red: 0.93, green: 0.54, blue: 0.10)
-    static let cyan = Color(red: 0.04, green: 0.56, blue: 0.70)
-    static let red = Color(red: 0.84, green: 0.16, blue: 0.16)
-}
+    static func blue(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 0.36, green: 0.62, blue: 1.00) : Color(red: 0.14, green: 0.43, blue: 0.95)
+    }
 
-private func thermalTint(_ state: String) -> Color {
-    switch state.lowercased() {
-    case "critical", "hot", "serious": WidgetColor.red
-    case "warm", "fair": WidgetColor.amber
-    case "nominal": WidgetColor.green
-    case "unknown": WidgetColor.cyan
-    default: WidgetColor.cyan
+    static func green(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 0.24, green: 0.82, blue: 0.62) : Color(red: 0.04, green: 0.62, blue: 0.39)
+    }
+
+    static func amber(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 1.00, green: 0.68, blue: 0.28) : Color(red: 0.93, green: 0.54, blue: 0.10)
+    }
+
+    static func cyan(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 0.29, green: 0.78, blue: 0.88) : Color(red: 0.04, green: 0.56, blue: 0.70)
+    }
+
+    static func red(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 1.00, green: 0.42, blue: 0.42) : Color(red: 0.84, green: 0.16, blue: 0.16)
     }
 }
 
-private func networkTint(_ snapshot: MetricSnapshot) -> Color {
+private func thermalTint(_ state: String, for colorScheme: ColorScheme) -> Color {
+    switch state.lowercased() {
+    case "critical", "hot", "serious": WidgetColor.red(for: colorScheme)
+    case "warm", "fair": WidgetColor.amber(for: colorScheme)
+    case "nominal": WidgetColor.green(for: colorScheme)
+    case "unknown": WidgetColor.cyan(for: colorScheme)
+    default: WidgetColor.cyan(for: colorScheme)
+    }
+}
+
+private func networkTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color {
     switch snapshot.networkPathStatus.lowercased() {
     case "satisfied":
-        WidgetColor.green
+        WidgetColor.green(for: colorScheme)
     case "requiresconnection", "requires_connection", "requires connection":
-        WidgetColor.amber
+        WidgetColor.amber(for: colorScheme)
     case "unsatisfied":
-        WidgetColor.red
+        WidgetColor.red(for: colorScheme)
     default:
-        WidgetColor.cyan
+        WidgetColor.cyan(for: colorScheme)
     }
 }
 
@@ -644,21 +669,21 @@ private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minim
     return max(minimumVisibleWidth, totalWidth * normalizedProgress)
 }
 
-private func reportedTint(hasReport: Bool, fallback: Color) -> Color {
-    guard hasReport else { return WidgetColor.cyan }
+private func reportedTint(hasReport: Bool, fallback: Color, for colorScheme: ColorScheme) -> Color {
+    guard hasReport else { return WidgetColor.cyan(for: colorScheme) }
     return fallback
 }
 
-private func powerTint(_ snapshot: MetricSnapshot) -> Color {
+private func powerTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color {
     switch snapshot.powerStatusTone {
     case .normal:
-        return WidgetColor.green
+        return WidgetColor.green(for: colorScheme)
     case .warning:
-        return WidgetColor.amber
+        return WidgetColor.amber(for: colorScheme)
     case .critical:
-        return WidgetColor.red
+        return WidgetColor.red(for: colorScheme)
     case .neutral:
-        return WidgetColor.cyan
+        return WidgetColor.cyan(for: colorScheme)
     }
 }
 
