@@ -62,6 +62,8 @@ import Testing
     #expect(!sampler.contains("record.bytesSent = UInt64(interfaceData.ifi_obytes)"))
     #expect(sampler.contains("record.hasByteCounters = false"))
     #expect(audit.contains("Network byte counters prefer sysctl interface statistics and do not mark legacy getifaddrs fallback counters as authoritative."))
+    #expect(!audit.contains("fall back to `getifaddrs` counters when route sysctl data is unavailable"))
+    #expect(audit.contains("remain not-reported when route sysctl byte counters are unavailable"))
 }
 
 @Test func networkPathStatusUsesUserReadableLabels() {
