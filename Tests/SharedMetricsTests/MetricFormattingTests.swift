@@ -8335,6 +8335,10 @@ import Testing
     #expect(widget.contains("private struct EmptyDataWidget: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
     #expect(widget.contains("Text(\"等待数据\")"))
     #expect(widget.contains(".accessibilityLabel(\"等待系统监控数据\")"))
+    #expect(widget.contains("private var shouldInlineLoadingLabel: Bool { family == .systemSmall }"))
+    #expect(widget.contains("if shouldInlineLoadingLabel {"))
+    #expect(widget.contains("if !shouldInlineLoadingLabel {"))
+    #expect(widget.contains("if family != .systemSmall {"))
 }
 
 @Test func widgetColorHelpersReceiveColorSchemeExplicitly() throws {

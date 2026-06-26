@@ -258,6 +258,8 @@ private struct EmptyDataWidget: View {
     @Environment(\.colorScheme) private var colorScheme
     let family: WidgetFamily
 
+    private var shouldInlineLoadingLabel: Bool { family == .systemSmall }
+
     var body: some View {
         VStack(alignment: .leading, spacing: family == .systemSmall ? 12 : 14) {
             HStack(spacing: 7) {
@@ -271,10 +273,13 @@ private struct EmptyDataWidget: View {
                     .fill(WidgetColor.amber(for: colorScheme))
                     .frame(width: 6, height: 6)
                 Spacer()
+                if shouldInlineLoadingLabel {
+                    loadingLabel
+                }
             }
-            Text("等待数据")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(widgetSecondaryText(for: colorScheme))
+            if !shouldInlineLoadingLabel {
+                loadingLabel
+            }
 
             if family == .systemSmall {
                 HStack(spacing: 12) {
@@ -282,11 +287,6 @@ private struct EmptyDataWidget: View {
                     PlaceholderMetricSkeleton(tint: WidgetColor.blue(for: colorScheme))
                 }
                 Spacer(minLength: 0)
-                HStack(spacing: 8) {
-                    PlaceholderDot(tint: WidgetColor.green(for: colorScheme))
-                    PlaceholderDot(tint: WidgetColor.cyan(for: colorScheme))
-                    PlaceholderDot(tint: WidgetColor.amber(for: colorScheme))
-                }
             } else {
                 HStack(spacing: 14) {
                     PlaceholderMetricSkeleton(tint: WidgetColor.green(for: colorScheme))
@@ -301,10 +301,23 @@ private struct EmptyDataWidget: View {
                     PlaceholderBar(tint: WidgetColor.cyan(for: colorScheme), widthRatio: 0.58)
                 }
             }
+            if family != .systemSmall {
+                HStack(spacing: 8) {
+                    PlaceholderDot(tint: WidgetColor.green(for: colorScheme))
+                    PlaceholderDot(tint: WidgetColor.cyan(for: colorScheme))
+                    PlaceholderDot(tint: WidgetColor.amber(for: colorScheme))
+                }
+            }
         }
         .padding(16)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("等待系统监控数据")
+    }
+
+    private var loadingLabel: some View {
+        Text("等待数据")
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(widgetSecondaryText(for: colorScheme))
     }
 }
 
