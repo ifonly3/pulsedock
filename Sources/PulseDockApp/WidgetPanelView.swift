@@ -12,6 +12,7 @@ enum MenuPopoverLayout {
 
 struct WidgetPanelView: View {
     @ObservedObject var store: MetricsStore
+    let popoverWidth: CGFloat
     let popoverHeight: CGFloat
     let openDashboard: () -> Void
     let togglePause: () -> Void
@@ -21,6 +22,7 @@ struct WidgetPanelView: View {
         MenuPopoverPreview(
             snapshot: store.snapshot,
             isPaused: store.isPaused,
+            popoverWidth: popoverWidth,
             popoverHeight: popoverHeight,
             openDashboard: openDashboard,
             togglePause: togglePause,
@@ -33,6 +35,7 @@ private struct MenuPopoverPreview: View {
     @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
     let isPaused: Bool
+    let popoverWidth: CGFloat
     let popoverHeight: CGFloat
     let openDashboard: () -> Void
     let togglePause: () -> Void
@@ -91,7 +94,7 @@ private struct MenuPopoverPreview: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-        .frame(width: MenuPopoverLayout.width, height: popoverHeight, alignment: .topLeading)
+        .frame(width: popoverWidth, height: popoverHeight, alignment: .topLeading)
     }
 
     private var header: some View {

@@ -1,7 +1,9 @@
 import CoreGraphics
 
 public enum MenuBarPopoverGeometry {
-    private static let windowChromeAllowance: CGFloat = 28
+    // AppKit popover chrome and arrow consume vertical space outside SwiftUI's content size.
+    // Reserving this before show(relativeTo:) avoids post-show window movement that desynchronizes the arrow.
+    private static let popoverChromeHeightAllowance: CGFloat = 28
 
     public enum AnchorKind: Equatable {
         case statusBar
@@ -139,7 +141,7 @@ public enum MenuBarPopoverGeometry {
             rawAvailableHeight = visibleFrame.height - screenMargin * 2
         }
 
-        let availableHeightAfterChrome = rawAvailableHeight - windowChromeAllowance
+        let availableHeightAfterChrome = rawAvailableHeight - popoverChromeHeightAllowance
         return max(1, availableHeightAfterChrome)
     }
 

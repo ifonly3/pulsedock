@@ -233,9 +233,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         statusPopover = popover
     }
 
-    private func makeWidgetPanelView(popoverHeight: CGFloat) -> WidgetPanelView {
+    private func makeWidgetPanelView(popoverWidth: CGFloat, popoverHeight: CGFloat) -> WidgetPanelView {
         WidgetPanelView(
             store: store,
+            popoverWidth: popoverWidth,
             popoverHeight: popoverHeight,
             openDashboard: { [weak self] in
                 self?.openDashboardFromPopover()
@@ -249,9 +250,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         )
     }
 
-    private func makeStatusHostingController(popoverHeight: CGFloat) -> NSHostingController<WidgetPanelView> {
-        let contentSize = NSSize(width: MenuPopoverLayout.width, height: popoverHeight)
-        let hostingController = NSHostingController(rootView: makeWidgetPanelView(popoverHeight: popoverHeight))
+    private func makeStatusHostingController(contentSize: NSSize) -> NSHostingController<WidgetPanelView> {
+        let hostingController = NSHostingController(
+            rootView: makeWidgetPanelView(
+                popoverWidth: contentSize.width,
+                popoverHeight: contentSize.height
+            )
+        )
         hostingController.sizingOptions = []
         hostingController.preferredContentSize = contentSize
         hostingController.view.frame = NSRect(origin: .zero, size: contentSize)
@@ -264,7 +269,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         popover.contentViewController = nil
         statusHostingController = nil
 
-        let hostingController = makeStatusHostingController(popoverHeight: contentSize.height)
+        let hostingController = makeStatusHostingController(contentSize: contentSize)
         hostingController.preferredContentSize = contentSize
         hostingController.view.frame = NSRect(origin: .zero, size: contentSize)
         hostingController.view.setFrameSize(contentSize)

@@ -4947,7 +4947,7 @@ import Testing
     #expect(appDelegate.contains("private func statusButtonAnchorRect("))
     #expect(appDelegate.contains("placement: MenuBarPopoverGeometry.Placement,"))
     #expect(appDelegate.contains("anchorFrame: NSRect?"))
-    #expect(widgetPanel.contains("frame(width: MenuPopoverLayout.width, height: popoverHeight, alignment: .topLeading)"))
+    #expect(widgetPanel.contains("frame(width: popoverWidth, height: popoverHeight, alignment: .topLeading)"))
     #expect(widgetPanel.contains("enum MenuPopoverLayout"))
     #expect(widgetPanel.contains("static let width: CGFloat = 356"))
     #expect(widgetPanel.contains("static let height: CGFloat = 520"))
@@ -4983,7 +4983,7 @@ import Testing
     #expect(appDelegate.contains("MenuPopoverLayout.minimumHeight"))
     #expect(appDelegate.contains("MenuPopoverLayout.screenMargin"))
     #expect(widgetPanel.contains("ScrollView(showsIndicators: false)"))
-    #expect(widgetPanel.contains("frame(width: MenuPopoverLayout.width, height: popoverHeight, alignment: .topLeading)"))
+    #expect(widgetPanel.contains("frame(width: popoverWidth, height: popoverHeight, alignment: .topLeading)"))
     #expect(widgetPanel.contains("static let minimumHeight: CGFloat"))
     #expect(widgetPanel.contains("static let screenMargin: CGFloat"))
     #expect(audit.contains("Menu bar popover chooses a visible screen edge and clamps height before showing, with scrollable content for smaller visible areas."))
@@ -5031,6 +5031,35 @@ import Testing
     #expect(audit.contains("Source-level tests execute menu bar popover geometry for top status-bar anchors and shorter visible screens."))
 }
 
+@Test func menuPopoverPassesClampedWidthIntoSwiftUIContent() throws {
+    let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+    let widgetPanel = try fixture("Sources/PulseDockApp/WidgetPanelView.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(widgetPanel.contains("let popoverWidth: CGFloat"))
+    #expect(widgetPanel.contains(".frame(width: popoverWidth, height: popoverHeight, alignment: .topLeading)"))
+    #expect(!widgetPanel.contains(".frame(width: MenuPopoverLayout.width, height: popoverHeight, alignment: .topLeading)"))
+    #expect(appDelegate.contains("makeWidgetPanelView(popoverWidth: CGFloat, popoverHeight: CGFloat)"))
+    #expect(appDelegate.contains("makeStatusHostingController(contentSize: NSSize)"))
+    #expect(appDelegate.contains("WidgetPanelView("))
+    #expect(appDelegate.contains("popoverWidth: contentSize.width"))
+    #expect(audit.contains("Menu bar popover passes geometry-clamped width and height into SwiftUI before showing."))
+}
+
+@Test func menuPopoverGeometryClampsNarrowVisibleWidth() {
+    let placement = MenuBarPopoverGeometry.placement(
+        preferredSize: CGSize(width: 356, height: 520),
+        minimumHeight: 420,
+        screenMargin: 12,
+        visibleFrame: CGRect(x: 0, y: 48, width: 300, height: 860),
+        anchorFrame: CGRect(x: 252, y: 884, width: 32, height: 24),
+        anchorKind: .statusBar
+    )
+
+    #expect(placement.size.width == 276)
+    #expect(placement.anchorScreenMidX == 150)
+}
+
 @Test func menuPopoverReservesChromeAndConstrainsActualWindowFrame() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(
@@ -5046,8 +5075,8 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(geometry.contains("private static let windowChromeAllowance: CGFloat = 28"))
-    #expect(geometry.contains("let availableHeightAfterChrome = rawAvailableHeight - windowChromeAllowance"))
+    #expect(geometry.contains("private static let popoverChromeHeightAllowance: CGFloat = 28"))
+    #expect(geometry.contains("let availableHeightAfterChrome = rawAvailableHeight - popoverChromeHeightAllowance"))
     #expect(geometry.contains("public static func constrainedWindowFrame("))
     #expect(geometry.contains("let constrainedWidth = min(proposedFrame.width, availableFrame.width)"))
     #expect(geometry.contains("let constrainedHeight = min(proposedFrame.height, availableFrame.height)"))
@@ -5206,12 +5235,13 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(appDelegate.contains("private func makeWidgetPanelView(popoverHeight: CGFloat) -> WidgetPanelView"))
-    #expect(appDelegate.contains("private func makeStatusHostingController(popoverHeight: CGFloat) -> NSHostingController<WidgetPanelView>"))
+    #expect(appDelegate.contains("private func makeWidgetPanelView(popoverWidth: CGFloat, popoverHeight: CGFloat) -> WidgetPanelView"))
+    #expect(appDelegate.contains("private func makeStatusHostingController(contentSize: NSSize) -> NSHostingController<WidgetPanelView>"))
     #expect(!appDelegate.contains("let hostingController = makeStatusHostingController(popoverHeight: menuPopoverSize.height)"))
     #expect(appDelegate.contains("installFreshStatusHostingController(contentSize, in: popover)"))
+    #expect(widgetPanel.contains("let popoverWidth: CGFloat"))
     #expect(widgetPanel.contains("let popoverHeight: CGFloat"))
-    #expect(widgetPanel.contains("frame(width: MenuPopoverLayout.width, height: popoverHeight, alignment: .topLeading)"))
+    #expect(widgetPanel.contains("frame(width: popoverWidth, height: popoverHeight, alignment: .topLeading)"))
     #expect(appDelegate.contains("hostingController.view.frame = NSRect(origin: .zero, size: contentSize)"))
     #expect(audit.contains("Menu bar popover pins a fresh SwiftUI root view to the computed content height before showing."))
     #expect(audit.contains("Source-level tests require the menu bar popover root view height to match the computed content height before showing."))
@@ -5231,7 +5261,7 @@ import Testing
     let sizeStart = appDelegate.range(of: "private func statusPopoverSize")?.lowerBound ?? appDelegate.endIndex
     let prepareBody = String(appDelegate[prepareStart..<sizeStart])
 
-    #expect(appDelegate.contains("private func makeStatusHostingController(popoverHeight: CGFloat) -> NSHostingController<WidgetPanelView>"))
+    #expect(appDelegate.contains("private func makeStatusHostingController(contentSize: NSSize) -> NSHostingController<WidgetPanelView>"))
     #expect(prepareBody.contains("installFreshStatusHostingController(contentSize, in: popover)"))
     #expect(!prepareBody.contains("updateStatusHostingControllerSize(contentSize)"))
     #expect(appDelegate.contains("private func resetStatusPopoverContentHost()"))

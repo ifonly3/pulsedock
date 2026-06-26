@@ -420,6 +420,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Menu bar popover dark appearance uses cool dynamic card colors without drawing a second root material or brown overlay stops.
 - Menu bar popover tracks transient close events and suppresses same-click reopen races when the status item is clicked to close.
 - Menu bar popover prepares size and bounded button-local anchor before showing and never moves the AppKit popover window after `show`, keeping the arrow aligned.
+- Menu bar popover passes geometry-clamped width and height into SwiftUI before showing.
 - Menu bar popover rebuilds its hidden hosting controller for each show cycle and avoids forcing layout on the system status-bar window before calculating the frame.
 - The menu bar popover leaves the outer background, rounded frame, arrow, and shadow to NSPopover instead of nesting a second custom chrome inside the system popover.
 - Menu bar title updates are coalesced from snapshot and CPU-title preference changes, and missing CPU samples keep the status item icon-only.
