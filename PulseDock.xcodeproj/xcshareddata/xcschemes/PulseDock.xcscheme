@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4A21E51561F2C81581B8D974"
+               BlueprintIdentifier = "73B9DCDD98428B9DE443A39A"
                BuildableName = "Pulse Dock.app"
                BlueprintName = "PulseDock"
                ReferencedContainer = "container:PulseDock.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F65E4FD74A5CC22268EB5ABD"
+               BlueprintIdentifier = "4EF894B0474579B5F19021DA"
                BuildableName = "PulseDockWidgetExtension.appex"
                BlueprintName = "PulseDockWidgetExtension"
                ReferencedContainer = "container:PulseDock.xcodeproj">
@@ -44,7 +44,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4A21E51561F2C81581B8D974"
+            BlueprintIdentifier = "73B9DCDD98428B9DE443A39A"
             BuildableName = "Pulse Dock.app"
             BlueprintName = "PulseDock"
             ReferencedContainer = "container:PulseDock.xcodeproj">
@@ -67,7 +67,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4A21E51561F2C81581B8D974"
+            BlueprintIdentifier = "73B9DCDD98428B9DE443A39A"
             BuildableName = "Pulse Dock.app"
             BlueprintName = "PulseDock"
             ReferencedContainer = "container:PulseDock.xcodeproj">
@@ -84,7 +84,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4A21E51561F2C81581B8D974"
+            BlueprintIdentifier = "73B9DCDD98428B9DE443A39A"
             BuildableName = "Pulse Dock.app"
             BlueprintName = "PulseDock"
             ReferencedContainer = "container:PulseDock.xcodeproj">
