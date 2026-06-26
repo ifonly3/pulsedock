@@ -186,8 +186,8 @@ private func windowBackdropColors(for colorScheme: ColorScheme) -> [Color] {
     if colorScheme == .dark {
         return [
             Color(nsColor: .windowBackgroundColor).opacity(0.98),
-            Color(red: 0.08, green: 0.11, blue: 0.10).opacity(0.64),
-            Color(red: 0.12, green: 0.09, blue: 0.06).opacity(0.42)
+            Color(red: 0.07, green: 0.11, blue: 0.12).opacity(0.54),
+            Color(red: 0.06, green: 0.09, blue: 0.11).opacity(0.34)
         ]
     }
 

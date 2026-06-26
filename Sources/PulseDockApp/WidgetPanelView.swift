@@ -48,27 +48,27 @@ private struct MenuPopoverPreview: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 11) {
                     VStack(spacing: 7) {
-                        PopoverMetricRow(title: "CPU", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green)
-                        PopoverMetricRow(title: "内存", value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue)
-                        PopoverMetricRow(title: "网络", value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), tint: Palette.cyan)
-                        PopoverMetricRow(title: "磁盘", value: snapshot.diskUsageText, detail: snapshot.diskText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber)
+                        PopoverMetricRow(title: "CPU", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green(for: colorScheme))
+                        PopoverMetricRow(title: "内存", value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue(for: colorScheme))
+                        PopoverMetricRow(title: "网络", value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), tint: Palette.cyan(for: colorScheme))
+                        PopoverMetricRow(title: "磁盘", value: snapshot.diskUsageText, detail: snapshot.diskText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber(for: colorScheme))
                     }
 
                     HStack(spacing: 8) {
                         PopoverSmallStat(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot))
                         PopoverSmallStat(title: "热状态", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState))
-                        PopoverSmallStat(title: "负载", value: snapshot.loadText, tint: reportedTint(hasReport: snapshot.hasLoadAverageReport, fallback: Palette.green))
+                        PopoverSmallStat(title: "负载", value: snapshot.loadText, tint: reportedTint(hasReport: snapshot.hasLoadAverageReport, fallback: Palette.green(for: colorScheme)))
                     }
 
                     HStack(spacing: 8) {
                         PopoverSmallStat(title: "网络", value: snapshot.networkPathText, tint: networkTint(snapshot))
-                        PopoverSmallStat(title: "显示器", value: snapshot.displaySummaryText, tint: reportedTint(hasReport: snapshot.hasDisplayReport, fallback: Palette.amber))
-                        PopoverSmallStat(title: "卷", value: snapshot.storageVolumeSummaryText, tint: reportedTint(hasReport: snapshot.hasStorageVolumeReport, fallback: Palette.blue))
+                        PopoverSmallStat(title: "显示器", value: snapshot.displaySummaryText, tint: reportedTint(hasReport: snapshot.hasDisplayReport, fallback: Palette.amber(for: colorScheme)))
+                        PopoverSmallStat(title: "卷", value: snapshot.storageVolumeSummaryText, tint: reportedTint(hasReport: snapshot.hasStorageVolumeReport, fallback: Palette.blue(for: colorScheme)))
                     }
 
                     HStack(spacing: 8) {
-                        PopoverSmallStat(title: "运行", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: Palette.amber))
-                        PopoverSmallStat(title: "内核", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: Palette.cyan))
+                        PopoverSmallStat(title: "运行", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: Palette.amber(for: colorScheme)))
+                        PopoverSmallStat(title: "内核", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: Palette.cyan(for: colorScheme)))
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -92,31 +92,15 @@ private struct MenuPopoverPreview: View {
             .padding(.bottom, 16)
         }
         .frame(width: MenuPopoverLayout.width, height: popoverHeight, alignment: .topLeading)
-        .background {
-            ZStack {
-                VisualEffectView(material: .popover)
-                LinearGradient(
-                    colors: popoverBackgroundColors(for: colorScheme),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(popoverPanelStroke(for: colorScheme), lineWidth: 1)
-        }
-        .shadow(color: popoverShadow(for: colorScheme), radius: 30, x: 0, y: 16)
     }
 
     private var header: some View {
         HStack(spacing: 10) {
             Image(systemName: "waveform.path.ecg.rectangle")
                 .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Palette.green)
+                .foregroundStyle(Palette.green(for: colorScheme))
                 .frame(width: 34, height: 34)
-                .background(Palette.green.opacity(0.12), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .background(Palette.green(for: colorScheme).opacity(colorScheme == .dark ? 0.18 : 0.12), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Pulse Dock")
@@ -129,15 +113,16 @@ private struct MenuPopoverPreview: View {
 
             Spacer()
 
+            let statusTint = isPaused ? Palette.amber(for: colorScheme) : Palette.green(for: colorScheme)
             HStack(spacing: 5) {
-                Circle().fill(isPaused ? Palette.amber : Palette.green).frame(width: 7, height: 7)
+                Circle().fill(statusTint).frame(width: 7, height: 7)
                 Text(isPaused ? "暂停" : "实时")
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(isPaused ? Palette.amber : Palette.green)
+                    .foregroundStyle(statusTint)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 5)
-            .background(popoverTintFill(isPaused ? Palette.amber : Palette.green, for: colorScheme), in: Capsule())
+            .background(popoverTintFill(statusTint, for: colorScheme), in: Capsule())
         }
     }
 
@@ -151,43 +136,43 @@ private struct MenuPopoverPreview: View {
     }
 
     private func reportedTint(hasReport: Bool, fallback: Color) -> Color {
-        guard hasReport else { return Palette.cyan }
+        guard hasReport else { return Palette.cyan(for: colorScheme) }
         return fallback
     }
 
     private func powerTint(_ snapshot: MetricSnapshot) -> Color {
         switch snapshot.powerStatusTone {
         case .normal:
-            return Palette.green
+            return Palette.green(for: colorScheme)
         case .warning:
-            return Palette.amber
+            return Palette.amber(for: colorScheme)
         case .critical:
-            return Palette.red
+            return Palette.red(for: colorScheme)
         case .neutral:
-            return Palette.cyan
+            return Palette.cyan(for: colorScheme)
         }
     }
 
     private func thermalTint(_ state: String) -> Color {
         switch state.lowercased() {
-        case "critical", "hot", "serious": Palette.red
-        case "warm", "fair": Palette.amber
-        case "nominal": Palette.green
-        case "unknown": Palette.cyan
-        default: Palette.cyan
+        case "critical", "hot", "serious": Palette.red(for: colorScheme)
+        case "warm", "fair": Palette.amber(for: colorScheme)
+        case "nominal": Palette.green(for: colorScheme)
+        case "unknown": Palette.cyan(for: colorScheme)
+        default: Palette.cyan(for: colorScheme)
         }
     }
 
     private func networkTint(_ snapshot: MetricSnapshot) -> Color {
         switch snapshot.networkPathStatus.lowercased() {
         case "satisfied":
-            Palette.green
+            Palette.green(for: colorScheme)
         case "requiresconnection", "requires_connection", "requires connection":
-            Palette.amber
+            Palette.amber(for: colorScheme)
         case "unsatisfied":
-            Palette.red
+            Palette.red(for: colorScheme)
         default:
-            Palette.cyan
+            Palette.cyan(for: colorScheme)
         }
     }
 }
@@ -297,28 +282,12 @@ private struct PopoverActionLabel: View {
     }
 }
 
-private func popoverBackgroundColors(for colorScheme: ColorScheme) -> [Color] {
-    if colorScheme == .dark {
-        return [
-            Color(red: 0.08, green: 0.10, blue: 0.11).opacity(0.96),
-            Color(red: 0.06, green: 0.18, blue: 0.17).opacity(0.90),
-            Color(red: 0.17, green: 0.13, blue: 0.07).opacity(0.78)
-        ]
-    }
-
-    return [
-        Color(red: 1, green: 1, blue: 1).opacity(0.80),
-        Color(red: 0.90, green: 0.95, blue: 0.94).opacity(0.72),
-        Color(red: 0.98, green: 0.94, blue: 0.86).opacity(0.42)
-    ]
-}
-
 private func popoverPanelFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.08) : Color(red: 1, green: 1, blue: 1).opacity(0.50)
+    colorScheme == .dark ? Color(red: 0.10, green: 0.13, blue: 0.15).opacity(0.58) : Color(red: 1, green: 1, blue: 1).opacity(0.50)
 }
 
 private func popoverPanelStroke(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.13) : Color.black.opacity(0.06)
+    colorScheme == .dark ? Color.white.opacity(0.11) : Color.black.opacity(0.06)
 }
 
 private func popoverPrimaryText(for colorScheme: ColorScheme) -> Color {
@@ -330,15 +299,11 @@ private func popoverSecondaryText(for colorScheme: ColorScheme) -> Color {
 }
 
 private func popoverTrackFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.14) : Color.secondary.opacity(0.13)
+    colorScheme == .dark ? Color.white.opacity(0.11) : Color.secondary.opacity(0.13)
 }
 
 private func popoverTintFill(_ tint: Color, for colorScheme: ColorScheme) -> Color {
     tint.opacity(colorScheme == .dark ? 0.18 : 0.11)
-}
-
-private func popoverShadow(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.black.opacity(0.36) : Color.black.opacity(0.16)
 }
 
 private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat {
@@ -348,9 +313,23 @@ private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minim
 }
 
 private enum Palette {
-    static let blue = Color(red: 0.14, green: 0.43, blue: 0.95)
-    static let green = Color(red: 0.04, green: 0.62, blue: 0.39)
-    static let amber = Color(red: 0.93, green: 0.54, blue: 0.10)
-    static let cyan = Color(red: 0.04, green: 0.56, blue: 0.70)
-    static let red = Color(red: 0.84, green: 0.16, blue: 0.16)
+    static func blue(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 0.42, green: 0.66, blue: 1.00) : Color(red: 0.14, green: 0.43, blue: 0.95)
+    }
+
+    static func green(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 0.26, green: 0.82, blue: 0.58) : Color(red: 0.04, green: 0.62, blue: 0.39)
+    }
+
+    static func amber(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 1.00, green: 0.70, blue: 0.30) : Color(red: 0.93, green: 0.54, blue: 0.10)
+    }
+
+    static func cyan(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 0.24, green: 0.76, blue: 0.86) : Color(red: 0.04, green: 0.56, blue: 0.70)
+    }
+
+    static func red(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(red: 1.00, green: 0.38, blue: 0.36) : Color(red: 0.84, green: 0.16, blue: 0.16)
+    }
 }

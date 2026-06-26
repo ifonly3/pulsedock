@@ -968,7 +968,7 @@ import Testing
     #expect(!dashboardView.contains("value: \"\\(snapshot.storageVolumes.count) 个卷\""))
     #expect(!dashboardView.contains("value: \"\\(externalVolumeCount) 个\""))
     #expect(!dashboardView.contains("private var externalVolumeCount"))
-    #expect(widgetPanel.contains("PopoverSmallStat(title: \"卷\", value: snapshot.storageVolumeSummaryText, tint: reportedTint(hasReport: snapshot.hasStorageVolumeReport, fallback: Palette.blue))"))
+    #expect(widgetPanel.contains("PopoverSmallStat(title: \"卷\", value: snapshot.storageVolumeSummaryText, tint: reportedTint(hasReport: snapshot.hasStorageVolumeReport, fallback: Palette.blue(for: colorScheme)))"))
     #expect(!widgetPanel.contains("PopoverSmallStat(title: \"卷\", value: snapshot.storageVolumeSummaryText, tint: reportedTint(valueText: snapshot.storageVolumeSummaryText, fallback: Palette.blue))"))
     #expect(!widgetPanel.contains("PopoverSmallStat(title: \"卷\", value: \"\\(snapshot.storageVolumes.count)\""))
     #expect(audit.contains("Storage volume count surfaces use shared storage summary text so missing storage inventory is not formatted as 0 volumes"))
@@ -1428,10 +1428,10 @@ import Testing
     #expect(widgetPanel.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
     #expect(!widgetPanel.contains("private func reportedProgress(valueText: String, progress: Double) -> Double?"))
     #expect(!widgetPanel.contains("guard valueText != \"未报告\" else { return nil }"))
-    #expect(widgetPanel.contains("PopoverMetricRow(title: \"CPU\", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green)"))
-    #expect(widgetPanel.contains("PopoverMetricRow(title: \"内存\", value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue)"))
-    #expect(widgetPanel.contains("PopoverMetricRow(title: \"网络\", value: snapshot.networkText, detail: \"\\(snapshot.networkPathText) · ↓ \\(snapshot.networkInText)  ↑ \\(snapshot.networkOutText)\", progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), tint: Palette.cyan)"))
-    #expect(widgetPanel.contains("PopoverMetricRow(title: \"磁盘\", value: snapshot.diskUsageText, detail: snapshot.diskText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber)"))
+    #expect(widgetPanel.contains("PopoverMetricRow(title: \"CPU\", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green(for: colorScheme))"))
+    #expect(widgetPanel.contains("PopoverMetricRow(title: \"内存\", value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue(for: colorScheme))"))
+    #expect(widgetPanel.contains("PopoverMetricRow(title: \"网络\", value: snapshot.networkText, detail: \"\\(snapshot.networkPathText) · ↓ \\(snapshot.networkInText)  ↑ \\(snapshot.networkOutText)\", progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), tint: Palette.cyan(for: colorScheme))"))
+    #expect(widgetPanel.contains("PopoverMetricRow(title: \"磁盘\", value: snapshot.diskUsageText, detail: snapshot.diskText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber(for: colorScheme))"))
     #expect(widgetPanel.contains("let progress: Double?"))
     #expect(widgetPanel.contains("if let progress {"))
     #expect(audit.contains("Menu bar popover progress bars suppress filled progress when the paired live value is not reported, so missing samples do not render as 0% readings."))
@@ -3390,7 +3390,7 @@ import Testing
     #expect(!dashboardView.contains("value: \"\\(snapshot.gpuDevices.count) / \\(snapshot.displays.count)\""))
     #expect(!dashboardView.contains("return \"\\(display.pixelWidth)x\\(display.pixelHeight)\""))
     #expect(!dashboardView.contains("return \"自适应\""))
-    #expect(widgetPanel.contains("PopoverSmallStat(title: \"显示器\", value: snapshot.displaySummaryText, tint: reportedTint(hasReport: snapshot.hasDisplayReport, fallback: Palette.amber))"))
+    #expect(widgetPanel.contains("PopoverSmallStat(title: \"显示器\", value: snapshot.displaySummaryText, tint: reportedTint(hasReport: snapshot.hasDisplayReport, fallback: Palette.amber(for: colorScheme)))"))
     #expect(!widgetPanel.contains("PopoverSmallStat(title: \"显示器\", value: snapshot.displaySummaryText, tint: reportedTint(valueText: snapshot.displaySummaryText, fallback: Palette.amber))"))
     #expect(!widgetPanel.contains("PopoverSmallStat(title: \"显示器\", value: \"\\(snapshot.displays.count)\""))
     #expect(audit.contains("Display metric text reports the system-not-reported state when display dimensions or capabilities are unavailable"))
@@ -4507,8 +4507,8 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(menuBarPopover.contains("PopoverSmallStat(title: \"显示器\", value: snapshot.displaySummaryText, tint: reportedTint(hasReport: snapshot.hasDisplayReport, fallback: Palette.amber))"))
-    #expect(menuBarPopover.contains("PopoverSmallStat(title: \"卷\", value: snapshot.storageVolumeSummaryText, tint: reportedTint(hasReport: snapshot.hasStorageVolumeReport, fallback: Palette.blue))"))
+    #expect(menuBarPopover.contains("PopoverSmallStat(title: \"显示器\", value: snapshot.displaySummaryText, tint: reportedTint(hasReport: snapshot.hasDisplayReport, fallback: Palette.amber(for: colorScheme)))"))
+    #expect(menuBarPopover.contains("PopoverSmallStat(title: \"卷\", value: snapshot.storageVolumeSummaryText, tint: reportedTint(hasReport: snapshot.hasStorageVolumeReport, fallback: Palette.blue(for: colorScheme)))"))
     #expect(!menuBarPopover.contains("PopoverSmallStat(title: \"显示器\", value: snapshot.displaySummaryText, tint: reportedTint(valueText: snapshot.displaySummaryText, fallback: Palette.amber))"))
     #expect(!menuBarPopover.contains("PopoverSmallStat(title: \"卷\", value: snapshot.storageVolumeSummaryText, tint: reportedTint(valueText: snapshot.storageVolumeSummaryText, fallback: Palette.blue))"))
     #expect(!menuBarPopover.contains("private func reportedTint(valueText: String, fallback: Color) -> Color"))
@@ -4602,7 +4602,6 @@ import Testing
     #expect(widget.contains("widgetTrackFill(for: colorScheme)"))
     #expect(widget.contains("colorScheme == .dark"))
     #expect(widgetPanel.contains("@Environment(\\.colorScheme) private var colorScheme"))
-    #expect(widgetPanel.contains("popoverBackgroundColors(for: colorScheme)"))
     #expect(widgetPanel.contains("popoverPanelFill(for: colorScheme)"))
     #expect(widgetPanel.contains("popoverPanelStroke(for: colorScheme)"))
     #expect(widgetPanel.contains("popoverPrimaryText(for: colorScheme)"))
@@ -4891,7 +4890,7 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(widgetPanel.contains("PopoverSmallStat(title: \"负载\", value: snapshot.loadText, tint: reportedTint(hasReport: snapshot.hasLoadAverageReport, fallback: Palette.green))"))
+    #expect(widgetPanel.contains("PopoverSmallStat(title: \"负载\", value: snapshot.loadText, tint: reportedTint(hasReport: snapshot.hasLoadAverageReport, fallback: Palette.green(for: colorScheme)))"))
     #expect(!widgetPanel.contains("PopoverSmallStat(title: \"负载\", value: snapshot.loadText, tint: reportedTint(valueText: snapshot.loadText, fallback: Palette.green))"))
     #expect(!widgetPanel.contains("PopoverSmallStat(title: \"采样\", value: snapshot.sampleTimeText"))
     #expect(audit.contains("Menu bar popover surfaces the sampled load average instead of duplicating the header sample timestamp."))
@@ -4909,8 +4908,8 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(widgetPanel.contains("PopoverSmallStat(title: \"运行\", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: Palette.amber))"))
-    #expect(widgetPanel.contains("PopoverSmallStat(title: \"内核\", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: Palette.cyan))"))
+    #expect(widgetPanel.contains("PopoverSmallStat(title: \"运行\", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: Palette.amber(for: colorScheme)))"))
+    #expect(widgetPanel.contains("PopoverSmallStat(title: \"内核\", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: Palette.cyan(for: colorScheme)))"))
     #expect(widgetPanel.contains("private func reportedTint(hasReport: Bool, fallback: Color) -> Color"))
     #expect(!widgetPanel.contains("private func reportedTint(valueText: String, fallback: Color) -> Color"))
     #expect(!widgetPanel.contains("guard valueText != \"未报告\" else { return Palette.cyan }"))
@@ -4939,19 +4938,21 @@ import Testing
 
     #expect(appDelegate.contains("private var menuPopoverSize: NSSize"))
     #expect(appDelegate.contains("NSSize(width: MenuPopoverLayout.width, height: MenuPopoverLayout.height)"))
-    #expect(appDelegate.contains("popover.animates = false"))
+    #expect(appDelegate.contains("popover.animates = true"))
     #expect(appDelegate.contains("hostingController.sizingOptions = []"))
-    #expect(appDelegate.contains("hostingController.preferredContentSize = menuPopoverSize"))
+    #expect(appDelegate.contains("hostingController.preferredContentSize = contentSize"))
     #expect(appDelegate.contains("popover.contentSize = menuPopoverSize"))
     #expect(appDelegate.contains("layoutSubtreeIfNeeded()"))
     #expect(appDelegate.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)"))
-    #expect(appDelegate.contains("private func statusButtonAnchorRect(_ button: NSStatusBarButton, placement: MenuBarPopoverGeometry.Placement) -> NSRect"))
+    #expect(appDelegate.contains("private func statusButtonAnchorRect("))
+    #expect(appDelegate.contains("placement: MenuBarPopoverGeometry.Placement,"))
+    #expect(appDelegate.contains("anchorFrame: NSRect?"))
     #expect(widgetPanel.contains("frame(width: MenuPopoverLayout.width, height: popoverHeight, alignment: .topLeading)"))
     #expect(widgetPanel.contains("enum MenuPopoverLayout"))
     #expect(widgetPanel.contains("static let width: CGFloat = 356"))
     #expect(widgetPanel.contains("static let height: CGFloat = 520"))
-    #expect(audit.contains("Source-level tests require the menu bar popover to use a fixed content size, matching preferred content size, disabled animation, and a bounded status-button anchor"))
-    #expect(audit.contains("Source-level tests require the menu bar popover to pin SwiftUI hosting size and layout before showing"))
+    #expect(audit.contains("Source-level tests require the menu bar popover to use a fixed content size, matching preferred content size, enabled AppKit animation, and a bounded status-button anchor"))
+    #expect(audit.contains("Source-level tests require the menu bar popover to pin SwiftUI hosting size and layout before showing with a fresh hidden hosting controller"))
 }
 
 @Test func menuPopoverChoosesVisibleScreenEdgeAndScrollableContentBeforeShowing() throws {
@@ -4972,7 +4973,9 @@ import Testing
     #expect(appDelegate.contains("private func prepareStatusPopover(_ popover: NSPopover, for button: NSStatusBarButton) -> StatusPopoverPresentation"))
     #expect(appDelegate.contains("let presentation = prepareStatusPopover(popover, for: button)"))
     #expect(appDelegate.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)"))
-    #expect(appDelegate.contains("private func statusPopoverPlacement(for button: NSStatusBarButton) -> MenuBarPopoverGeometry.Placement"))
+    #expect(appDelegate.contains("private func statusPopoverPlacement(\n        for button: NSStatusBarButton,"))
+    #expect(appDelegate.contains("visibleFrame: NSRect?"))
+    #expect(appDelegate.contains("anchorFrame: NSRect?"))
     #expect(!appDelegate.contains("private func statusPopoverSize(for button: NSStatusBarButton) -> NSSize"))
     #expect(!appDelegate.contains("private func statusPopoverPreferredEdge(for button: NSStatusBarButton, contentSize: NSSize) -> NSRectEdge"))
     #expect(appDelegate.contains("button.window?.screen?.visibleFrame ?? NSScreen.main?.visibleFrame"))
@@ -5020,9 +5023,9 @@ import Testing
     #expect(regularPlacement.preferredEdge == .maxY)
     #expect(regularPlacement.availableHeight == 356)
     #expect(regularPlacement.size == CGSize(width: 356, height: 356))
-    #expect(appDelegate.contains("private func statusPopoverPlacement(for button: NSStatusBarButton) -> MenuBarPopoverGeometry.Placement"))
+    #expect(appDelegate.contains("private func statusPopoverPlacement(\n        for button: NSStatusBarButton,"))
     #expect(appDelegate.contains("MenuBarPopoverGeometry.placement("))
-    #expect(appDelegate.contains("anchorFrame: statusButtonScreenFrame(button)"))
+    #expect(appDelegate.contains("anchorFrame: anchorFrame"))
     #expect(appDelegate.contains("anchorKind: statusPopoverAnchorKind(for: button)"))
     #expect(audit.contains("Menu bar popover placement uses a tested geometry helper that clamps status-bar popovers from the actual anchor frame before showing."))
     #expect(audit.contains("Source-level tests execute menu bar popover geometry for top status-bar anchors and shorter visible screens."))
@@ -5048,12 +5051,11 @@ import Testing
     #expect(geometry.contains("public static func constrainedWindowFrame("))
     #expect(geometry.contains("let constrainedWidth = min(proposedFrame.width, availableFrame.width)"))
     #expect(geometry.contains("let constrainedHeight = min(proposedFrame.height, availableFrame.height)"))
-    #expect(appDelegate.contains("constrainStatusPopoverWindow(popover, for: button, presentation: presentation)"))
-    #expect(appDelegate.contains("private func constrainStatusPopoverWindow(_ popover: NSPopover, for button: NSStatusBarButton, presentation: StatusPopoverPresentation)"))
-    #expect(appDelegate.contains("MenuBarPopoverGeometry.constrainedWindowFrame("))
-    #expect(appDelegate.contains("window.setFrame(constrainedFrame, display: false, animate: false)"))
-    #expect(audit.contains("Menu bar popover reserves non-content popover chrome before sizing, then immediately constrains the actual AppKit window frame after showing."))
-    #expect(audit.contains("Source-level tests require the menu bar popover to reserve popover chrome and clamp the shown window frame into the visible screen."))
+    #expect(!appDelegate.contains("constrainStatusPopoverWindow(popover, for: button, presentation: presentation)"))
+    #expect(!appDelegate.contains("private func constrainStatusPopoverWindow"))
+    #expect(!appDelegate.contains("window.setFrame(constrainedFrame"))
+    #expect(audit.contains("Menu bar popover reserves non-content popover chrome before sizing and does not move the AppKit popover window after showing."))
+    #expect(audit.contains("Source-level tests require the menu bar popover to reserve popover chrome before showing without clamping the shown window frame."))
 }
 
 @Test func menuPopoverUsesPreparedPlacementForInitialShowAndFitsClampedContent() throws {
@@ -5069,22 +5071,19 @@ import Testing
     let toggleStart = appDelegate.range(of: "@objc private func toggleStatusPopover")?.lowerBound ?? appDelegate.startIndex
     let prepareStart = appDelegate.range(of: "private func prepareStatusPopover")?.lowerBound ?? appDelegate.endIndex
     let toggleBody = String(appDelegate[toggleStart..<prepareStart])
-    let constrainStart = appDelegate.range(of: "private func constrainStatusPopoverWindow")?.lowerBound ?? appDelegate.startIndex
-    let openDashboardStart = appDelegate.range(of: "private func openDashboardFromPopover")?.lowerBound ?? appDelegate.endIndex
-    let constrainBody = String(appDelegate[constrainStart..<openDashboardStart])
+    let showStart = appDelegate.range(of: "private func showPreparedStatusPopover")?.lowerBound ?? appDelegate.startIndex
+    let showBody = String(appDelegate[showStart..<prepareStart])
 
     #expect(appDelegate.contains("private struct StatusPopoverPresentation"))
     #expect(appDelegate.contains("let presentation = prepareStatusPopover(popover, for: button)"))
-    #expect(toggleBody.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)"))
-    #expect(toggleBody.contains("constrainStatusPopoverWindow(popover, for: button, presentation: presentation)"))
-    #expect(appDelegate.contains("private func statusButtonAnchorRect(_ button: NSStatusBarButton, placement: MenuBarPopoverGeometry.Placement) -> NSRect"))
-    #expect(appDelegate.contains("anchorRect: statusButtonAnchorRect(button, placement: placement)"))
+    #expect(showBody.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)"))
+    #expect(!showBody.contains("setFrame("))
+    #expect(appDelegate.contains("private func statusButtonAnchorRect("))
+    #expect(appDelegate.contains("anchorRect: statusButtonAnchorRect(button, placement: placement, anchorFrame: anchorFrame)"))
     #expect(!toggleBody.contains("statusButtonAnchorRect(button), of: button"))
-    #expect(constrainBody.contains("let heightDelta = max(0, window.frame.height - constrainedFrame.height)"))
-    #expect(constrainBody.contains("fitStatusPopoverContent(popover, height: popover.contentSize.height - heightDelta)"))
-    #expect(appDelegate.contains("private func fitStatusPopoverContent(_ popover: NSPopover, height: CGFloat)"))
-    #expect(audit.contains("Menu bar popover computes one placement before showing and reuses it for content size, preferred edge, anchor rect, and post-show frame fitting."))
-    #expect(audit.contains("Source-level tests require menu bar popover content height to shrink with any final clamped AppKit window frame instead of clipping inside a smaller outer frame."))
+    #expect(!appDelegate.contains("private func fitStatusPopoverContent"))
+    #expect(audit.contains("Menu bar popover computes one placement before showing and reuses it for content size, preferred edge, and bounded anchor rect."))
+    #expect(audit.contains("Source-level tests require menu bar popover content height to be finalized before `show` instead of shrinking after AppKit creates the popover window."))
 }
 
 @Test func menuPopoverRefitsWindowAfterClampedContentHeightChanges() throws {
@@ -5097,16 +5096,12 @@ import Testing
         contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"),
         encoding: .utf8
     )
-    let constrainStart = appDelegate.range(of: "private func constrainStatusPopoverWindow")?.lowerBound ?? appDelegate.startIndex
-    let fitStart = appDelegate.range(of: "private func fitStatusPopoverContent")?.lowerBound ?? appDelegate.endIndex
-    let constrainBody = String(appDelegate[constrainStart..<fitStart])
-
-    #expect(constrainBody.contains("var constrainedFrame = MenuBarPopoverGeometry.constrainedWindowFrame("))
-    #expect(constrainBody.contains("constrainedFrame = MenuBarPopoverGeometry.constrainedWindowFrame(\n                window.frame,"))
-    #expect(constrainBody.contains("fitStatusPopoverContent(popover, height: popover.contentSize.height - heightDelta)"))
-    #expect(constrainBody.contains("window.setFrame(constrainedFrame, display: false, animate: false)"))
-    #expect(audit.contains("Menu bar popover recalculates the final constrained window frame after shrinking content height, so the AppKit outer frame and SwiftUI content stay synchronized."))
-    #expect(audit.contains("Source-level tests require the menu bar popover to refit the shown window frame after clamped content height changes."))
+    #expect(!appDelegate.contains("private func constrainStatusPopoverWindow"))
+    #expect(!appDelegate.contains("private func fitStatusPopoverContent"))
+    #expect(!appDelegate.contains("window.setFrame(constrainedFrame"))
+    #expect(!appDelegate.contains("heightDelta = max(0, window.frame.height - constrainedFrame.height)"))
+    #expect(audit.contains("Menu bar popover relies on pre-show content sizing instead of post-show window fitting, keeping the AppKit arrow and status item anchor synchronized."))
+    #expect(audit.contains("Source-level tests require the menu bar popover to avoid post-show window frame refits that desynchronize the arrow."))
 }
 
 @Test func menuPopoverGeometryHorizontallyClampsStatusBarAnchorBeforeShowing() throws {
@@ -5149,9 +5144,11 @@ import Testing
     #expect(narrowPlacement.anchorScreenMidX == 150)
     #expect(narrowPlacement.size.width == 276)
     #expect(appDelegate.contains("placement.anchorScreenMidX"))
-    #expect(appDelegate.contains("anchorCenterX += anchorScreenMidX - buttonFrame.midX"))
-    #expect(audit.contains("Menu bar popover horizontally clamps the status-button positioning rect before showing, preventing edge-of-screen menu extras from first drawing clipped."))
-    #expect(audit.contains("Source-level tests require status popover geometry to clamp the horizontal anchor center to the visible screen."))
+    #expect(appDelegate.contains("let proposedAnchorCenterX"))
+    #expect(appDelegate.contains("min(max(proposedAnchorCenterX"))
+    #expect(!appDelegate.contains("anchorCenterX += anchorScreenMidX - buttonFrame.midX"))
+    #expect(audit.contains("Menu bar popover clamps the status-button positioning rect within button-local coordinates before showing, so edge-of-screen clamping cannot move the arrow onto neighboring menu extras."))
+    #expect(audit.contains("Source-level tests require status popover geometry to clamp any screen-derived anchor adjustment back into button-local coordinates."))
 }
 
 @Test func menuPopoverTreatsStatusBarWindowAsTopAnchoredBeforeShowing() throws {
@@ -5211,12 +5208,12 @@ import Testing
 
     #expect(appDelegate.contains("private func makeWidgetPanelView(popoverHeight: CGFloat) -> WidgetPanelView"))
     #expect(appDelegate.contains("private func makeStatusHostingController(popoverHeight: CGFloat) -> NSHostingController<WidgetPanelView>"))
-    #expect(appDelegate.contains("let hostingController = makeStatusHostingController(popoverHeight: menuPopoverSize.height)"))
-    #expect(appDelegate.contains("let hostingController = makeStatusHostingController(popoverHeight: contentSize.height)"))
+    #expect(!appDelegate.contains("let hostingController = makeStatusHostingController(popoverHeight: menuPopoverSize.height)"))
+    #expect(appDelegate.contains("installFreshStatusHostingController(contentSize, in: popover)"))
     #expect(widgetPanel.contains("let popoverHeight: CGFloat"))
     #expect(widgetPanel.contains("frame(width: MenuPopoverLayout.width, height: popoverHeight, alignment: .topLeading)"))
-    #expect(!appDelegate.contains("statusHostingController?.rootView ="))
-    #expect(audit.contains("Menu bar popover pins the SwiftUI root view to the computed content height before showing, avoiding a second intrinsic-size pass."))
+    #expect(appDelegate.contains("hostingController.view.frame = NSRect(origin: .zero, size: contentSize)"))
+    #expect(audit.contains("Menu bar popover pins a fresh SwiftUI root view to the computed content height before showing."))
     #expect(audit.contains("Source-level tests require the menu bar popover root view height to match the computed content height before showing."))
 }
 
@@ -5235,13 +5232,13 @@ import Testing
     let prepareBody = String(appDelegate[prepareStart..<sizeStart])
 
     #expect(appDelegate.contains("private func makeStatusHostingController(popoverHeight: CGFloat) -> NSHostingController<WidgetPanelView>"))
-    #expect(prepareBody.contains("let hostingController = makeStatusHostingController(popoverHeight: contentSize.height)"))
-    #expect(prepareBody.contains("hostingController.preferredContentSize = contentSize"))
-    #expect(prepareBody.contains("popover.contentViewController = hostingController"))
-    #expect(prepareBody.contains("statusHostingController = hostingController"))
-    #expect(!prepareBody.contains("statusHostingController?.rootView ="))
-    #expect(audit.contains("Menu bar popover rebuilds the sized SwiftUI hosting controller before each show, preventing stale first-frame geometry."))
-    #expect(audit.contains("Source-level tests require the menu bar popover to replace its hosting controller before showing instead of mutating a reused root view."))
+    #expect(prepareBody.contains("installFreshStatusHostingController(contentSize, in: popover)"))
+    #expect(!prepareBody.contains("updateStatusHostingControllerSize(contentSize)"))
+    #expect(appDelegate.contains("private func resetStatusPopoverContentHost()"))
+    #expect(appDelegate.contains("popoverDidClose"))
+    #expect(appDelegate.contains("resetStatusPopoverContentHost()"))
+    #expect(audit.contains("Menu bar popover installs a fresh hosting controller before each show and releases it after close, avoiding stale second-open layout state without replacing content after `show`."))
+    #expect(audit.contains("Source-level tests require the menu bar popover to rebuild its hidden hosting controller before showing and release it after close."))
 }
 
 @Test func menuPopoverUsesStableStatusItemLengthWhileCPUTitleRefreshes() throws {
@@ -5258,9 +5255,12 @@ import Testing
     #expect(appDelegate.contains("private enum MenuBarStatusItemLayout"))
     #expect(appDelegate.contains("static let compactLength = NSStatusItem.squareLength"))
     #expect(appDelegate.contains("static let cpuTitleLength: CGFloat"))
-    #expect(appDelegate.contains("statusItem?.length = store.showsMenuBarCPU ? MenuBarStatusItemLayout.cpuTitleLength : MenuBarStatusItemLayout.compactLength"))
-    #expect(appDelegate.contains("statusItem?.button?.title = store.showsMenuBarCPU ? \" \\(store.snapshot.cpuText)\" : \"\""))
-    #expect(appDelegate.contains("store.$snapshot"))
+    #expect(appDelegate.contains("private var statusButtonCPUText: String?"))
+    #expect(appDelegate.contains("guard store.snapshot.hasCPUUsageReport else { return nil }"))
+    #expect(appDelegate.contains("guard let cpuText = statusButtonCPUText else"))
+    #expect(appDelegate.contains("statusItem?.length = MenuBarStatusItemLayout.cpuTitleLength"))
+    #expect(appDelegate.contains("statusItem?.button?.title = \" \\(cpuText)\""))
+    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$showsMenuBarCPU)"))
     #expect(appDelegate.contains("self?.updateStatusButtonTitle()"))
     #expect(audit.contains("Menu bar status item uses stable fixed lengths so live CPU title refreshes do not move the popover anchor while it is shown."))
     #expect(audit.contains("Source-level tests require the menu bar status item to keep a stable length while the live CPU title refreshes."))
@@ -5313,13 +5313,13 @@ import Testing
     #expect(toggleBody.contains("showPreparedStatusPopover(popover, for: button, presentation: presentation)"))
     #expect(!toggleBody.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)\n            constrainStatusPopoverWindow(popover, for: button, presentation: presentation)"))
     #expect(showBody.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)"))
-    #expect(showBody.contains("window.alphaValue = 0"))
-    #expect(showBody.contains("constrainStatusPopoverWindow(popover, for: button, presentation: presentation)"))
-    #expect(showBody.contains("window.contentView?.layoutSubtreeIfNeeded()"))
-    #expect(showBody.contains("window.displayIfNeeded()"))
-    #expect(showBody.contains("window.alphaValue = originalAlphaValue"))
-    #expect(audit.contains("Menu bar popover keeps the AppKit window transparent while the first shown frame is constrained, preventing users from seeing the transient off-screen placement."))
-    #expect(audit.contains("Source-level tests require the menu bar popover to hide the shown window until final frame and content fitting are applied."))
+    #expect(!showBody.contains("window.alphaValue = 0"))
+    #expect(!showBody.contains("constrainStatusPopoverWindow(popover, for: button, presentation: presentation)"))
+    #expect(showBody.contains("popover.contentViewController?.view.window?.contentView?.layoutSubtreeIfNeeded()"))
+    #expect(!showBody.contains("window.displayIfNeeded()"))
+    #expect(!showBody.contains("window.alphaValue = originalAlphaValue"))
+    #expect(audit.contains("Menu bar popover prepares size and bounded button-local anchor before showing and never moves the AppKit popover window after `show`, keeping the arrow aligned."))
+    #expect(audit.contains("Source-level tests require the menu bar popover to avoid hiding content as a workaround for post-show window movement."))
 }
 
 @Test func menuPopoverHidesContentBeforeInitialShowFrameIsRendered() throws {
@@ -5341,38 +5341,116 @@ import Testing
         showBody = ""
     }
 
-    let hideRange = showBody.range(of: "let hiddenContent = hideStatusPopoverContentBeforeShowing(popover)")
     let showRange = showBody.range(of: "popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)")
-    let displayRange = showBody.range(of: "window.displayIfNeeded()")
-    let restoreRange = showBody.range(of: "restoreStatusPopoverContentAfterShowing(hiddenContent)")
-    let restoreAfterDisplayRange: Range<String.Index>?
-    if let displayRange {
-        restoreAfterDisplayRange = showBody.range(
-            of: "restoreStatusPopoverContentAfterShowing(hiddenContent)",
-            range: displayRange.upperBound..<showBody.endIndex
-        )
-    } else {
-        restoreAfterDisplayRange = nil
-    }
 
-    #expect(appDelegate.contains("private struct HiddenStatusPopoverContent"))
-    #expect(appDelegate.contains("private func hideStatusPopoverContentBeforeShowing(_ popover: NSPopover) -> HiddenStatusPopoverContent?"))
-    #expect(appDelegate.contains("private func restoreStatusPopoverContentAfterShowing(_ hiddenContent: HiddenStatusPopoverContent?)"))
-    #expect(appDelegate.contains("view.alphaValue = 0"))
-    #expect(appDelegate.contains("hiddenContent.view.alphaValue = hiddenContent.alphaValue"))
-    #expect(hideRange != nil)
+    #expect(!appDelegate.contains("private struct HiddenStatusPopoverContent"))
+    #expect(!appDelegate.contains("private func hideStatusPopoverContentBeforeShowing"))
+    #expect(!appDelegate.contains("private func restoreStatusPopoverContentAfterShowing"))
+    #expect(!appDelegate.contains("view.alphaValue = 0"))
+    #expect(!appDelegate.contains("hiddenContent.view.alphaValue = hiddenContent.alphaValue"))
     #expect(showRange != nil)
-    #expect(displayRange != nil)
-    #expect(restoreRange != nil)
-    #expect(restoreAfterDisplayRange != nil)
-    if let hideRange, let showRange {
-        #expect(hideRange.lowerBound < showRange.lowerBound)
-    }
-    if let displayRange, let restoreAfterDisplayRange {
-        #expect(displayRange.lowerBound < restoreAfterDisplayRange.lowerBound)
-    }
-    #expect(audit.contains("Menu bar popover hides SwiftUI content before calling AppKit show, so the initial rendered frame cannot expose an off-screen or partially clipped panel."))
-    #expect(audit.contains("Source-level tests require menu bar popover content to be restored only after the final constrained frame has been laid out and displayed."))
+    #expect(audit.contains("Menu bar popover prepares size and bounded button-local anchor before showing and never moves the AppKit popover window after `show`, keeping the arrow aligned."))
+    #expect(audit.contains("Source-level tests require the menu bar popover to avoid hiding content as a workaround for post-show window movement."))
+}
+
+@Test func statusPopoverClosesWithoutTransientToggleRace() throws {
+    let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+    let toggleStart = appDelegate.range(of: "@objc private func toggleStatusPopover")?.lowerBound ?? appDelegate.startIndex
+    let showStart = appDelegate.range(of: "private func showPreparedStatusPopover")?.lowerBound ?? appDelegate.endIndex
+    let toggleBody = String(appDelegate[toggleStart..<showStart])
+
+    #expect(appDelegate.contains("final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate"))
+    #expect(appDelegate.contains("private var isStatusPopoverClosing = false"))
+    #expect(appDelegate.contains("private var statusPopoverSuppressToggleUntil: Date?"))
+    #expect(appDelegate.contains("popover.delegate = self"))
+    #expect(appDelegate.contains("popover.animates = true"))
+    #expect(toggleBody.contains("shouldSuppressStatusPopoverToggle()"))
+    #expect(toggleBody.contains("closeStatusPopover(popover)"))
+    #expect(appDelegate.contains("private func closeStatusPopover(_ popover: NSPopover)"))
+    #expect(appDelegate.contains("func popoverWillClose(_ notification: Notification)"))
+    #expect(appDelegate.contains("func popoverDidClose(_ notification: Notification)"))
+    #expect(!appDelegate.contains("performClose"))
+    #expect(audit.contains("Menu bar popover tracks transient close events and suppresses same-click reopen races when the status item is clicked to close."))
+}
+
+@Test func statusPopoverShowsFromPreparedAnchorWithoutMovingWindowAfterShow() throws {
+    let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+    let showStart = appDelegate.range(of: "private func showPreparedStatusPopover")?.lowerBound ?? appDelegate.startIndex
+    let prepareStart = appDelegate.range(of: "private func prepareStatusPopover")?.lowerBound ?? appDelegate.endIndex
+    let showBody = String(appDelegate[showStart..<prepareStart])
+
+    #expect(showBody.contains("popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)"))
+    #expect(!appDelegate.contains("private func constrainStatusPopoverWindow"))
+    #expect(!appDelegate.contains("private func fitStatusPopoverContent"))
+    #expect(!appDelegate.contains("window.setFrame(constrainedFrame"))
+    #expect(!showBody.contains("setFrame("))
+    #expect(appDelegate.contains("let visibleFrame = statusPopoverVisibleFrame(for: button)"))
+    #expect(appDelegate.contains("let anchorFrame = statusButtonScreenFrame(button)"))
+    #expect(appDelegate.contains("statusPopoverPlacement(for: button, visibleFrame: visibleFrame, anchorFrame: anchorFrame)"))
+    #expect(appDelegate.contains("let proposedAnchorCenterX"))
+    #expect(appDelegate.contains("min(max(proposedAnchorCenterX"))
+    #expect(!appDelegate.contains("anchorCenterX += anchorScreenMidX - buttonFrame.midX"))
+    #expect(audit.contains("Menu bar popover prepares size and bounded button-local anchor before showing and never moves the AppKit popover window after `show`, keeping the arrow aligned."))
+}
+
+@Test func statusPopoverRebuildsHostAndAvoidsStatusWindowRelayoutForSecondOpen() throws {
+    let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+    let prepareStart = appDelegate.range(of: "private func prepareStatusPopover")?.lowerBound ?? appDelegate.startIndex
+    let placementStart = appDelegate.range(of: "private func statusPopoverPlacement")?.lowerBound ?? appDelegate.endIndex
+    let prepareBody = String(appDelegate[prepareStart..<placementStart])
+
+    #expect(appDelegate.contains("private func installFreshStatusHostingController(_ contentSize: NSSize, in popover: NSPopover)"))
+    #expect(prepareBody.contains("installFreshStatusHostingController(contentSize, in: popover)"))
+    #expect(appDelegate.contains("private func resetStatusPopoverContentHost()"))
+    #expect(appDelegate.contains("statusPopover?.contentViewController = nil"))
+    #expect(appDelegate.contains("statusHostingController = nil"))
+    #expect(!appDelegate.contains("button.window?.layoutIfNeeded()"))
+    #expect(audit.contains("Menu bar popover rebuilds its hidden hosting controller for each show cycle and avoids forcing layout on the system status-bar window before calculating the frame."))
+}
+
+@Test func popoverDarkModeUsesCoolMaterialPaletteWithoutBrownOverlay() throws {
+    let widgetPanel = try fixture("Sources/PulseDockApp/WidgetPanelView.swift")
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+    let visualEffect = try fixture("Sources/PulseDockApp/VisualEffectView.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(!widgetPanel.contains("Color(red: 0.17, green: 0.13, blue: 0.07)"))
+    #expect(!dashboard.contains("Color(red: 0.12, green: 0.09, blue: 0.06)"))
+    #expect(widgetPanel.contains("static func green(for colorScheme: ColorScheme) -> Color"))
+    #expect(widgetPanel.contains("Palette.green(for: colorScheme)"))
+    #expect(!widgetPanel.contains("VisualEffectView(material: .popover"))
+    #expect(!widgetPanel.contains("popoverBackgroundColors(for: colorScheme)"))
+    #expect(visualEffect.contains("var appearanceName: NSAppearance.Name?"))
+    #expect(visualEffect.contains("view.isEmphasized = isEmphasized"))
+    #expect(visualEffect.contains("nsView.appearance = appearanceName.flatMap(NSAppearance.init(named:))"))
+    #expect(audit.contains("Menu bar popover dark appearance uses cool dynamic card colors without drawing a second root material or brown overlay stops."))
+}
+
+@Test func appDelegateCoalescesStatusTitleUpdatesAndStartsStoreOnMainActor() throws {
+    let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(!appDelegate.contains("DispatchQueue.main.async"))
+    #expect(appDelegate.contains("store.start()"))
+    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$showsMenuBarCPU)"))
+    #expect(appDelegate.contains("private var statusButtonCPUText: String?"))
+    #expect(appDelegate.contains("guard let cpuText = statusButtonCPUText else"))
+    #expect(!appDelegate.contains("store.showsMenuBarCPU ? \" \\(store.snapshot.cpuText)\" : \"\""))
+    #expect(audit.contains("Menu bar title updates are coalesced from snapshot and CPU-title preference changes, and missing CPU samples keep the status item icon-only."))
+}
+
+@Test func metricsStoreInvalidatesTimerOnDeinit() throws {
+    let metricsStore = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(metricsStore.contains("deinit {"))
+    #expect(metricsStore.contains("timer?.invalidate()"))
+    #expect(metricsStore.contains("initialRefreshTask?.cancel()"))
+    #expect(metricsStore.contains("refreshTask?.cancel()"))
+    #expect(audit.contains("MetricsStore invalidates timers and cancels refresh tasks during deinitialization as a final lifecycle backstop."))
 }
 
 @Test func installScriptVerifiesWidgetRegistrationBeforeReturning() throws {
@@ -7117,9 +7195,10 @@ import Testing
     #expect(dashboardView.contains("store.showsMenuBarCPU"))
     #expect(dashboardView.contains("store.updateShowsMenuBarCPU"))
     #expect(!dashboardView.contains("SettingRow(title: \"菜单栏状态\", detail: \"显示当前 CPU 占用\", control: \"开\")"))
-    #expect(appDelegate.contains("store.$showsMenuBarCPU"))
+    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$showsMenuBarCPU)"))
     #expect(appDelegate.contains("updateStatusButtonTitle()"))
-    #expect(appDelegate.contains("store.showsMenuBarCPU ? \" \\(store.snapshot.cpuText)\" : \"\""))
+    #expect(appDelegate.contains("private var statusButtonCPUText: String?"))
+    #expect(appDelegate.contains("guard let cpuText = statusButtonCPUText else"))
 }
 
 @Test func historyPersistenceUsesSanitizedTrendSnapshots() throws {
@@ -7511,7 +7590,13 @@ import Testing
     let audit = try fixture("docs/data-capability-audit.md")
 
     #expect(appGroup.contains("static let suiteName = \"group.com.ifonly3.pulsedock\""))
-    #expect(sharedStore.contains("UserDefaults(suiteName: PulseDockAppGroup.suiteName)"))
+    #expect(appGroup.contains("static let appBundleIdentifier = \"com.ifonly3.pulsedock\""))
+    #expect(appGroup.contains("static let widgetBundleIdentifier = \"com.ifonly3.pulsedock.widget\""))
+    #expect(appGroup.contains("supportsAppGroup(bundleIdentifier: String?)"))
+    #expect(sharedStore.contains("PulseDockAppGroup.supportsAppGroup(bundleIdentifier: bundleIdentifier)"))
+    #expect(sharedStore.contains("containerURL(forSecurityApplicationGroupIdentifier: suiteName)"))
+    #expect(sharedStore.contains("UserDefaults(suiteName: suiteName)"))
+    #expect(!sharedStore.contains("public init(defaults: UserDefaults? = UserDefaults(suiteName: PulseDockAppGroup.suiteName))"))
     #expect(sharedStore.contains("func saveLatestSnapshot(_ snapshot: MetricSnapshot)"))
     #expect(sharedStore.contains("func loadLatestSnapshot(maxAge: TimeInterval"))
     #expect(metricsStore.contains("private let sharedSnapshotWriteInterval: TimeInterval = 60"))
@@ -7525,6 +7610,55 @@ import Testing
     #expect(audit.contains("The main app writes a compact latest snapshot to App Group UserDefaults on a 60-second throttled cadence"))
     #expect(audit.contains("The Widget extension reads the shared compact snapshot first"))
     #expect(!audit.contains("The main app does not write App Group files for widget updates."))
+}
+
+@Test func sharedSnapshotStoreSkipsAppGroupDefaultsWhenContainerUnavailable() throws {
+    let sharedStore = try fixture("Sources/SharedMetrics/SharedSnapshotStore.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+    let store = SharedSnapshotStore(defaults: nil)
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.2,
+        memoryUsedBytes: 1_024,
+        memoryTotalBytes: 2_048,
+        loadAverage: 0.4,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
+        timestamp: Date(timeIntervalSince1970: 1_000)
+    )
+
+    store.saveLatestSnapshot(snapshot)
+
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_010)) == nil)
+    #expect(sharedStore.contains("guard fileManager.containerURL(forSecurityApplicationGroupIdentifier: suiteName) != nil else"))
+    #expect(sharedStore.contains("self.defaults = nil"))
+    #expect(audit.contains("Shared widget snapshot storage checks the production bundle identifier and App Group container availability before creating suite UserDefaults, so local ad-hoc builds fall back without blocking on unavailable App Group preferences."))
+}
+
+@Test func sharedSnapshotStoreDoesNotUseAppGroupDefaultsForLocalBundleIdentifiers() throws {
+    let store = SharedSnapshotStore(suiteName: PulseDockAppGroup.suiteName, bundleIdentifier: "local.pulsedock")
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.2,
+        memoryUsedBytes: 1_024,
+        memoryTotalBytes: 2_048,
+        loadAverage: 0.4,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
+        timestamp: Date(timeIntervalSince1970: 1_000)
+    )
+
+    store.saveLatestSnapshot(snapshot)
+
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_010)) == nil)
+    #expect(PulseDockAppGroup.supportsAppGroup(bundleIdentifier: "local.pulsedock") == false)
+    #expect(PulseDockAppGroup.supportsAppGroup(bundleIdentifier: "local.pulsedock.widget") == false)
+    #expect(PulseDockAppGroup.supportsAppGroup(bundleIdentifier: "com.ifonly3.pulsedock") == true)
+    #expect(PulseDockAppGroup.supportsAppGroup(bundleIdentifier: "com.ifonly3.pulsedock.widget") == true)
 }
 
 @Test func sharedSnapshotStoreRoundTripsCompactSnapshotThroughDefaults() throws {
@@ -7671,6 +7805,50 @@ import Testing
     #expect(installScript.contains("osascript - \"$APP_BUNDLE_IDENTIFIER\" <<'APPLESCRIPT'"))
 }
 
+@Test func installScriptRemovesLegacySystemDashboardRegistrationBeforeInstallingPulseDock() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let installScript = try String(
+        contentsOf: root.appendingPathComponent("scripts/install-system-widget.sh"),
+        encoding: .utf8
+    )
+    let audit = try String(
+        contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"),
+        encoding: .utf8
+    )
+
+    #expect(installScript.contains("LEGACY_APP=\"$INSTALL_DIR/System Dashboard.app\""))
+    #expect(installScript.contains("LEGACY_WIDGET_BUNDLE_IDENTIFIER=\"${LEGACY_WIDGET_BUNDLE_IDENTIFIER:-local.system-dashboard.widget}\""))
+    #expect(installScript.contains("EXTRA_LEGACY_WIDGET_BUNDLE_IDENTIFIERS=(\"com.qiaoni.systemdashboard.widget\")"))
+    #expect(installScript.contains("unregister_legacy_widget_registrations"))
+    #expect(installScript.contains("uninstall_legacy_system_dashboard"))
+    #expect(installScript.contains("read_bundle_identifier \"$LEGACY_APP\""))
+    #expect(installScript.contains("if [[ \"$legacy_bundle_id\" == \"local.system-dashboard\" ]]; then"))
+    #expect(installScript.contains("pluginkit -e ignore -i \"$LEGACY_WIDGET_BUNDLE_IDENTIFIER\""))
+    #expect(installScript.contains("pluginkit -r \"$LEGACY_WIDGET_EXTENSION\""))
+    #expect(installScript.contains("rm -rf \"$LEGACY_APP\""))
+    #expect(audit.contains("Local install cleanup removes the legacy System Dashboard bundle only after confirming its old bundle identifier, and unregisters old System Dashboard widget extensions before installing Pulse Dock."))
+}
+
+@Test func menuPopoverLetsNativeNSPopoverOwnOuterChrome() throws {
+    let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    let widgetPanel = try String(
+        contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"),
+        encoding: .utf8
+    )
+    let audit = try String(
+        contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"),
+        encoding: .utf8
+    )
+
+    #expect(!widgetPanel.contains("VisualEffectView(material: .popover"))
+    #expect(!widgetPanel.contains("LinearGradient(\n                    colors: popoverBackgroundColors(for: colorScheme)"))
+    #expect(!widgetPanel.contains(".clipShape(RoundedRectangle(cornerRadius: 18"))
+    #expect(!widgetPanel.contains(".shadow(color: popoverShadow(for: colorScheme)"))
+    #expect(!widgetPanel.contains("private func popoverShadow"))
+    #expect(!widgetPanel.contains("private func popoverBackgroundColors"))
+    #expect(audit.contains("The menu bar popover leaves the outer background, rounded frame, arrow, and shadow to NSPopover instead of nesting a second custom chrome inside the system popover."))
+}
+
 @Test func appStoreReadinessChecklistTracksCompletedFixes() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let checklist = try String(
@@ -7783,9 +7961,11 @@ import Testing
     #expect(sharedScheme.contains("BuildableName = \"Pulse Dock.app\""))
     #expect(sharedScheme.contains("BlueprintName = \"PulseDock\""))
     #expect(sharedScheme.contains("ReferencedContainer = \"container:PulseDock.xcodeproj\""))
-    #expect(![appInfo, widgetInfo, appDelegate, dashboardView, widgetPanel, widget, packageScript, installScript, projectGenerator].contains { text in
+    #expect(![appInfo, widgetInfo, appDelegate, dashboardView, widgetPanel, widget, packageScript, projectGenerator].contains { text in
         text.contains("System Pulse") || text.contains("System Dashboard")
     })
+    #expect(!installScript.contains("System Pulse"))
+    #expect(installScript.contains("LEGACY_APP=\"$INSTALL_DIR/System Dashboard.app\""))
 }
 
 @Test func appDelegateInstallsStandardMainMenuAndRestorableStateHooks() throws {

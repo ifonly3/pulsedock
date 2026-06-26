@@ -95,17 +95,15 @@ This file is an internal product and App Store readiness audit. It should not be
 - Menu bar popover chooses a visible screen edge and clamps height before showing, with scrollable content for smaller visible areas.
 - Menu bar popover shows without activating the main app, avoiding a second window-ordering pass after the popover is positioned.
 - Menu bar status item uses stable fixed lengths so live CPU title refreshes do not move the popover anchor while it is shown.
-- Menu bar popover pins the SwiftUI root view to the computed content height before showing, avoiding a second intrinsic-size pass.
-- Menu bar popover rebuilds the sized SwiftUI hosting controller before each show, preventing stale first-frame geometry.
+- Menu bar popover pins a fresh SwiftUI root view to the computed content height before showing.
+- Menu bar popover installs a fresh hosting controller before each show and releases it after close, avoiding stale second-open layout state without replacing content after `show`.
 - Menu bar popover treats the NSStatusBar window as a fixed top anchor, always opening downward while clamping height from the actual anchor frame and visible screen.
 - Menu bar popover treats status-bar-level or higher anchor windows as fixed top anchors, so menu extra window-level differences cannot trigger transient off-screen edge calculation.
 - Menu bar popover placement uses a tested geometry helper that clamps status-bar popovers from the actual anchor frame before showing.
-- Menu bar popover horizontally clamps the status-button positioning rect before showing, preventing edge-of-screen menu extras from first drawing clipped.
-- Menu bar popover reserves non-content popover chrome before sizing, then immediately constrains the actual AppKit window frame after showing.
-- Menu bar popover computes one placement before showing and reuses it for content size, preferred edge, anchor rect, and post-show frame fitting.
-- Menu bar popover recalculates the final constrained window frame after shrinking content height, so the AppKit outer frame and SwiftUI content stay synchronized.
-- Menu bar popover keeps the AppKit window transparent while the first shown frame is constrained, preventing users from seeing the transient off-screen placement.
-- Menu bar popover hides SwiftUI content before calling AppKit show, so the initial rendered frame cannot expose an off-screen or partially clipped panel.
+- Menu bar popover clamps the status-button positioning rect within button-local coordinates before showing, so edge-of-screen clamping cannot move the arrow onto neighboring menu extras.
+- Menu bar popover reserves non-content popover chrome before sizing and does not move the AppKit popover window after showing.
+- Menu bar popover computes one placement before showing and reuses it for content size, preferred edge, and bounded anchor rect.
+- Menu bar popover relies on pre-show content sizing instead of post-show window fitting, keeping the AppKit arrow and status item anchor synchronized.
 - Menu bar popover adapts background, panel, track, and text colors for light and dark appearances.
 - Menu bar popover surfaces the sampled load average instead of duplicating the header sample timestamp.
 - Menu bar popover surfaces uptime and Darwin kernel release with explicit snapshot reported-state tinting.
@@ -278,20 +276,19 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests prevent app and widget surfaces from formatting placeholder snapshot timestamps as real sample times.
 - Source-level tests require widget headers to use explicit sample-time reported-state flags instead of comparing sampled time display text.
 - Source-level tests prevent history count labels from counting placeholder snapshots as sampled history.
-- Source-level tests require the menu bar popover to use a fixed content size, matching preferred content size, disabled animation, and a bounded status-button anchor.
-- Source-level tests require the menu bar popover to pin SwiftUI hosting size and layout before showing.
+- Source-level tests require the menu bar popover to use a fixed content size, matching preferred content size, enabled AppKit animation, and a bounded status-button anchor.
+- Source-level tests require the menu bar popover to pin SwiftUI hosting size and layout before showing with a fresh hidden hosting controller.
 - Source-level tests require the menu bar popover to choose a visible screen edge, clamp content height, and keep smaller popovers scrollable before showing.
 - Source-level tests require the menu bar popover root view height to match the computed content height before showing.
-- Source-level tests require the menu bar popover to replace its hosting controller before showing instead of mutating a reused root view.
+- Source-level tests require the menu bar popover to rebuild its hidden hosting controller before showing and release it after close.
 - Source-level tests require the menu bar popover to bypass dynamic edge inference for NSStatusBar windows.
 - Source-level tests require the menu bar popover to treat status-bar-level or higher anchor windows as top anchored.
 - Source-level tests execute menu bar popover geometry for top status-bar anchors and shorter visible screens.
-- Source-level tests require status popover geometry to clamp the horizontal anchor center to the visible screen.
-- Source-level tests require the menu bar popover to reserve popover chrome and clamp the shown window frame into the visible screen.
-- Source-level tests require menu bar popover content height to shrink with any final clamped AppKit window frame instead of clipping inside a smaller outer frame.
-- Source-level tests require the menu bar popover to refit the shown window frame after clamped content height changes.
-- Source-level tests require the menu bar popover to hide the shown window until final frame and content fitting are applied.
-- Source-level tests require menu bar popover content to be restored only after the final constrained frame has been laid out and displayed.
+- Source-level tests require status popover geometry to clamp any screen-derived anchor adjustment back into button-local coordinates.
+- Source-level tests require the menu bar popover to reserve popover chrome before showing without clamping the shown window frame.
+- Source-level tests require menu bar popover content height to be finalized before `show` instead of shrinking after AppKit creates the popover window.
+- Source-level tests require the menu bar popover to avoid post-show window frame refits that desynchronize the arrow.
+- Source-level tests require the menu bar popover to avoid hiding content as a workaround for post-show window movement.
 - Source-level tests require menu bar popover progress bars to use reported-state progress instead of drawing missing values as zero.
 - Source-level tests require the menu bar status item to keep a stable length while the live CPU title refreshes.
 - Source-level tests require the menu bar popover to use dynamic light/dark appearance helpers instead of fixed light panel colors.
@@ -420,6 +417,13 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require widget metric ring tracks and stat tile labels to use dynamic light/dark appearance helpers.
 - Source-level tests require WidgetKit placeholder skeleton tracks and fills to use dynamic light/dark helpers.
 - Source-level tests prevent the dashboard widget preview from using fixed light-only colors in dark mode.
+- Menu bar popover dark appearance uses cool dynamic card colors without drawing a second root material or brown overlay stops.
+- Menu bar popover tracks transient close events and suppresses same-click reopen races when the status item is clicked to close.
+- Menu bar popover prepares size and bounded button-local anchor before showing and never moves the AppKit popover window after `show`, keeping the arrow aligned.
+- Menu bar popover rebuilds its hidden hosting controller for each show cycle and avoids forcing layout on the system status-bar window before calculating the frame.
+- The menu bar popover leaves the outer background, rounded frame, arrow, and shadow to NSPopover instead of nesting a second custom chrome inside the system popover.
+- Menu bar title updates are coalesced from snapshot and CPU-title preference changes, and missing CPU samples keep the status item icon-only.
+- MetricsStore invalidates timers and cancels refresh tasks during deinitialization as a final lifecycle backstop.
 - Source-level tests prevent dashboard network cards from showing normalized chart baselines as measured percentages.
 - Source-level tests require Network page and large widget path capability display to come from public `NWPath` DNS/IPv4/IPv6 support flags.
 - Source-level tests prevent reported false network path support flags from being displayed as not-reported.
@@ -492,6 +496,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Main app refresh: user-selectable 1/2/5 seconds with timer tolerance.
 - Widget timeline: 5 minutes.
 - Shared widget snapshot write and Widget reload request from app: throttled to 60 seconds.
+- Shared widget snapshot storage checks the production bundle identifier and App Group container availability before creating suite UserDefaults, so local ad-hoc builds fall back without blocking on unavailable App Group preferences.
 - Trend history persistence: throttled to 15 seconds, with forced writes when sampling stops or history depth changes.
 - Rationale: WidgetKit is system-scheduled, so the widget should be glanceable and power-friendly rather than pretending to be a real-time monitor.
 
@@ -522,6 +527,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require App Store archive/export to stay separate from local ad-hoc packaging.
 - Source-level tests require PulseDock naming across project generation, shared schemes, archive scripts, and package metadata.
 - Source-level tests require in-app privacy/support links and Mac App Store screenshot validation to remain wired.
+- Local install cleanup removes the legacy System Dashboard bundle only after confirming its old bundle identifier, and unregisters old System Dashboard widget extensions before installing Pulse Dock.
 
 ## Next Implementation Targets
 

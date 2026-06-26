@@ -17,11 +17,6 @@ private struct StatusPopoverPresentation {
     let visibleFrame: NSRect?
 }
 
-private struct HiddenStatusPopoverContent {
-    let view: NSView
-    let alphaValue: CGFloat
-}
-
 private extension MenuBarPopoverGeometry.Edge {
     var nsRectEdge: NSRectEdge {
         switch self {
@@ -34,14 +29,17 @@ private extension MenuBarPopoverGeometry.Edge {
 }
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var dashboardWindow: NSWindow?
     private var statusItem: NSStatusItem?
     private var statusPopover: NSPopover?
     private var statusHostingController: NSHostingController<WidgetPanelView>?
+    private var isStatusPopoverClosing = false
+    private var statusPopoverSuppressToggleUntil: Date?
     private var cancellables = Set<AnyCancellable>()
     private let store = MetricsStore()
     private let router = DashboardRouter()
+    private let statusPopoverToggleSuppressionInterval: TimeInterval = 0.25
     private var menuPopoverSize: NSSize {
         NSSize(width: MenuPopoverLayout.width, height: MenuPopoverLayout.height)
     }
@@ -51,9 +49,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         configureMainMenu()
         showDashboardWindow(activating: true)
         createStatusItem()
-        DispatchQueue.main.async { [store] in
-            store.start()
-        }
+        store.start()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -224,21 +220,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let popover = NSPopover()
         popover.behavior = .transient
-        popover.animates = false
+        popover.animates = true
+        popover.delegate = self
         popover.contentSize = menuPopoverSize
-        let hostingController = makeStatusHostingController(popoverHeight: menuPopoverSize.height)
-        hostingController.preferredContentSize = menuPopoverSize
-        popover.contentViewController = hostingController
-        statusHostingController = hostingController
 
-        store.$snapshot
-            .sink { [weak self] _ in
-                self?.updateStatusButtonTitle()
-            }
-            .store(in: &cancellables)
-
-        store.$showsMenuBarCPU
-            .sink { [weak self] _ in
+        store.$snapshot.combineLatest(store.$showsMenuBarCPU)
+            .sink { [weak self] _, _ in
                 self?.updateStatusButtonTitle()
             }
             .store(in: &cancellables)
@@ -273,16 +260,55 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return hostingController
     }
 
+    private func installFreshStatusHostingController(_ contentSize: NSSize, in popover: NSPopover) {
+        popover.contentViewController = nil
+        statusHostingController = nil
+
+        let hostingController = makeStatusHostingController(popoverHeight: contentSize.height)
+        hostingController.preferredContentSize = contentSize
+        hostingController.view.frame = NSRect(origin: .zero, size: contentSize)
+        hostingController.view.setFrameSize(contentSize)
+        hostingController.view.layoutSubtreeIfNeeded()
+        statusHostingController = hostingController
+        popover.contentViewController = hostingController
+    }
+
+    private func resetStatusPopoverContentHost() {
+        statusPopover?.contentViewController = nil
+        statusHostingController = nil
+    }
+
+    private var statusButtonCPUText: String? {
+        guard store.snapshot.hasCPUUsageReport else { return nil }
+        let text = store.snapshot.cpuText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, text != "未报告" else { return nil }
+        return text
+    }
+
     private func updateStatusButtonTitle() {
-        statusItem?.length = store.showsMenuBarCPU ? MenuBarStatusItemLayout.cpuTitleLength : MenuBarStatusItemLayout.compactLength
-        statusItem?.button?.title = store.showsMenuBarCPU ? " \(store.snapshot.cpuText)" : ""
+        guard store.showsMenuBarCPU else {
+            statusItem?.length = MenuBarStatusItemLayout.compactLength
+            statusItem?.button?.title = ""
+            return
+        }
+
+        guard let cpuText = statusButtonCPUText else {
+            statusItem?.length = MenuBarStatusItemLayout.compactLength
+            statusItem?.button?.title = ""
+            return
+        }
+
+        statusItem?.length = MenuBarStatusItemLayout.cpuTitleLength
+        statusItem?.button?.title = " \(cpuText)"
     }
 
     @objc private func toggleStatusPopover(_ sender: Any?) {
         guard let button = statusItem?.button, let popover = statusPopover else { return }
 
+        guard !shouldSuppressStatusPopoverToggle() else { return }
+
         if popover.isShown {
-            popover.performClose(sender)
+            closeStatusPopover(popover)
         } else {
             let presentation = prepareStatusPopover(popover, for: button)
             showPreparedStatusPopover(popover, for: button, presentation: presentation)
@@ -290,63 +316,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func showPreparedStatusPopover(_ popover: NSPopover, for button: NSStatusBarButton, presentation: StatusPopoverPresentation) {
-        let hiddenContent = hideStatusPopoverContentBeforeShowing(popover)
         popover.show(relativeTo: presentation.anchorRect, of: button, preferredEdge: presentation.preferredEdge)
-        guard let window = popover.contentViewController?.view.window else {
-            restoreStatusPopoverContentAfterShowing(hiddenContent)
-            return
-        }
-
-        let originalAlphaValue = window.alphaValue
-        window.alphaValue = 0
-        constrainStatusPopoverWindow(popover, for: button, presentation: presentation)
-        window.contentView?.layoutSubtreeIfNeeded()
-        window.displayIfNeeded()
-        window.alphaValue = originalAlphaValue
-        restoreStatusPopoverContentAfterShowing(hiddenContent)
-    }
-
-    private func hideStatusPopoverContentBeforeShowing(_ popover: NSPopover) -> HiddenStatusPopoverContent? {
-        guard let view = popover.contentViewController?.view else { return nil }
-        let hiddenContent = HiddenStatusPopoverContent(view: view, alphaValue: view.alphaValue)
-        view.alphaValue = 0
-        return hiddenContent
-    }
-
-    private func restoreStatusPopoverContentAfterShowing(_ hiddenContent: HiddenStatusPopoverContent?) {
-        guard let hiddenContent else { return }
-        hiddenContent.view.alphaValue = hiddenContent.alphaValue
+        popover.contentViewController?.view.window?.contentView?.layoutSubtreeIfNeeded()
     }
 
     private func prepareStatusPopover(_ popover: NSPopover, for button: NSStatusBarButton) -> StatusPopoverPresentation {
-        button.window?.layoutIfNeeded()
         let visibleFrame = statusPopoverVisibleFrame(for: button)
-        let placement = statusPopoverPlacement(for: button)
+        let anchorFrame = statusButtonScreenFrame(button)
+        let placement = statusPopoverPlacement(for: button, visibleFrame: visibleFrame, anchorFrame: anchorFrame)
         let contentSize = placement.size
-        let hostingController = makeStatusHostingController(popoverHeight: contentSize.height)
-        hostingController.preferredContentSize = contentSize
-        hostingController.view.frame = NSRect(origin: .zero, size: contentSize)
-        hostingController.view.setFrameSize(contentSize)
-        hostingController.view.layoutSubtreeIfNeeded()
+        installFreshStatusHostingController(contentSize, in: popover)
         popover.contentSize = contentSize
-        popover.contentViewController = hostingController
-        statusHostingController = hostingController
 
         return StatusPopoverPresentation(
             placement: placement,
-            anchorRect: statusButtonAnchorRect(button, placement: placement),
+            anchorRect: statusButtonAnchorRect(button, placement: placement, anchorFrame: anchorFrame),
             preferredEdge: placement.preferredEdge.nsRectEdge,
             visibleFrame: visibleFrame
         )
     }
 
-    private func statusPopoverPlacement(for button: NSStatusBarButton) -> MenuBarPopoverGeometry.Placement {
+    private func statusPopoverPlacement(
+        for button: NSStatusBarButton,
+        visibleFrame: NSRect?,
+        anchorFrame: NSRect?
+    ) -> MenuBarPopoverGeometry.Placement {
         MenuBarPopoverGeometry.placement(
             preferredSize: menuPopoverSize,
             minimumHeight: MenuPopoverLayout.minimumHeight,
             screenMargin: MenuPopoverLayout.screenMargin,
-            visibleFrame: statusPopoverVisibleFrame(for: button),
-            anchorFrame: statusButtonScreenFrame(button),
+            visibleFrame: visibleFrame,
+            anchorFrame: anchorFrame,
             anchorKind: statusPopoverAnchorKind(for: button)
         )
     }
@@ -369,14 +369,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return window.convertToScreen(button.convert(button.bounds, to: nil))
     }
 
-    private func statusButtonAnchorRect(_ button: NSStatusBarButton, placement: MenuBarPopoverGeometry.Placement) -> NSRect {
+    private func statusButtonAnchorRect(
+        _ button: NSStatusBarButton,
+        placement: MenuBarPopoverGeometry.Placement,
+        anchorFrame: NSRect?
+    ) -> NSRect {
         let bounds = button.bounds
         let anchorWidth = min(max(bounds.width, 18), 30)
-        var anchorCenterX = bounds.midX
+        let proposedAnchorCenterX: CGFloat
         if let anchorScreenMidX = placement.anchorScreenMidX,
-           let buttonFrame = statusButtonScreenFrame(button) {
-            anchorCenterX += anchorScreenMidX - buttonFrame.midX
+           let anchorFrame {
+            proposedAnchorCenterX = bounds.midX + anchorScreenMidX - anchorFrame.midX
+        } else {
+            proposedAnchorCenterX = bounds.midX
         }
+        let minimumAnchorCenterX = bounds.minX + min(anchorWidth, bounds.width) / 2
+        let maximumAnchorCenterX = bounds.maxX - min(anchorWidth, bounds.width) / 2
+        let anchorCenterX = minimumAnchorCenterX <= maximumAnchorCenterX
+            ? min(max(proposedAnchorCenterX, minimumAnchorCenterX), maximumAnchorCenterX)
+            : bounds.midX
+
         return NSRect(
             x: anchorCenterX - anchorWidth / 2,
             y: bounds.minY,
@@ -385,51 +397,50 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
     }
 
-    private func constrainStatusPopoverWindow(_ popover: NSPopover, for button: NSStatusBarButton, presentation: StatusPopoverPresentation) {
-        guard let window = popover.contentViewController?.view.window,
-              let visibleFrame = presentation.visibleFrame ?? statusPopoverVisibleFrame(for: button) else { return }
-
-        var constrainedFrame = MenuBarPopoverGeometry.constrainedWindowFrame(
-            window.frame,
-            visibleFrame: visibleFrame,
-            screenMargin: MenuPopoverLayout.screenMargin
-        )
-        let heightDelta = max(0, window.frame.height - constrainedFrame.height)
-        if heightDelta > 0 {
-            fitStatusPopoverContent(popover, height: popover.contentSize.height - heightDelta)
-            constrainedFrame = MenuBarPopoverGeometry.constrainedWindowFrame(
-                window.frame,
-                visibleFrame: visibleFrame,
-                screenMargin: MenuPopoverLayout.screenMargin
-            )
+    private func shouldSuppressStatusPopoverToggle() -> Bool {
+        if isStatusPopoverClosing {
+            if let statusPopoverSuppressToggleUntil, Date() >= statusPopoverSuppressToggleUntil {
+                isStatusPopoverClosing = false
+                self.statusPopoverSuppressToggleUntil = nil
+                return false
+            }
+            return true
         }
-        guard constrainedFrame != window.frame else { return }
-
-        window.setFrame(constrainedFrame, display: false, animate: false)
+        guard let statusPopoverSuppressToggleUntil else { return false }
+        if Date() < statusPopoverSuppressToggleUntil {
+            return true
+        }
+        self.statusPopoverSuppressToggleUntil = nil
+        return false
     }
 
-    private func fitStatusPopoverContent(_ popover: NSPopover, height: CGFloat) {
-        let fittedHeight = max(1, min(popover.contentSize.height, height))
-        guard fittedHeight < popover.contentSize.height else { return }
-
-        let contentSize = NSSize(width: MenuPopoverLayout.width, height: fittedHeight)
-        let hostingController = makeStatusHostingController(popoverHeight: fittedHeight)
-        hostingController.preferredContentSize = contentSize
-        hostingController.view.frame = NSRect(origin: .zero, size: contentSize)
-        hostingController.view.setFrameSize(contentSize)
-        hostingController.view.layoutSubtreeIfNeeded()
-        popover.contentSize = contentSize
-        popover.contentViewController = hostingController
-        statusHostingController = hostingController
+    private func closeStatusPopover(_ popover: NSPopover) {
+        isStatusPopoverClosing = true
+        statusPopoverSuppressToggleUntil = Date().addingTimeInterval(statusPopoverToggleSuppressionInterval)
+        popover.close()
     }
 
     private func openDashboardFromPopover() {
-        statusPopover?.performClose(nil)
+        if let statusPopover {
+            closeStatusPopover(statusPopover)
+        }
         showDashboardWindow(activating: true)
     }
 
     private func openSettingsFromPopover() {
         router.openSettings()
         openDashboardFromPopover()
+    }
+
+    func popoverWillClose(_ notification: Notification) {
+        guard notification.object as? NSPopover === statusPopover else { return }
+        isStatusPopoverClosing = true
+        statusPopoverSuppressToggleUntil = Date().addingTimeInterval(statusPopoverToggleSuppressionInterval)
+    }
+
+    func popoverDidClose(_ notification: Notification) {
+        guard notification.object as? NSPopover === statusPopover else { return }
+        isStatusPopoverClosing = false
+        resetStatusPopoverContentHost()
     }
 }

@@ -7,8 +7,26 @@ public struct SharedSnapshotStore: @unchecked Sendable {
 
     private let defaults: UserDefaults?
 
-    public init(defaults: UserDefaults? = UserDefaults(suiteName: PulseDockAppGroup.suiteName)) {
+    public init(defaults: UserDefaults?) {
         self.defaults = defaults
+    }
+
+    public init(
+        suiteName: String = PulseDockAppGroup.suiteName,
+        fileManager: FileManager = .default,
+        bundleIdentifier: String? = Bundle.main.bundleIdentifier
+    ) {
+        guard PulseDockAppGroup.supportsAppGroup(bundleIdentifier: bundleIdentifier) else {
+            self.defaults = nil
+            return
+        }
+
+        guard fileManager.containerURL(forSecurityApplicationGroupIdentifier: suiteName) != nil else {
+            self.defaults = nil
+            return
+        }
+
+        self.defaults = UserDefaults(suiteName: suiteName)
     }
 
     public func saveLatestSnapshot(_ snapshot: MetricSnapshot) {

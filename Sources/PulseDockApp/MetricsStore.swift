@@ -89,6 +89,14 @@ final class MetricsStore: ObservableObject {
         }
     }
 
+    deinit {
+        MainActor.assumeIsolated {
+            timer?.invalidate()
+            initialRefreshTask?.cancel()
+            refreshTask?.cancel()
+        }
+    }
+
     func start() {
         guard timer == nil else { return }
         scheduleTimer()
