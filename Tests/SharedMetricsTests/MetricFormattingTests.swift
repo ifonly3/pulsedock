@@ -1124,6 +1124,27 @@ import Testing
     #expect(snapshot.memoryActiveBytes == 0)
 }
 
+@Test func memoryActiveBytesRequiresReportedComposition() {
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.1,
+        memoryUsedBytes: 1_000,
+        memoryTotalBytes: 2_000,
+        memoryWiredBytes: 100,
+        memoryCompressedBytes: 100,
+        hasMemoryCompositionReport: false,
+        loadAverage: 0.1,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
+        timestamp: Date(timeIntervalSince1970: 0)
+    )
+
+    #expect(snapshot.memoryActiveBytes == 0)
+    #expect(snapshot.memoryActiveText == "未报告")
+}
+
 @Test func initializerMemoryCapacityOnlyDoesNotInventZeroByteComposition() throws {
     let snapshot = MetricSnapshot(
         cpuUsage: 0.1,

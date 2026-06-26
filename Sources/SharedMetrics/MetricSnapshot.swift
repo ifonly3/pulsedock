@@ -1047,10 +1047,11 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
 
     public var memoryActiveBytes: UInt64 {
-        guard memoryUsedBytes >= memoryWiredBytes + memoryCompressedBytes else {
-            return 0
-        }
-        return memoryUsedBytes - memoryWiredBytes - memoryCompressedBytes
+        guard hasMemoryCompositionReport else { return 0 }
+        guard memoryUsedBytes >= memoryWiredBytes else { return 0 }
+        let remainingAfterWired = memoryUsedBytes - memoryWiredBytes
+        guard remainingAfterWired >= memoryCompressedBytes else { return 0 }
+        return remainingAfterWired - memoryCompressedBytes
     }
 
     private func reportedMemoryText(_ bytes: UInt64) -> String {
