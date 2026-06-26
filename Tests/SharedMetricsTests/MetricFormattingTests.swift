@@ -7927,6 +7927,15 @@ import Testing
     #expect(project.contains("SharedSnapshotStore.swift"))
 }
 
+@Test func xcodeProjectGenerationUsesDeterministicUUIDs() throws {
+    let generator = try fixture("scripts/generate-xcodeproj.rb")
+
+    #expect(generator.contains("module DeterministicXcodeUUIDs"))
+    #expect(generator.contains("Xcodeproj::Project.prepend(DeterministicXcodeUUIDs)"))
+    #expect(generator.contains("format(\"%024X\", @deterministic_uuid_counter)"))
+    #expect(generator.contains("project.sort"))
+}
+
 @Test func mainWindowSupportsThirteenInchFriendlyMinimumSize() throws {
     let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
 

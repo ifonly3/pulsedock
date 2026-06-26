@@ -4,6 +4,21 @@
 require "xcodeproj"
 require "fileutils"
 
+module DeterministicXcodeUUIDs
+  def generate_available_uuid_list(count = 100)
+    @deterministic_uuid_counter ||= 0
+    new_uuids = Array.new(count) do
+      @deterministic_uuid_counter += 1
+      format("%024X", @deterministic_uuid_counter)
+    end
+    uniques = new_uuids - (@generated_uuids + uuids)
+    @generated_uuids += uniques
+    @available_uuids += uniques
+  end
+end
+
+Xcodeproj::Project.prepend(DeterministicXcodeUUIDs)
+
 root = File.expand_path("..", __dir__)
 project_path = File.join(root, "PulseDock.xcodeproj")
 legacy_project_path = File.join(root, "SystemDashboard.xcodeproj")
@@ -86,6 +101,8 @@ project.targets.each do |target|
     settings.reject! { |key, _| key.start_with?("ASSETCATALOG_COMPILER_") }
   end
 end
+
+project.sort
 
 scheme = Xcodeproj::XCScheme.new
 scheme.add_build_target(app_target)
