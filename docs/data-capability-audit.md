@@ -60,6 +60,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Widget timeline entries store compact snapshots that preserve visible network summary signals while stripping detailed process, network interface, storage, GPU, and display inventory lists.
 - Widget sampler fallback returns the priming sample instead of taking an immediate second sample with near-zero deltas.
 - Main app and widget snapshots warm the sampler before publishing delta-based CPU/network readings, so the first visible sample and resume-after-pause sample are not unprimed or stale counter baselines.
+- Refresh ticks that arrive while sampling is in flight queue one follow-up refresh instead of disappearing silently.
 - Sample timestamp display text reports the system-not-reported state for placeholder or missing timestamp snapshots.
 - Widget headers use minute-level sampled time text so narrow widget families stay readable.
 - Widget headers use explicit sample-time reported-state flags instead of comparing sampled time display text.

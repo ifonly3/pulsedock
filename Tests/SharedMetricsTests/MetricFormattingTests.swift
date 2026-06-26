@@ -3959,8 +3959,24 @@ import Testing
     #expect(metricsStore.contains("initialRefreshTask?.cancel()"))
     #expect(metricsStore.contains("refreshTask?.cancel()"))
     #expect(metricsStore.contains("guard !Task.isCancelled"))
-    #expect(metricsStore.contains("guard !isPaused, refreshTask == nil else { return }"))
+    #expect(metricsStore.contains("guard !isPaused else { return }"))
+    #expect(metricsStore.contains("guard refreshTask == nil else"))
+    #expect(metricsStore.contains("pendingRefreshAfterCurrent = true"))
     #expect(!metricsStore.contains("func start() {\n        guard timer == nil else { return }\n        refresh()\n        scheduleTimer()\n    }"))
+}
+
+@Test func metricsStoreQueuesOnePendingRefreshWhenSamplingIsInFlight() throws {
+    let metricsStore = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+    let audit = try fixture("docs/data-capability-audit.md")
+
+    #expect(metricsStore.contains("@Published private(set) var isRefreshing = false"))
+    #expect(metricsStore.contains("private var pendingRefreshAfterCurrent = false"))
+    #expect(metricsStore.contains("guard refreshTask == nil else"))
+    #expect(metricsStore.contains("pendingRefreshAfterCurrent = true"))
+    #expect(metricsStore.contains("let shouldRunPendingRefresh = pendingRefreshAfterCurrent && !isPaused && !Task.isCancelled"))
+    #expect(metricsStore.contains("if shouldRunPendingRefresh"))
+    #expect(metricsStore.contains("refresh()"))
+    #expect(audit.contains("Refresh ticks that arrive while sampling is in flight queue one follow-up refresh instead of disappearing silently."))
 }
 
 @Test func resumeAfterPauseWarmsSamplerBeforePublishingSnapshot() throws {
@@ -4936,7 +4952,9 @@ import Testing
     #expect(widgetPanel.contains("isPaused ? \"恢复刷新\" : \"暂停刷新\""))
     #expect(metricsStore.contains("@Published private(set) var isPaused"))
     #expect(metricsStore.contains("func togglePause()"))
-    #expect(metricsStore.contains("guard !isPaused, refreshTask == nil else { return }"))
+    #expect(metricsStore.contains("guard !isPaused else { return }"))
+    #expect(metricsStore.contains("guard refreshTask == nil else"))
+    #expect(metricsStore.contains("pendingRefreshAfterCurrent = true"))
     #expect(metricsStore.contains("refreshTask?.cancel()"))
 }
 

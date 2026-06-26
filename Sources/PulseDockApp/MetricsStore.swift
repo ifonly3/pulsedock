@@ -44,6 +44,7 @@ final class MetricsStore: ObservableObject {
     @Published private(set) var snapshot = MetricSnapshot.placeholder
     @Published private(set) var recentSnapshots: [MetricSnapshot] = [.placeholder]
     @Published private(set) var isPaused = false
+    @Published private(set) var isRefreshing = false
     @Published private(set) var refreshInterval: RefreshIntervalOption
     @Published private(set) var historyDepth: HistoryDepthOption
     @Published private(set) var cpuAlertThreshold: Double
@@ -57,6 +58,7 @@ final class MetricsStore: ObservableObject {
     private var timer: Timer?
     private var initialRefreshTask: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
+    private var pendingRefreshAfterCurrent = false
     private var refreshGeneration = 0
     private var lastWidgetReloadDate: Date?
     private var lastHistoryPersistenceDate: Date?
@@ -301,11 +303,18 @@ final class MetricsStore: ObservableObject {
         refreshGeneration += 1
         refreshTask?.cancel()
         refreshTask = nil
+        pendingRefreshAfterCurrent = false
+        isRefreshing = false
     }
 
     private func refresh() {
-        guard !isPaused, refreshTask == nil else { return }
+        guard !isPaused else { return }
+        guard refreshTask == nil else {
+            pendingRefreshAfterCurrent = true
+            return
+        }
 
+        isRefreshing = true
         let sampler = self.sampler
         let generation = refreshGeneration
         refreshTask = Task { @MainActor [weak self] in
@@ -316,6 +325,9 @@ final class MetricsStore: ObservableObject {
             guard let self else { return }
             guard generation == refreshGeneration else { return }
             refreshTask = nil
+            isRefreshing = false
+            let shouldRunPendingRefresh = pendingRefreshAfterCurrent && !isPaused && !Task.isCancelled
+            pendingRefreshAfterCurrent = false
             guard !Task.isCancelled, !isPaused else { return }
 
             var nextSnapshot = sampledSnapshot
@@ -326,6 +338,10 @@ final class MetricsStore: ObservableObject {
             trimHistoryIfNeeded()
             persistHistoryIfNeeded(at: nextSnapshot.timestamp)
             reloadWidgetsIfNeeded(at: nextSnapshot.timestamp)
+
+            if shouldRunPendingRefresh {
+                refresh()
+            }
         }
     }
 
