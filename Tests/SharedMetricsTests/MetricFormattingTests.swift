@@ -266,12 +266,12 @@ import Testing
     #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.cpuRecentSampleLabel, value: snapshot.sampleTimeText, status: snapshot.hasSampleTimeReport ? .normal : .neutral)"))
     #expect(widgetPanel.contains("Text(snapshot.sampleTimeText)"))
     #expect(!widgetPanel.contains("snapshot.timestamp.formatted(.dateTime.hour().minute().second())"))
-    #expect(widget.contains("WidgetHeader(title: \"Pulse Dock\", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)"))
-    #expect(widget.contains("CompactWidgetHeader(title: \"Pulse Dock\", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)"))
-    #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)"))
+    #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)"))
+    #expect(widget.contains("CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)"))
+    #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)"))
     #expect(widget.contains("let hasTimeReport: Bool"))
     #expect(widget.contains("if hasTimeReport {"))
-    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText)\" : title)"))
+    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText), \\(freshnessTone.accessibilityText)\" : \"\\(title), \\(freshnessTone.accessibilityText)\")"))
     #expect(!widget.contains("timeText != \"未报告\""))
     #expect(!widget.contains("timeText == \"未报告\""))
     #expect(!widget.contains("timeText: snapshot.sampleTimeText"))
@@ -4000,7 +4000,7 @@ import Testing
     )
     let blockedPlaceholderCopy = ["等待首次同步", "系统会按时间线刷新"]
 
-    #expect(widget.contains("SystemEntry(date: Date(), snapshot: Self.representativeSnapshot())"))
+    #expect(widget.contains("SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0)"))
     #expect(widget.contains("DispatchQueue.global(qos: .utility).async"))
     #expect(widget.contains("Self.sampledSnapshotForTimeline(now: now)"))
     #expect(widget.contains("private final class WidgetSamplerCache: @unchecked Sendable"))
@@ -4295,6 +4295,10 @@ import Testing
         contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
+    let widgetTokens = try String(
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/WidgetVisualTokens.swift"),
+        encoding: .utf8
+    )
     let audit = try String(
         contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"),
         encoding: .utf8
@@ -4308,8 +4312,8 @@ import Testing
     #expect(mediumWidget.contains("VStack(alignment: .leading, spacing: 9)"))
     #expect(mediumWidget.contains(".font(.system(size: 52, weight: .semibold).monospacedDigit())"))
     #expect(mediumWidget.contains(".foregroundStyle(widgetPrimaryText(for: colorScheme))"))
-    #expect(widget.contains("private func widgetPrimaryText(for colorScheme: ColorScheme) -> Color"))
-    #expect(widget.contains("private func widgetTrackFill(for colorScheme: ColorScheme) -> Color"))
+    #expect(widgetTokens.contains("func widgetPrimaryText(for colorScheme: ColorScheme) -> Color"))
+    #expect(widgetTokens.contains("func widgetTrackFill(for colorScheme: ColorScheme) -> Color"))
     #expect(widget.contains("Capsule().fill(widgetTrackFill(for: colorScheme))"))
     #expect(!widget.contains("Capsule().fill(Color.secondary.opacity(0.14))"))
     #expect(audit.contains("Medium widget layout follows the roomier first-version composition with wider left content, larger CPU type, and relaxed supporting row spacing"))
@@ -4380,10 +4384,11 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(widget.contains("CompactWidgetHeader(title: \"Pulse Dock\""))
+    #expect(widget.contains("CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName"))
     #expect(!widget.contains("CompactWidgetHeader(title: \"System\""))
     #expect(!widget.contains("WidgetHeader(title: \"System\", time: snapshot.timestamp)"))
-    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText)\" : title)"))
+    #expect(widget.contains("Spacer(minLength: 4)"))
+    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText), \\(freshnessTone.accessibilityText)\" : \"\\(title), \\(freshnessTone.accessibilityText)\")"))
     #expect(!widget.contains(".accessibilityLabel(timeText == \"未报告\" ? title : \"\\(title), \\(timeText)\")"))
     #expect(dashboardView.contains("Text(\"Pulse Dock\")"))
     #expect(!dashboardView.contains("Text(\"System\")\n                    .font(.system(size: 14, weight: .semibold))"))
@@ -4931,6 +4936,10 @@ import Testing
         contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
+    let widgetTokens = try String(
+        contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/WidgetVisualTokens.swift"),
+        encoding: .utf8
+    )
     let audit = try String(
         contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"),
         encoding: .utf8
@@ -4947,7 +4956,7 @@ import Testing
     #expect(metricSkeleton.contains(".fill(widgetPlaceholderFill(for: colorScheme))"))
     #expect(placeholderDot.contains("@Environment(\\.colorScheme) private var colorScheme"))
     #expect(placeholderDot.contains(".fill(widgetPlaceholderFill(for: colorScheme))"))
-    #expect(widget.contains("private func widgetPlaceholderFill(for colorScheme: ColorScheme) -> Color"))
+    #expect(widgetTokens.contains("func widgetPlaceholderFill(for colorScheme: ColorScheme) -> Color"))
     #expect(!metricSkeleton.contains(".stroke(Color.secondary.opacity(0.14), lineWidth: 6)"))
     #expect(!metricSkeleton.contains(".fill(Color.secondary.opacity(0.16))"))
     #expect(!placeholderDot.contains(".fill(Color.secondary.opacity(0.16))"))
@@ -8857,6 +8866,7 @@ import Testing
     let dashboardView = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"), encoding: .utf8)
     let widgetPanel = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/WidgetPanelView.swift"), encoding: .utf8)
     let widget = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"), encoding: .utf8)
+    let widgetStrings = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/PulseDockWidgetStrings.swift"), encoding: .utf8)
     let packageManifest = try String(contentsOf: root.appendingPathComponent("Package.swift"), encoding: .utf8)
     let packageScript = try String(contentsOf: root.appendingPathComponent("scripts/package-app.sh"), encoding: .utf8)
     let archiveScript = try String(contentsOf: root.appendingPathComponent("scripts/archive-app-store.sh"), encoding: .utf8)
@@ -8871,10 +8881,11 @@ import Testing
     #expect(appDelegate.contains("accessibilityDescription: \"Pulse Dock\""))
     #expect(dashboardView.contains("Text(\"Pulse Dock\")"))
     #expect(widgetPanel.contains("Text(\"Pulse Dock\")"))
+    #expect(widgetStrings.contains("localized(\"widget.display_name\", defaultValue: \"Pulse Dock\")"))
     #expect(widget.contains(".configurationDisplayName(PulseDockWidgetStrings.widgetDisplayName)"))
-    #expect(widget.contains("WidgetHeader(title: \"Pulse Dock\""))
-    #expect(widget.contains("CompactWidgetHeader(title: \"Pulse Dock\""))
-    #expect(widget.contains("Text(\"Pulse Dock\")"))
+    #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName"))
+    #expect(widget.contains("CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName"))
+    #expect(widget.contains("Text(PulseDockWidgetStrings.widgetDisplayName)"))
     #expect(packageManifest.contains("name: \"PulseDock\""))
     #expect(packageManifest.contains(".executable(name: \"PulseDockApp\", targets: [\"PulseDockApp\"])"))
     #expect(packageManifest.contains("name: \"PulseDockApp\""))
@@ -9075,8 +9086,8 @@ import Testing
     #expect(package.contains("resources: [\n                .process(\"Resources\")\n            ],\n            linkerSettings: [\n                .linkedFramework(\"SwiftUI\"),\n                .linkedFramework(\"WidgetKit\")\n            ]"))
     #expect(package.contains(".testTarget(\n            name: \"SharedMetricsTests\",\n            dependencies: [\"SharedMetrics\", \"PulseDockWidget\"]"))
     #expect(widget.contains("#if !SWIFT_PACKAGE\n@main\nstruct SystemDashboardWidgetBundle: WidgetBundle"))
-    #expect(widget.contains("case .systemLarge:\n                LargeWidget(snapshot: snapshot)"))
-    #expect(widget.contains("default:\n                SmallWidget(snapshot: snapshot)"))
+    #expect(widget.contains("case .systemLarge:\n                LargeWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)"))
+    #expect(widget.contains("default:\n                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)"))
     #expect(widget.contains("return systemSampler.sampleWidgetCompact()"))
     #expect(!widget.contains("return systemSampler.sample()"))
 }
@@ -9247,13 +9258,15 @@ import Testing
 
 @Test func widgetDarkPaletteAvoidsBrownBackgroundStops() throws {
     let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let widgetTokens = try fixture("Sources/PulseDockWidget/WidgetVisualTokens.swift")
     let audit = try fixture("docs/data-capability-audit.md")
 
-    #expect(widget.contains("private func widgetBackgroundColors(for colorScheme: ColorScheme) -> [Color]"))
+    #expect(widgetTokens.contains("func widgetBackgroundColors(for colorScheme: ColorScheme) -> [Color]"))
     #expect(!widget.contains("Color(red: 0.17, green: 0.13, blue: 0.08).opacity(0.82)"))
-    #expect(widget.contains("Color(red: 0.06, green: 0.09, blue: 0.11).opacity(0.82)"))
-    #expect(widget.contains("private enum WidgetColor"))
-    #expect(widget.contains("static func green(for colorScheme: ColorScheme) -> Color"))
+    #expect(!widgetTokens.contains("Color(red: 0.17, green: 0.13, blue: 0.08).opacity(0.82)"))
+    #expect(widgetTokens.contains("Color(red: 0.06, green: 0.09, blue: 0.11).opacity(0.82)"))
+    #expect(widgetTokens.contains("enum WidgetColor"))
+    #expect(widgetTokens.contains("static func green(for colorScheme: ColorScheme) -> Color"))
     #expect(audit.contains("Widget dark-mode palette uses cool neutral stops and color-scheme-aware accents."))
 }
 
@@ -9363,7 +9376,7 @@ import Testing
 
     #expect(widget.contains("private struct WidgetHeader"))
     #expect(widget.contains(".accessibilityElement(children: .combine)"))
-    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText)\" : title)"))
+    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText), \\(freshnessTone.accessibilityText)\" : \"\\(title), \\(freshnessTone.accessibilityText)\")"))
     #expect(widget.contains(".accessibilityHidden(true)"))
 }
 
