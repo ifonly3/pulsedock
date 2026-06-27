@@ -172,6 +172,20 @@ import Testing
     #expect(generator.contains("widget_target.add_resources(shared_resource_files"))
 }
 
+@Test func reviewV2DocumentsUseCorrectedSeverityAndDoNotCarryStaleClaims() throws {
+    let top = try fixture("docs/review/top/final-review-v2.md")
+    let middle = try fixture("docs/review/middle/integrated-review-v2.md")
+    let plan = try fixture("docs/review/REVIEW-PLAN.md")
+
+    #expect(top.contains("CGDisplay can still provide refresh rate"))
+    #expect(top.contains("watchdog risk is unmeasured"))
+    #expect(top.contains("P2-19 removed: undo:/redo: are valid AppKit responder-chain selectors"))
+    #expect(!top.contains("refresh 永远为空"))
+    #expect(!top.contains("无需降级/升级"))
+    #expect(!middle.contains("P0-2 新"))
+    #expect(plan.contains("P0-2 Widget synchronous fallback sampler"))
+}
+
 @Test func appDelegateMenuStringsUsePulseDockAppLocalizationResources() throws {
     let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
     let appStrings = try fixture("Sources/PulseDockApp/PulseDockAppStrings.swift")
