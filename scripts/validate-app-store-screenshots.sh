@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SCREENSHOT_DIR="${SCREENSHOT_DIR:-$ROOT_DIR/docs/app-store/screenshots}"
+SCREENSHOT_LOCALE="${SCREENSHOT_LOCALE:-en}"
+SCREENSHOT_DIR="${SCREENSHOT_DIR:-$ROOT_DIR/docs/app-store/screenshots/$SCREENSHOT_LOCALE}"
 expected_files=(
   "01-overview.png"
   "02-cpu-memory.png"
@@ -11,6 +12,7 @@ expected_files=(
   "05-settings-history.png"
 )
 expected_files_text="Expected files: 01-overview.png, 02-cpu-memory.png, 03-network-storage.png, 04-widget-popover.png, 05-settings-history.png."
+screenshot_locale_hint="Capture English screenshots in docs/app-store/screenshots/en for global release, or run SCREENSHOT_LOCALE=zh-Hans scripts/validate-app-store-screenshots.sh to validate the existing Chinese screenshots."
 
 if [[ ! -d "$SCREENSHOT_DIR" ]]; then
   echo "Screenshot directory not found: $SCREENSHOT_DIR" >&2
@@ -29,6 +31,7 @@ count="${#screenshots[@]}"
 if (( count != ${#expected_files[@]} )); then
   echo "Mac App Store screenshots must include exactly ${#expected_files[@]} images in $SCREENSHOT_DIR." >&2
   echo "$expected_files_text" >&2
+  echo "$screenshot_locale_hint" >&2
   exit 1
 fi
 

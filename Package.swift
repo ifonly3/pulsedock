@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "PulseDock",
+    defaultLocalization: "en",
     platforms: [
         .macOS(.v14)
     ],
@@ -14,6 +15,9 @@ let package = Package(
     targets: [
         .target(
             name: "SharedMetrics",
+            resources: [
+                .process("Resources")
+            ],
             linkerSettings: [
                 .linkedFramework("CoreGraphics"),
                 .linkedFramework("IOKit"),
@@ -26,6 +30,9 @@ let package = Package(
             name: "PulseDockApp",
             dependencies: ["SharedMetrics"],
             path: "Sources/PulseDockApp",
+            resources: [
+                .process("Resources")
+            ],
             linkerSettings: [
                 .linkedFramework("AppKit"),
                 .linkedFramework("SwiftUI"),

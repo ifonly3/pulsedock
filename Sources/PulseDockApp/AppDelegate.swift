@@ -82,32 +82,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         let appMenuItem = NSMenuItem()
         let appMenu = NSMenu(title: "Pulse Dock")
 
-        appMenu.addItem(NSMenuItem(title: "关于 Pulse Dock", action: #selector(showAboutPanel(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuAbout, action: #selector(showAboutPanel(_:)), keyEquivalent: ""))
         appMenu.addItem(NSMenuItem.separator())
 
-        let settingsItem = NSMenuItem(title: "设置...", action: #selector(openSettingsFromMenu(_:)), keyEquivalent: ",")
+        let settingsItem = NSMenuItem(title: PulseDockAppStrings.mainMenuSettings, action: #selector(openSettingsFromMenu(_:)), keyEquivalent: ",")
         settingsItem.keyEquivalent = ","
         appMenu.addItem(settingsItem)
         appMenu.addItem(NSMenuItem.separator())
 
-        appMenu.addItem(NSMenuItem(title: "隐私政策", action: #selector(openPrivacyPolicyFromMenu(_:)), keyEquivalent: ""))
-        appMenu.addItem(NSMenuItem(title: "支持", action: #selector(openSupportFromMenu(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuPrivacyPolicy, action: #selector(openPrivacyPolicyFromMenu(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuSupport, action: #selector(openSupportFromMenu(_:)), keyEquivalent: ""))
         appMenu.addItem(NSMenuItem.separator())
 
-        let servicesItem = NSMenuItem(title: "服务", action: nil, keyEquivalent: "")
-        let servicesMenu = NSMenu(title: "服务")
+        let servicesItem = NSMenuItem(title: PulseDockAppStrings.mainMenuServices, action: nil, keyEquivalent: "")
+        let servicesMenu = NSMenu(title: PulseDockAppStrings.mainMenuServices)
         servicesItem.submenu = servicesMenu
         appMenu.addItem(servicesItem)
         NSApp.servicesMenu = servicesMenu
         appMenu.addItem(NSMenuItem.separator())
 
-        appMenu.addItem(NSMenuItem(title: "隐藏 Pulse Dock", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h"))
-        let hideOthersItem = NSMenuItem(title: "隐藏其他", action: #selector(NSApplication.hideOtherApplications(_:)), keyEquivalent: "h")
+        appMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuHideApp, action: #selector(NSApplication.hide(_:)), keyEquivalent: "h"))
+        let hideOthersItem = NSMenuItem(title: PulseDockAppStrings.mainMenuHideOthers, action: #selector(NSApplication.hideOtherApplications(_:)), keyEquivalent: "h")
         hideOthersItem.keyEquivalentModifierMask = [.command, .option]
         appMenu.addItem(hideOthersItem)
-        appMenu.addItem(NSMenuItem(title: "全部显示", action: #selector(NSApplication.unhideAllApplications(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuShowAll, action: #selector(NSApplication.unhideAllApplications(_:)), keyEquivalent: ""))
         appMenu.addItem(NSMenuItem.separator())
-        appMenu.addItem(NSMenuItem(title: "退出 Pulse Dock", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        appMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuQuitApp, action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
 
         appMenuItem.submenu = appMenu
         return appMenuItem
@@ -115,19 +115,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
     private func makeEditMenu() -> NSMenuItem {
         let editMenuItem = NSMenuItem()
-        let editMenu = NSMenu(title: "编辑")
+        let editMenu = NSMenu(title: PulseDockAppStrings.mainMenuEdit)
 
-        editMenu.addItem(NSMenuItem(title: "撤销", action: Selector(("undo:")), keyEquivalent: "z"))
-        let redoItem = NSMenuItem(title: "重做", action: Selector(("redo:")), keyEquivalent: "Z")
+        editMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuUndo, action: Selector(("undo:")), keyEquivalent: "z"))
+        let redoItem = NSMenuItem(title: PulseDockAppStrings.mainMenuRedo, action: Selector(("redo:")), keyEquivalent: "Z")
         redoItem.keyEquivalentModifierMask = [.command, .shift]
         editMenu.addItem(redoItem)
         editMenu.addItem(NSMenuItem.separator())
-        editMenu.addItem(NSMenuItem(title: "剪切", action: #selector(NSText.cut(_:)), keyEquivalent: "x"))
-        editMenu.addItem(NSMenuItem(title: "复制", action: #selector(NSText.copy(_:)), keyEquivalent: "c"))
-        editMenu.addItem(NSMenuItem(title: "粘贴", action: #selector(NSText.paste(_:)), keyEquivalent: "v"))
-        editMenu.addItem(NSMenuItem(title: "删除", action: #selector(NSText.delete(_:)), keyEquivalent: ""))
+        editMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuCut, action: #selector(NSText.cut(_:)), keyEquivalent: "x"))
+        editMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuCopy, action: #selector(NSText.copy(_:)), keyEquivalent: "c"))
+        editMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuPaste, action: #selector(NSText.paste(_:)), keyEquivalent: "v"))
+        editMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuDelete, action: #selector(NSText.delete(_:)), keyEquivalent: ""))
         editMenu.addItem(NSMenuItem.separator())
-        editMenu.addItem(NSMenuItem(title: "全选", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a"))
+        editMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuSelectAll, action: #selector(NSText.selectAll(_:)), keyEquivalent: "a"))
 
         editMenuItem.submenu = editMenu
         return editMenuItem
@@ -135,20 +135,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
     private func makeViewMenu() -> NSMenuItem {
         let viewMenuItem = NSMenuItem()
-        let viewMenu = NSMenu(title: "显示")
-        viewMenu.addItem(NSMenuItem(title: "显示总览", action: #selector(showDashboardFromMenu(_:)), keyEquivalent: "1"))
-        viewMenu.addItem(NSMenuItem(title: "打开设置", action: #selector(openSettingsFromMenu(_:)), keyEquivalent: ""))
+        let viewMenu = NSMenu(title: PulseDockAppStrings.mainMenuView)
+        viewMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuShowOverview, action: #selector(showDashboardFromMenu(_:)), keyEquivalent: "1"))
+        viewMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuOpenSettings, action: #selector(openSettingsFromMenu(_:)), keyEquivalent: ""))
         viewMenuItem.submenu = viewMenu
         return viewMenuItem
     }
 
     private func makeWindowMenu() -> NSMenuItem {
         let windowMenuItem = NSMenuItem()
-        let windowMenu = NSMenu(title: "窗口")
-        windowMenu.addItem(NSMenuItem(title: "最小化", action: #selector(NSWindow.miniaturize(_:)), keyEquivalent: "m"))
-        windowMenu.addItem(NSMenuItem(title: "缩放", action: #selector(NSWindow.zoom(_:)), keyEquivalent: ""))
+        let windowMenu = NSMenu(title: PulseDockAppStrings.mainMenuWindow)
+        windowMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuMinimize, action: #selector(NSWindow.miniaturize(_:)), keyEquivalent: "m"))
+        windowMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuZoom, action: #selector(NSWindow.zoom(_:)), keyEquivalent: ""))
         windowMenu.addItem(NSMenuItem.separator())
-        windowMenu.addItem(NSMenuItem(title: "全部置于前方", action: #selector(NSApplication.arrangeInFront(_:)), keyEquivalent: ""))
+        windowMenu.addItem(NSMenuItem(title: PulseDockAppStrings.mainMenuBringAllToFront, action: #selector(NSApplication.arrangeInFront(_:)), keyEquivalent: ""))
         NSApp.windowsMenu = windowMenu
         windowMenuItem.submenu = windowMenu
         return windowMenuItem
@@ -286,7 +286,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var statusButtonCPUText: String? {
         guard store.snapshot.hasCPUUsageReport else { return nil }
         let text = store.snapshot.cpuText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty, text != "未报告" else { return nil }
+        guard !text.isEmpty, text != PulseDockAppStrings.notReported else { return nil }
         return text
     }
 

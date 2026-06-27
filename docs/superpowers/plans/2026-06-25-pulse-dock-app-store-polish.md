@@ -962,7 +962,7 @@ Add:
     let script = try fixture("scripts/audit-localization.sh")
 
     #expect(script.contains("rg --pcre2"))
-    #expect(script.contains("[\\\\p{Han}]"))
+    #expect(script.contains("\\\\p{Script=Han}"))
     #expect(script.contains("Sources/SystemDashboardApp"))
     #expect(script.contains("Sources/SystemDashboardWidget"))
     #expect(script.contains("Sources/SharedMetrics"))
@@ -992,7 +992,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 matches="$(
-  rg --pcre2 -n '[\p{Han}]' \
+  rg --pcre2 -n '\p{Script=Han}' \
     Sources/SystemDashboardApp \
     Sources/SystemDashboardWidget \
     Sources/SharedMetrics \

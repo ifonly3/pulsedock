@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pulse Dock Support</title>
+  <meta name="description" content="Support information for Pulse Dock, a local macOS system monitor.">
+  <style type="text/css">
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f8fb;
+      --fg: #17202a;
+      --muted: #5f6b7a;
+      --panel: #ffffff;
+      --line: #dce2ea;
+      --accent: #2563eb;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101318;
+        --fg: #f1f5f9;
+        --muted: #a7b0bd;
+        --panel: #171b22;
+        --line: #2a313c;
+        --accent: #7aa2ff;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 56px 24px 72px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: clamp(24px, 5vw, 48px);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 36px 0 10px;
+      font-size: 1.2rem;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 16px;
+    }
+
+    ul {
+      margin: 0 0 16px 1.25rem;
+      padding: 0;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.16em;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .summary {
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="panel">
+      <h1>Pulse Dock Support</h1>
+      <p class="meta">Support information for Pulse Dock for macOS</p>
+
+      <p class="summary">
+        Pulse Dock is a local macOS system monitor for the main app, menu bar popover, and WidgetKit extension.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        For support, questions, bug reports, or App Review follow-up, open an issue in the public repository:
+        <a href="https://github.com/ifonly3/pulsedock/issues">github.com/ifonly3/pulsedock/issues</a>.
+      </p>
+      <p>
+        Please do not include private data, personal files, screenshots containing sensitive information, or confidential system details in public issues.
+      </p>
+
+      <h2>What To Include</h2>
+      <p>When reporting a problem, include:</p>
+      <ul>
+        <li>Your macOS version.</li>
+        <li>Your Pulse Dock version and build number.</li>
+        <li>Whether the issue appears in the main window, menu bar popover, or widget.</li>
+        <li>A short description of what happened and what you expected.</li>
+        <li>Steps that reproduce the issue, if you have them.</li>
+      </ul>
+
+      <h2>Supported Platform</h2>
+      <p>
+        Pulse Dock supports macOS 14.0 or later. Release builds are prepared for both Apple silicon and Intel Mac hardware unless a specific release note says otherwise.
+      </p>
+
+      <h2>Privacy</h2>
+      <p>
+        Pulse Dock is designed as a local utility with no account, no tracking, and no analytics. Read the <a href="https://ifonly3.github.io/pulsedock/privacy-policy/">Pulse Dock privacy policy</a> for details.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

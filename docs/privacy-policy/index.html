@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pulse Dock Privacy Policy</title>
+  <meta name="description" content="Privacy policy for Pulse Dock, a local macOS system monitor.">
+  <style type="text/css">
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f8fb;
+      --fg: #17202a;
+      --muted: #5f6b7a;
+      --panel: #ffffff;
+      --line: #dce2ea;
+      --accent: #2563eb;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101318;
+        --fg: #f1f5f9;
+        --muted: #a7b0bd;
+        --panel: #171b22;
+        --line: #2a313c;
+        --accent: #7aa2ff;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 56px 24px 72px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: clamp(24px, 5vw, 48px);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 36px 0 10px;
+      font-size: 1.2rem;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 16px;
+    }
+
+    ul {
+      margin: 0 0 16px 1.25rem;
+      padding: 0;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.16em;
+    }
+
+    .meta {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .summary {
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="panel">
+      <h1>Pulse Dock Privacy Policy</h1>
+      <p class="meta">Effective date: June 27, 2026</p>
+
+      <p class="summary">
+        Pulse Dock is a local macOS system monitor. It samples on-device system metrics so it can display the dashboard, menu bar popover, and WidgetKit extension.
+      </p>
+
+      <h2>Data We Process On Device</h2>
+      <p>
+        Pulse Dock uses public macOS APIs to read local system status, including CPU activity, memory pressure, storage capacity, network counters, battery and thermal state, display information, GPU capability, uptime, and running app status.
+      </p>
+      <p>
+        The app stores settings, sanitized trend history, and a compact latest widget snapshot locally on your Mac. The widget snapshot is shared with the WidgetKit extension through App Group UserDefaults so the widget can display recent local metrics.
+      </p>
+
+      <h2>Data Collection</h2>
+      <p>Pulse Dock does not collect personal data from this app. The current app does not:</p>
+      <ul>
+        <li>Create user accounts or require sign-in.</li>
+        <li>Track users across apps or websites.</li>
+        <li>Send analytics, advertising identifiers, or remote telemetry to the developer.</li>
+        <li>Upload system metrics, running app lists, screenshots, documents, or personal files.</li>
+        <li>Include third-party advertising or analytics SDKs.</li>
+      </ul>
+
+      <h2>Data Sharing</h2>
+      <p>
+        Pulse Dock does not sell, rent, or share user data with third parties. Local app data stays on the Mac unless you choose to share information when contacting support.
+      </p>
+
+      <h2>Retention And Removal</h2>
+      <p>
+        Local settings, trend history, and widget snapshots remain on your Mac for app functionality. You can remove local app data by deleting the app and its associated local containers from macOS.
+      </p>
+
+      <h2>Children's Privacy</h2>
+      <p>
+        Pulse Dock is a general utility app and is not directed to children. Because the app does not collect personal data, it does not knowingly collect personal information from children.
+      </p>
+
+      <h2>Changes To This Policy</h2>
+      <p>
+        If Pulse Dock adds accounts, analytics, crash reporting, remote services, or any other data collection feature in the future, this policy and the App Store privacy answers will be updated before release.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        For support or privacy questions, use the <a href="https://ifonly3.github.io/pulsedock/support/">Pulse Dock support page</a>.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

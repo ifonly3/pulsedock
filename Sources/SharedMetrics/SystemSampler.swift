@@ -188,7 +188,7 @@ private final class NetworkPathObserver: @unchecked Sendable {
         if path.usesInterfaceType(.wiredEthernet) { kinds.append("Ethernet") }
         if path.usesInterfaceType(.cellular) { kinds.append("Cellular") }
         if path.usesInterfaceType(.loopback) { kinds.append("Loopback") }
-        if path.usesInterfaceType(.other) { kinds.append("其他") }
+        if path.usesInterfaceType(.other) { kinds.append(SharedMetricStrings.other) }
         return kinds
     }
 }
@@ -966,7 +966,7 @@ public final class SystemSampler: @unchecked Sendable {
 
             return DisplayMetric(
                 index: index,
-                name: isMain ? "主显示器" : "显示器 \(index + 1)",
+                name: isMain ? SharedMetricStrings.mainDisplay : SharedMetricStrings.display(number: index + 1),
                 pixelWidth: pixelWidth,
                 pixelHeight: pixelHeight,
                 modeWidth: pointWidth,
@@ -1145,7 +1145,7 @@ public final class SystemSampler: @unchecked Sendable {
         case "Bridge": return "Bridge"
         case "Thunderbolt": return "Thunderbolt"
         case "AWDL": return "Apple Wireless Direct"
-        default: return "网络接口"
+        default: return SharedMetricStrings.networkInterface
         }
     }
 
@@ -1179,27 +1179,27 @@ public final class SystemSampler: @unchecked Sendable {
         if name.hasPrefix("utun") || name.hasPrefix("ipsec") || name.hasPrefix("ppp") { return "VPN" }
         if name.hasPrefix("bridge") { return "Bridge" }
         if name.hasPrefix("awdl") || name.hasPrefix("llw") { return "AWDL" }
-        if name.hasPrefix("en") { return "网络接口" }
+        if name.hasPrefix("en") { return SharedMetricStrings.networkInterface }
         if name.hasPrefix("thunderbolt") { return "Thunderbolt" }
-        return "其他"
+        return SharedMetricStrings.other
     }
 
     private func fileSystemName(forPath path: String) -> String {
         var stats = statfs()
-        guard statfs(path, &stats) == 0 else { return "未报告" }
+        guard statfs(path, &stats) == 0 else { return SharedMetricStrings.notReported }
         return Self.stringFromFixedCString(stats.f_fstypename)
     }
 
     private func displayName(for displayID: CGDirectDisplayID, index: Int) -> String {
         if CGDisplayIsBuiltin(displayID) != 0 {
-            return "内建显示器"
+            return SharedMetricStrings.builtInDisplay
         }
 
         if displayID == CGMainDisplayID() {
-            return "主显示器"
+            return SharedMetricStrings.mainDisplay
         }
 
-        return "外接显示器 \(index + 1)"
+        return SharedMetricStrings.externalDisplay(number: index + 1)
     }
 
     private func intValue(_ value: Any?) -> Int? {

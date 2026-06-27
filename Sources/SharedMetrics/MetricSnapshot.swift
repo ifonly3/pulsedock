@@ -66,33 +66,32 @@ public struct ProcessMetric: Codable, Equatable, Sendable, Identifiable {
     }
 
     private static func reportedName(_ name: String?) -> String {
-        let trimmed = name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmed.isEmpty ? "未报告" : trimmed
+        SharedMetricStrings.reportedTextOrNotReported(name)
     }
 
     public var stateText: String {
-        guard hasStateReport else { return "未报告" }
-        if isActive { return "前台" }
-        if isHidden { return "已隐藏" }
+        guard hasStateReport else { return SharedMetricStrings.notReported }
+        if isActive { return SharedMetricStrings.processStateForeground }
+        if isHidden { return SharedMetricStrings.processStateHidden }
 
         let trimmedPolicy = activationPolicy?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmedPolicy.isEmpty ? "运行" : trimmedPolicy
+        return trimmedPolicy.isEmpty ? SharedMetricStrings.processStateRunning : trimmedPolicy
     }
 
     public var architectureText: String {
         let trimmedArchitecture = architecture?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmedArchitecture.isEmpty ? "系统未报告" : trimmedArchitecture
+        return trimmedArchitecture.isEmpty ? SharedMetricStrings.systemDidNotReport : trimmedArchitecture
     }
 
     public var launchText: String {
-        guard let launchDate else { return "系统未报告" }
+        guard let launchDate else { return SharedMetricStrings.systemDidNotReport }
         return launchDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits).hour().minute())
     }
 
     public var hasInventoryReport: Bool {
         let trimmedPolicy = activationPolicy?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let trimmedArchitecture = architecture?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return name != "未报告"
+        return !SharedMetricStrings.isNotReportedText(name)
             || hasStateReport
             || launchDate != nil
             || !trimmedPolicy.isEmpty
@@ -100,7 +99,7 @@ public struct ProcessMetric: Codable, Equatable, Sendable, Identifiable {
     }
 
     public static func listSubtitle(for processes: [ProcessMetric], defaultSubtitle: String) -> String {
-        processes.contains(where: \.hasInventoryReport) ? defaultSubtitle : "未报告"
+        processes.contains(where: \.hasInventoryReport) ? defaultSubtitle : SharedMetricStrings.notReported
     }
 }
 
@@ -194,28 +193,27 @@ public struct GPUDeviceMetric: Codable, Equatable, Sendable, Identifiable {
     }
 
     private static func reportedGPUName(_ name: String?) -> String {
-        let trimmed = name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmed.isEmpty || trimmed == "GPU" ? "未报告" : trimmed
+        SharedMetricStrings.reportedGPUName(name)
     }
 
     public var kindText: String {
-        guard hasDeviceKindReport else { return "未报告" }
-        if isRemovable { return "外置" }
-        return isLowPower ? "低功耗" : "高性能"
+        guard hasDeviceKindReport else { return SharedMetricStrings.notReported }
+        if isRemovable { return SharedMetricStrings.gpuKindExternal }
+        return isLowPower ? SharedMetricStrings.gpuKindLowPower : SharedMetricStrings.gpuKindHighPerformance
     }
 
     public var unifiedMemoryText: String {
-        guard hasUnifiedMemoryReport else { return "未报告" }
-        return hasUnifiedMemory ? "是" : "否"
+        guard hasUnifiedMemoryReport else { return SharedMetricStrings.notReported }
+        return hasUnifiedMemory ? SharedMetricStrings.booleanYes : SharedMetricStrings.booleanNo
     }
 
     public var recommendedWorkingSetText: String {
-        guard recommendedMaxWorkingSetBytes > 0 else { return "未报告" }
+        guard recommendedMaxWorkingSetBytes > 0 else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(recommendedMaxWorkingSetBytes)
     }
 
     public var threadgroupMemoryText: String {
-        guard maxThreadgroupMemoryLength > 0 else { return "未报告" }
+        guard maxThreadgroupMemoryLength > 0 else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(UInt64(maxThreadgroupMemoryLength))
     }
 
@@ -223,17 +221,17 @@ public struct GPUDeviceMetric: Codable, Equatable, Sendable, Identifiable {
         guard maxThreadsPerThreadgroupWidth > 0,
               maxThreadsPerThreadgroupHeight > 0,
               maxThreadsPerThreadgroupDepth > 0
-        else { return "未报告" }
+        else { return SharedMetricStrings.notReported }
         return "\(maxThreadsPerThreadgroupWidth)x\(maxThreadsPerThreadgroupHeight)x\(maxThreadsPerThreadgroupDepth)"
     }
 
     public var stateText: String {
-        guard hasDisplayRoleReport else { return "未报告" }
-        return isHeadless ? "计算" : "显示"
+        guard hasDisplayRoleReport else { return SharedMetricStrings.notReported }
+        return isHeadless ? SharedMetricStrings.gpuRoleCompute : SharedMetricStrings.gpuRoleDisplay
     }
 
     public var hasInventoryReport: Bool {
-        name != "未报告"
+        !SharedMetricStrings.isNotReportedText(name)
             || hasDeviceKindReport
             || hasUnifiedMemoryReport
             || hasDisplayRoleReport
@@ -355,22 +353,21 @@ public struct DisplayMetric: Codable, Equatable, Sendable, Identifiable {
     }
 
     private static func reportedDisplayName(_ name: String?) -> String {
-        let trimmed = name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmed.isEmpty || trimmed == "显示器" ? "未报告" : trimmed
+        SharedMetricStrings.reportedDisplayName(name)
     }
 
     public var pixelSizeText: String {
-        guard pixelWidth > 0, pixelHeight > 0 else { return "未报告" }
+        guard pixelWidth > 0, pixelHeight > 0 else { return SharedMetricStrings.notReported }
         return "\(pixelWidth)x\(pixelHeight)"
     }
 
     public var modeSizeText: String {
-        guard modeWidth > 0, modeHeight > 0 else { return "未报告" }
+        guard modeWidth > 0, modeHeight > 0 else { return SharedMetricStrings.notReported }
         return "\(modeWidth)x\(modeHeight)"
     }
 
     public var backingScaleText: String {
-        guard backingScaleFactor > 0 else { return "未报告" }
+        guard backingScaleFactor > 0 else { return SharedMetricStrings.notReported }
         let roundedScale = (backingScaleFactor * 10).rounded() / 10
         if roundedScale.rounded() == roundedScale {
             return String(format: "%.0fx", roundedScale)
@@ -379,37 +376,39 @@ public struct DisplayMetric: Codable, Equatable, Sendable, Identifiable {
     }
 
     public var colorText: String {
-        guard let model = colorSpaceModel, !model.isEmpty else { return "未报告" }
+        guard let model = colorSpaceModel, !model.isEmpty else { return SharedMetricStrings.notReported }
         guard colorComponentCount > 0 else { return model }
         return "\(model) · \(colorComponentCount)"
     }
 
     public var refreshRateText: String {
-        guard refreshRate > 0 else { return "未报告" }
+        guard refreshRate > 0 else { return SharedMetricStrings.notReported }
         return String(format: "%.0f Hz", refreshRate)
     }
 
     public var physicalSizeText: String {
-        guard physicalWidthMillimeters > 0, physicalHeightMillimeters > 0 else { return "未报告" }
+        guard physicalWidthMillimeters > 0, physicalHeightMillimeters > 0 else { return SharedMetricStrings.notReported }
         return "\(physicalWidthMillimeters)x\(physicalHeightMillimeters) mm"
     }
 
     public var rotationText: String {
-        guard hasRotationReport else { return "未报告" }
+        guard hasRotationReport else { return SharedMetricStrings.notReported }
         let normalized = rotationDegrees.truncatingRemainder(dividingBy: 360)
         let positive = normalized < 0 ? normalized + 360 : normalized
         return String(format: "%.0f°", positive)
     }
 
     public var stateText: String {
-        guard hasTopologyReport else { return "未报告" }
-        let role = isMain ? "主屏幕" : (isBuiltin ? "内建" : "外接")
-        let mode = isMirrored ? "镜像" : "扩展"
+        guard hasTopologyReport else { return SharedMetricStrings.notReported }
+        let role = isMain
+            ? SharedMetricStrings.displayTopologyMain
+            : (isBuiltin ? SharedMetricStrings.displayTopologyBuiltIn : SharedMetricStrings.displayTopologyExternal)
+        let mode = isMirrored ? SharedMetricStrings.displayTopologyMirrored : SharedMetricStrings.displayTopologyExtended
         return "\(role) · \(mode)"
     }
 
     public var hasInventoryReport: Bool {
-        name != "未报告"
+        !SharedMetricStrings.isNotReportedText(name)
             || pixelWidth > 0
             || pixelHeight > 0
             || modeWidth > 0
@@ -506,7 +505,7 @@ public struct StorageVolumeMetric: Codable, Equatable, Sendable, Identifiable {
 
     private static func reportedFileSystemName(_ fileSystem: String?) -> String {
         let trimmed = fileSystem?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmed.isEmpty || trimmed == "unknown" ? "未报告" : trimmed
+        return SharedMetricStrings.reportedTextOrNotReported(trimmed == "unknown" ? nil : trimmed)
     }
 
     public var usedBytes: UInt64 {
@@ -530,35 +529,35 @@ public struct StorageVolumeMetric: Codable, Equatable, Sendable, Identifiable {
     }
 
     public var totalText: String {
-        guard hasCapacityReport else { return "未报告" }
+        guard hasCapacityReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(totalBytes)
     }
 
     public var usedText: String {
-        guard hasCapacityReport else { return "未报告" }
+        guard hasCapacityReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(usedBytes)
     }
 
     public var availableText: String {
-        guard let reportedAvailableBytes else { return "未报告" }
+        guard let reportedAvailableBytes else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(reportedAvailableBytes)
     }
 
     public var usageText: String {
-        guard hasCapacityReport else { return "未报告" }
+        guard hasCapacityReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.percentage(usage)
     }
 
     public var kindText: String {
-        guard hasKindReport else { return "未报告" }
-        if isRemovable { return "可移除" }
-        if isEjectable { return "可弹出" }
-        return isInternal ? "内置" : "外置"
+        guard hasKindReport else { return SharedMetricStrings.notReported }
+        if isRemovable { return SharedMetricStrings.storageKindRemovable }
+        if isEjectable { return SharedMetricStrings.storageKindEjectable }
+        return isInternal ? SharedMetricStrings.storageKindInternal : SharedMetricStrings.storageKindExternal
     }
 
     public var accessText: String {
-        guard hasAccessReport else { return "未报告" }
-        return isReadOnly ? "只读" : "可写"
+        guard hasAccessReport else { return SharedMetricStrings.notReported }
+        return isReadOnly ? SharedMetricStrings.storageAccessReadOnly : SharedMetricStrings.storageAccessWritable
     }
 
     public var isExternalVolume: Bool {
@@ -568,7 +567,7 @@ public struct StorageVolumeMetric: Codable, Equatable, Sendable, Identifiable {
     }
 
     public var hasInventoryReport: Bool {
-        fileSystem != "未报告"
+        !SharedMetricStrings.isNotReportedText(fileSystem)
             || hasCapacityReport
             || hasKindReport
             || hasAccessReport
@@ -679,48 +678,48 @@ public struct NetworkInterfaceMetric: Codable, Equatable, Sendable, Identifiable
 
     private static func reportedInterfaceDisplayName(_ displayName: String?) -> String {
         let trimmed = displayName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmed.isEmpty || trimmed == "Interface" ? "未报告" : trimmed
+        return trimmed.isEmpty || trimmed == "Interface" ? SharedMetricStrings.notReported : trimmed
     }
 
     private static func reportedInterfaceKind(_ kind: String?) -> String {
         let trimmed = kind?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmed.isEmpty || trimmed == "Other" ? "未报告" : trimmed
+        return trimmed.isEmpty || SharedMetricStrings.isOtherText(trimmed) ? SharedMetricStrings.notReported : trimmed
     }
 
     public var byteCountText: String {
-        guard hasByteCounters, hasByteCounterValues else { return "未报告" }
+        guard hasByteCounters, hasByteCounterValues else { return SharedMetricStrings.notReported }
         return "\(MetricFormatting.compactBytes(bytesReceived)) / \(MetricFormatting.compactBytes(bytesSent))"
     }
 
     public var packetCountText: String {
-        guard let packetsReceived, let packetsSent else { return "未报告" }
+        guard let packetsReceived, let packetsSent else { return SharedMetricStrings.notReported }
         return "\(Self.compactCount(packetsReceived)) / \(Self.compactCount(packetsSent))"
     }
 
     public var packetErrorText: String {
-        guard let receiveErrors, let sendErrors else { return "未报告" }
+        guard let receiveErrors, let sendErrors else { return SharedMetricStrings.notReported }
         return "\(Self.compactCount(receiveErrors)) / \(Self.compactCount(sendErrors))"
     }
 
     public var linkSpeedText: String {
-        guard let linkSpeedBitsPerSecond, linkSpeedBitsPerSecond > 0 else { return "未报告" }
+        guard let linkSpeedBitsPerSecond, linkSpeedBitsPerSecond > 0 else { return SharedMetricStrings.notReported }
         return MetricFormatting.bitRate(bitsPerSecond: Double(linkSpeedBitsPerSecond))
     }
 
     public var mtuText: String {
-        guard let mtu, mtu > 0 else { return "未报告" }
+        guard let mtu, mtu > 0 else { return SharedMetricStrings.notReported }
         return "\(mtu)"
     }
 
     public var stateText: String {
-        guard hasInterfaceStateReport else { return "未报告" }
-        if isLoopback { return "本机" }
-        return isUp ? "在线" : "离线"
+        guard hasInterfaceStateReport else { return SharedMetricStrings.notReported }
+        if isLoopback { return SharedMetricStrings.networkInterfaceStateLoopback }
+        return isUp ? SharedMetricStrings.networkInterfaceStateOnline : SharedMetricStrings.networkInterfaceStateOffline
     }
 
     public var hasInventoryReport: Bool {
-        displayName != "未报告"
-            || kind != "未报告"
+        !SharedMetricStrings.isNotReportedText(displayName)
+            || !SharedMetricStrings.isNotReportedText(kind)
             || hasInterfaceStateReport
             || (hasByteCounters && hasByteCounterValues)
             || packetsReceived != nil
@@ -1055,42 +1054,44 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
 
     private func reportedMemoryText(_ bytes: UInt64) -> String {
-        guard hasMemoryCapacityReport else { return "未报告" }
+        guard hasMemoryCapacityReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(bytes)
     }
 
     private func reportedMemoryCompositionText(_ bytes: UInt64) -> String {
-        guard hasMemoryCapacityReport else { return "未报告" }
-        guard hasMemoryCompositionReport else { return "未报告" }
+        guard hasMemoryCapacityReport else { return SharedMetricStrings.notReported }
+        guard hasMemoryCompositionReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(bytes)
     }
 
     private func reportedSwapText(_ bytes: UInt64) -> String {
-        guard hasMemorySwapReport else { return "未报告" }
+        guard hasMemorySwapReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(bytes)
     }
 
     public var cpuText: String {
-        guard hasCPUUsageReport else { return "未报告" }
+        guard hasCPUUsageReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.percentage(cpuUsage)
     }
     public var cpuBrandText: String {
-        guard let cpuBrandName, !cpuBrandName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return "未报告" }
+        guard let cpuBrandName, !cpuBrandName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return SharedMetricStrings.notReported
+        }
         return cpuBrandName
     }
     private static func reportedCountText(_ value: Int) -> String {
-        value > 0 ? "\(value)" : "未报告"
+        value > 0 ? "\(value)" : SharedMetricStrings.notReported
     }
 
     public var physicalCoreCountText: String { Self.reportedCountText(physicalCoreCount) }
     public var logicalCoreCountText: String { Self.reportedCountText(logicalCoreCount) }
     public var activeProcessorCountText: String { Self.reportedCountText(activeProcessorCount) }
     public var logicalCoreSummaryText: String {
-        logicalCoreCount > 0 ? "\(logicalCoreCount) 逻辑核心" : "未报告"
+        logicalCoreCount > 0 ? SharedMetricStrings.logicalCoreSummary(count: logicalCoreCount) : SharedMetricStrings.notReported
     }
 
     public var memoryUsageText: String {
-        guard hasMemoryCapacityReport else { return "未报告" }
+        guard hasMemoryCapacityReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.percentage(memoryUsage)
     }
     public var memoryText: String { reportedMemoryText(memoryUsedBytes) }
@@ -1104,7 +1105,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     public var memorySwapAvailableText: String { reportedSwapText(memorySwapAvailableBytes) }
     public var memorySwapTotalText: String { reportedSwapText(memorySwapTotalBytes) }
     private func reportedLoadText(_ value: Double) -> String {
-        guard hasLoadAverageReport else { return "未报告" }
+        guard hasLoadAverageReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.load(value)
     }
 
@@ -1121,11 +1122,13 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     public var loadAverage5Progress: Double? { reportedLoadProgress(loadAverage5) }
     public var loadAverage15Progress: Double? { reportedLoadProgress(loadAverage15) }
     public var loadDetailText: String {
-        guard hasLoadAverageReport else { return "未报告" }
+        guard hasLoadAverageReport else { return SharedMetricStrings.notReported }
         return "\(loadAverageText) / \(loadAverage5Text) / \(loadAverage15Text)"
     }
     private func sourceStatusText(hasAnyReport: Bool, hasFullReport: Bool) -> String {
-        hasAnyReport ? (hasFullReport ? "已报告" : "部分报告") : "未报告"
+        hasAnyReport
+            ? (hasFullReport ? SharedMetricStrings.sourceStatusReported : SharedMetricStrings.sourceStatusPartial)
+            : SharedMetricStrings.notReported
     }
     public var cpuMemorySourceStatusText: String {
         sourceStatusText(
@@ -1160,12 +1163,16 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         hasRunningAppCountReport
     }
     public var runningAppSummaryText: String {
-        guard hasRunningAppReport else { return "未报告" }
+        guard hasRunningAppReport else { return SharedMetricStrings.notReported }
         guard hasReportedRunningAppCounts else {
             let reportedListCount = runningApps.filter(\.hasInventoryReport).count
-            return "列表 \(reportedListCount) · 总数未报告"
+            return SharedMetricStrings.runningAppListOnly(reportedListCount: reportedListCount)
         }
-        return "\(processCount) 个 · 前台 \(activeApplicationCount) · 隐藏 \(hiddenApplicationCount)"
+        return SharedMetricStrings.runningAppSummary(
+            processCount: processCount,
+            activeApplicationCount: activeApplicationCount,
+            hiddenApplicationCount: hiddenApplicationCount
+        )
     }
     public var runningAppCountText: String {
         runningAppCountText(processCount)
@@ -1182,11 +1189,11 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
 
     private func runningAppCountText(_ count: Int) -> String {
-        guard hasReportedRunningAppCounts else { return "未报告" }
+        guard hasReportedRunningAppCounts else { return SharedMetricStrings.notReported }
         return "\(count)"
     }
     private func runningAppListCountText(_ count: Int) -> String {
-        guard count > 0 else { return "未报告" }
+        guard count > 0 else { return SharedMetricStrings.notReported }
         return "\(count)"
     }
     public var gpuDisplaySourceStatusText: String {
@@ -1218,11 +1225,11 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
     public var thermalText: String {
         switch thermalState.lowercased() {
-        case "nominal": return "正常"
-        case "warm", "fair": return "偏热"
-        case "hot", "serious": return "较热"
-        case "critical": return "严重"
-        default: return "未报告"
+        case "nominal": return SharedMetricStrings.thermalStateNominal
+        case "warm", "fair": return SharedMetricStrings.thermalStateWarm
+        case "hot", "serious": return SharedMetricStrings.thermalStateHot
+        case "critical": return SharedMetricStrings.thermalStateCritical
+        default: return SharedMetricStrings.notReported
         }
     }
     public var hasThermalStateReport: Bool {
@@ -1235,33 +1242,33 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
     public var thermalLimitText: String {
         switch thermalState.lowercased() {
-        case "critical": return "可能强限制"
-        case "hot", "serious": return "可能降频"
-        case "warm", "fair": return "轻微压力"
-        case "nominal": return "无明显限制"
-        default: return "未报告"
+        case "critical": return SharedMetricStrings.thermalLimitCritical
+        case "hot", "serious": return SharedMetricStrings.thermalLimitHot
+        case "warm", "fair": return SharedMetricStrings.thermalLimitWarm
+        case "nominal": return SharedMetricStrings.thermalLimitNominal
+        default: return SharedMetricStrings.notReported
         }
     }
     public var batteryPercentText: String {
-        guard let batteryPercent else { return "未报告" }
+        guard let batteryPercent else { return SharedMetricStrings.notReported }
         return MetricFormatting.percentage(batteryPercent)
     }
     public var powerSourceText: String {
         switch batteryPowerSource?.lowercased() {
         case "ac power":
-            return batteryIsCharging ? "电源适配器 · 充电中" : "电源适配器"
+            return batteryIsCharging ? SharedMetricStrings.powerSourceAdapterCharging : SharedMetricStrings.powerSourceAdapter
         case "battery power":
-            return "电池供电"
+            return SharedMetricStrings.powerSourceBattery
         case "ups power":
-            return "UPS 供电"
+            return SharedMetricStrings.powerSourceUPS
         case .some(let value) where !value.isEmpty:
             return value
         default:
             if batteryPercent == nil {
-                guard batteryPowerSource != nil else { return "未报告" }
-                return "无电池"
+                guard batteryPowerSource != nil else { return SharedMetricStrings.notReported }
+                return SharedMetricStrings.powerSourceNoBattery
             }
-            return batteryIsCharging ? "电源适配器 · 充电中" : "电源状态未报告"
+            return batteryIsCharging ? SharedMetricStrings.powerSourceAdapterCharging : SharedMetricStrings.powerSourceStateNotReported
         }
     }
     public var powerStatusText: String {
@@ -1307,10 +1314,10 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         }
     }
     public var powerStatusTitle: String {
-        batteryPercent == nil ? "电源" : "电池"
+        batteryPercent == nil ? SharedMetricStrings.powerStatusTitlePower : SharedMetricStrings.powerStatusTitleBattery
     }
     public var networkText: String {
-        guard hasNetworkByteCounters else { return "未报告" }
+        guard hasNetworkByteCounters else { return SharedMetricStrings.notReported }
         return MetricFormatting.networkRate(bytesPerSecond: networkBytesPerSecond)
     }
     public var hasNetworkPathReport: Bool {
@@ -1327,61 +1334,63 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     public var networkPathText: String {
         switch networkPathStatus.lowercased() {
         case "satisfied":
-            return "在线"
+            return SharedMetricStrings.networkPathStatusOnline
         case "unsatisfied":
-            return "离线"
+            return SharedMetricStrings.networkPathStatusOffline
         case "requiresconnection", "requires_connection", "requires connection":
-            return "需连接"
+            return SharedMetricStrings.networkPathStatusRequiresConnection
         default:
-            return "未报告"
+            return SharedMetricStrings.notReported
         }
     }
     public var networkPathDetailText: String {
-        guard hasNetworkPathReport else { return "未报告" }
+        guard hasNetworkPathReport else { return SharedMetricStrings.notReported }
 
         var parts: [String] = []
 
         switch networkPathStatus.lowercased() {
         case "satisfied", "requiresconnection", "requires_connection", "requires connection":
             if networkPathInterfaceKinds.isEmpty {
-                parts.append("本机网络")
+                parts.append(SharedMetricStrings.networkPathLocalNetwork)
             } else {
                 parts.append(networkPathInterfaceKinds.joined(separator: " / "))
             }
         case "unsatisfied":
-            parts.append("无可用连接")
+            parts.append(SharedMetricStrings.networkPathNoConnection)
         default:
-            parts.append("未报告")
+            parts.append(SharedMetricStrings.notReported)
         }
 
         if hasNetworkPathCostReport && networkPathIsConstrained {
-            parts.append("低数据模式")
+            parts.append(SharedMetricStrings.networkPathLowDataMode)
         }
 
         if hasNetworkPathCostReport && networkPathIsExpensive {
-            parts.append("计量网络")
+            parts.append(SharedMetricStrings.networkPathMeteredNetwork)
         }
 
         return parts.joined(separator: " · ")
     }
     public var networkPathCapabilityText: String {
-        guard hasNetworkPathReport else { return "未报告" }
+        guard hasNetworkPathReport else { return SharedMetricStrings.notReported }
 
         if isNetworkPathOffline {
-            return "不可用"
+            return SharedMetricStrings.networkPathUnavailable
         }
 
-        guard hasNetworkPathSupportReport else { return "未报告" }
+        guard hasNetworkPathSupportReport else { return SharedMetricStrings.notReported }
 
         var parts: [String] = []
         if networkPathSupportsDNS { parts.append("DNS") }
         if networkPathSupportsIPv4 { parts.append("IPv4") }
         if networkPathSupportsIPv6 { parts.append("IPv6") }
-        return parts.isEmpty ? "不支持" : parts.joined(separator: " / ")
+        return parts.isEmpty ? SharedMetricStrings.networkPathUnsupported : parts.joined(separator: " / ")
     }
     public var networkRuleStatusText: String {
-        guard hasNetworkPathReport else { return "未报告" }
-        return networkPathStatus.lowercased() == "satisfied" ? "正常" : "注意"
+        guard hasNetworkPathReport else { return SharedMetricStrings.notReported }
+        return networkPathStatus.lowercased() == "satisfied"
+            ? SharedMetricStrings.networkRuleNormal
+            : SharedMetricStrings.networkRuleAttention
     }
     public var networkDNSCapabilityText: String {
         networkPathSupportText(networkPathSupportsDNS)
@@ -1400,73 +1409,73 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
 
     private func networkPathSupportText(_ isSupported: Bool) -> String {
-        guard hasNetworkPathReport else { return "未报告" }
-        guard !isNetworkPathOffline else { return "不可用" }
-        guard hasNetworkPathSupportReport else { return "未报告" }
-        return isSupported ? "支持" : "不支持"
+        guard hasNetworkPathReport else { return SharedMetricStrings.notReported }
+        guard !isNetworkPathOffline else { return SharedMetricStrings.networkPathUnavailable }
+        guard hasNetworkPathSupportReport else { return SharedMetricStrings.notReported }
+        return isSupported ? SharedMetricStrings.networkPathSupported : SharedMetricStrings.networkPathUnsupported
     }
 
     private func networkPathFlagText(_ isEnabled: Bool) -> String {
-        guard hasNetworkPathReport else { return "未报告" }
-        guard !isNetworkPathOffline else { return "不可用" }
-        guard hasNetworkPathCostReport else { return "未报告" }
-        return isEnabled ? "开启" : "关闭"
+        guard hasNetworkPathReport else { return SharedMetricStrings.notReported }
+        guard !isNetworkPathOffline else { return SharedMetricStrings.networkPathUnavailable }
+        guard hasNetworkPathCostReport else { return SharedMetricStrings.notReported }
+        return isEnabled ? SharedMetricStrings.networkPathEnabled : SharedMetricStrings.networkPathDisabled
     }
     public var networkInText: String {
-        guard hasNetworkDirectionByteCounters else { return "未报告" }
+        guard hasNetworkDirectionByteCounters else { return SharedMetricStrings.notReported }
         return MetricFormatting.byteRate(bytesPerSecond: networkInBytesPerSecond)
     }
     public var networkOutText: String {
-        guard hasNetworkDirectionByteCounters else { return "未报告" }
+        guard hasNetworkDirectionByteCounters else { return SharedMetricStrings.notReported }
         return MetricFormatting.byteRate(bytesPerSecond: networkOutBytesPerSecond)
     }
     public var diskText: String {
-        guard hasDiskUsageReport else { return "未报告" }
-        return "\(MetricFormatting.compactBytes(diskFreeBytes)) 可用"
+        guard hasDiskUsageReport else { return SharedMetricStrings.notReported }
+        return SharedMetricStrings.diskAvailableSummary(availableText: MetricFormatting.compactBytes(diskFreeBytes))
     }
     public var diskUsageText: String {
-        guard hasDiskUsageReport else { return "未报告" }
+        guard hasDiskUsageReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.percentage(diskUsage)
     }
     public var diskUsedText: String {
-        guard hasDiskUsageReport else { return "未报告" }
+        guard hasDiskUsageReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(diskUsedBytes)
     }
     public var diskTotalText: String {
-        guard hasDiskUsageReport else { return "未报告" }
+        guard hasDiskUsageReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.bytes(diskTotalBytes)
     }
     public var diskAvailableText: String {
-        guard hasDiskUsageReport else { return "未报告" }
+        guard hasDiskUsageReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.compactBytes(diskFreeBytes)
     }
     public var hasStorageVolumeReport: Bool {
         storageVolumes.contains(where: \.hasInventoryReport)
     }
     public var storageVolumeSummaryText: String {
-        guard hasStorageVolumeReport else { return "未报告" }
+        guard hasStorageVolumeReport else { return SharedMetricStrings.notReported }
         let reportedVolumeCount = storageVolumes.filter(\.hasInventoryReport).count
-        return "\(reportedVolumeCount) 个卷"
+        return SharedMetricStrings.storageVolumeSummary(count: reportedVolumeCount)
     }
     public var hasExternalStorageVolumeSummaryReport: Bool {
         let reportedVolumes = storageVolumes.filter(\.hasInventoryReport)
         return !reportedVolumes.isEmpty && reportedVolumes.allSatisfy(\.hasKindReport)
     }
     public var externalStorageVolumeSummaryText: String {
-        guard hasExternalStorageVolumeSummaryReport else { return "未报告" }
+        guard hasExternalStorageVolumeSummaryReport else { return SharedMetricStrings.notReported }
         let reportedVolumes = storageVolumes.filter(\.hasInventoryReport)
         let externalCount = reportedVolumes.filter(\.isExternalVolume).count
-        return "\(externalCount) 个"
+        return SharedMetricStrings.externalStorageVolumeSummary(count: externalCount)
     }
     public var hasSampleTimeReport: Bool {
         timestamp.timeIntervalSince1970 > 0
     }
     public var sampleTimeText: String {
-        guard hasSampleTimeReport else { return "未报告" }
+        guard hasSampleTimeReport else { return SharedMetricStrings.notReported }
         return timestamp.formatted(.dateTime.hour().minute().second())
     }
     public var sampleClockText: String {
-        guard hasSampleTimeReport else { return "未报告" }
+        guard hasSampleTimeReport else { return SharedMetricStrings.notReported }
         return timestamp.formatted(.dateTime.hour().minute())
     }
     public var hasOSVersionReport: Bool {
@@ -1474,26 +1483,26 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         return !trimmedVersion.isEmpty && trimmedVersion != "macOS"
     }
     public var osVersionText: String {
-        guard hasOSVersionReport else { return "未报告" }
+        guard hasOSVersionReport else { return SharedMetricStrings.notReported }
         return osVersion.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     public var uptimeText: String {
-        guard hasUptimeReport else { return "未报告" }
+        guard hasUptimeReport else { return SharedMetricStrings.notReported }
         return MetricFormatting.duration(uptimeSeconds)
     }
     public var hasKernelReleaseReport: Bool {
         !kernelRelease.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     public var kernelText: String {
-        guard hasKernelReleaseReport else { return "未报告" }
+        guard hasKernelReleaseReport else { return SharedMetricStrings.notReported }
         return "Darwin \(kernelRelease.trimmingCharacters(in: .whitespacesAndNewlines))"
     }
     public var batteryTimeRemainingText: String {
-        guard let batteryTimeRemainingMinutes else { return "未报告" }
+        guard let batteryTimeRemainingMinutes else { return SharedMetricStrings.notReported }
         return MetricFormatting.minutes(batteryTimeRemainingMinutes)
     }
     public var batteryCycleText: String {
-        guard let batteryCycleCount else { return "未报告" }
+        guard let batteryCycleCount else { return SharedMetricStrings.notReported }
         return "\(batteryCycleCount)"
     }
     public var batteryCurrentCapacityText: String {
@@ -1513,40 +1522,40 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
     public var batteryHealthText: String {
         let trimmedHealth = batteryHealth?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        guard !trimmedHealth.isEmpty else { return "未报告" }
+        guard !trimmedHealth.isEmpty else { return SharedMetricStrings.notReported }
 
         switch trimmedHealth.lowercased() {
         case "good":
-            return "良好"
+            return SharedMetricStrings.batteryHealthGood
         case "fair":
-            return "一般"
+            return SharedMetricStrings.batteryHealthFair
         case "poor":
-            return "较差"
+            return SharedMetricStrings.batteryHealthPoor
         case "check battery":
-            return "建议检查"
+            return SharedMetricStrings.batteryHealthCheck
         case "permanent battery failure":
-            return "需要维修"
+            return SharedMetricStrings.batteryHealthService
         default:
             return trimmedHealth
         }
     }
 
     private func reportedBatteryIntegerText(_ value: Int?) -> String {
-        guard let value else { return "未报告" }
+        guard let value else { return SharedMetricStrings.notReported }
         return "\(value)"
     }
 
     private func reportedBatteryElectricalText(_ value: Int?, unit: String) -> String {
-        guard let value else { return "未报告" }
+        guard let value else { return SharedMetricStrings.notReported }
         return "\(value) \(unit)"
     }
     public var gpuSummaryText: String {
         let reportedGPUCount = gpuDevices.filter(\.hasInventoryReport).count
-        guard reportedGPUCount > 0 else { return "未报告" }
-        return "\(reportedGPUCount) 个"
+        guard reportedGPUCount > 0 else { return SharedMetricStrings.notReported }
+        return SharedMetricStrings.gpuSummary(count: reportedGPUCount)
     }
     public var primaryGPUName: String {
-        gpuDevices.first { $0.name != "未报告" }?.name ?? "未报告"
+        gpuDevices.first { !SharedMetricStrings.isNotReportedText($0.name) }?.name ?? SharedMetricStrings.notReported
     }
     public var hasGPUReport: Bool {
         gpuDevices.contains(where: \.hasInventoryReport)
@@ -1560,20 +1569,24 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     public var gpuDisplaySummaryText: String {
         let reportedGPUCount = gpuDevices.filter(\.hasInventoryReport).count
         let reportedDisplayCount = displays.filter(\.hasInventoryReport).count
-        let gpuText = reportedGPUCount == 0 ? "GPU 未报告" : "\(reportedGPUCount) GPU"
-        let displayText = reportedDisplayCount == 0 ? "显示器未报告" : "\(reportedDisplayCount) 显示器"
-        return "\(gpuText) / \(displayText)"
+        let gpuText = reportedGPUCount == 0
+            ? SharedMetricStrings.gpuNotReportedSummary
+            : SharedMetricStrings.gpuSummary(count: reportedGPUCount)
+        let displayText = reportedDisplayCount == 0
+            ? SharedMetricStrings.displayNotReportedSummary
+            : SharedMetricStrings.displaySummary(count: reportedDisplayCount)
+        return SharedMetricStrings.gpuDisplaySummary(gpuText: gpuText, displayText: displayText)
     }
     public var displaySummaryText: String {
         let reportedDisplayCount = displays.filter(\.hasInventoryReport).count
-        guard hasDisplayReport else { return "未报告" }
-        return "\(reportedDisplayCount) 台显示器"
+        guard hasDisplayReport else { return SharedMetricStrings.notReported }
+        return SharedMetricStrings.displaySummary(count: reportedDisplayCount)
     }
     public var networkInterfaceSummary: String {
-        guard hasNetworkInterfaceReport else { return "未报告" }
-        guard networkInterfaces.contains(where: \.hasInterfaceStateReport) else { return "未报告" }
+        guard hasNetworkInterfaceReport else { return SharedMetricStrings.notReported }
+        guard networkInterfaces.contains(where: \.hasInterfaceStateReport) else { return SharedMetricStrings.notReported }
         let activeCount = networkInterfaces.filter { $0.hasInterfaceStateReport && $0.isUp && !$0.isLoopback }.count
-        return "\(activeCount) 个活动接口"
+        return SharedMetricStrings.activeNetworkInterfaceSummary(activeCount: activeCount)
     }
     public var hasNetworkInterfaceReport: Bool {
         networkInterfaces.contains(where: \.hasInterfaceStateReport)

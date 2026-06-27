@@ -2,7 +2,7 @@ import Foundation
 
 public enum MetricFormatting {
     public static func percentage(_ value: Double) -> String {
-        guard value.isFinite else { return "未报告" }
+        guard value.isFinite else { return SharedMetricStrings.notReported }
         let clamped = min(max(value, 0), 1)
         return "\(Int((clamped * 100).rounded()))%"
     }
@@ -47,7 +47,7 @@ public enum MetricFormatting {
     }
 
     public static func bitRate(bitsPerSecond: Double) -> String {
-        guard bitsPerSecond.isFinite else { return "未报告" }
+        guard bitsPerSecond.isFinite else { return SharedMetricStrings.notReported }
         let bitsPerSecond = max(bitsPerSecond, 0)
         if bitsPerSecond >= 1_000_000_000 {
             return String(format: "%.1f Gbps", bitsPerSecond / 1_000_000_000)
@@ -65,12 +65,12 @@ public enum MetricFormatting {
     }
 
     public static func load(_ value: Double) -> String {
-        guard value.isFinite else { return "未报告" }
+        guard value.isFinite else { return SharedMetricStrings.notReported }
         return String(format: "%.1f", value)
     }
 
     public static func duration(_ seconds: TimeInterval) -> String {
-        guard seconds.isFinite else { return "未报告" }
+        guard seconds.isFinite else { return SharedMetricStrings.notReported }
         let totalMinutes = max(Int(seconds / 60), 0)
         return minutes(totalMinutes)
     }

@@ -525,7 +525,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - App Store signing should use the generated Xcode project with Apple-managed signing, production bundle identifiers, and an App Store Connect archive/export workflow.
 - App Store archive/export uses a dedicated script that requires production bundle identifiers and DEVELOPMENT_TEAM, then runs Xcode archive and export with App Store Connect export options.
 - Generated Xcode projects, targets, shared scheme, and archive path use `PulseDock`, while the installed app product name remains `Pulse Dock`.
-- Mac App Store screenshots live in `docs/app-store/screenshots` and are validated by `scripts/validate-app-store-screenshots.sh` before upload.
+- Mac App Store screenshots live in locale-specific directories: English release screenshots in `docs/app-store/screenshots/en/` and Simplified Chinese screenshots in `docs/app-store/screenshots/zh-Hans/`. Validate them with `SCREENSHOT_LOCALE=en scripts/validate-app-store-screenshots.sh` or `SCREENSHOT_LOCALE=zh-Hans scripts/validate-app-store-screenshots.sh` before upload.
 - Generated Xcode projects and local packaging accept DEVELOPMENT_TEAM from the environment for Apple-managed signing while keeping the default unset for local unsigned builds.
 - Local packaging forwards bundle identifiers, version metadata, and DEVELOPMENT_TEAM to both Xcode project generation and xcodebuild, keeping generated project files and archive build settings aligned.
 - Local packaging restores the tracked Xcode project to default production bundle identifiers after local bundle-id builds.

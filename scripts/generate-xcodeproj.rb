@@ -26,6 +26,8 @@ FileUtils.rm_rf(project_path)
 FileUtils.rm_rf(legacy_project_path)
 
 project = Xcodeproj::Project.new(project_path)
+project.root_object.development_region = "en"
+project.root_object.known_regions = ["en", "zh-Hans", "Base"]
 
 shared_group = project.new_group("SharedMetrics", "Sources/SharedMetrics")
 app_group = project.new_group("PulseDockApp", "Sources/PulseDockApp")
@@ -35,6 +37,21 @@ resources_group = project.new_group("Resources", "Resources")
 shared_files = Dir.glob(File.join(root, "Sources/SharedMetrics/*.swift")).sort.map { |path| shared_group.new_file(path) }
 app_files = Dir.glob(File.join(root, "Sources/PulseDockApp/*.swift")).sort.map { |path| app_group.new_file(path) }
 widget_files = Dir.glob(File.join(root, "Sources/PulseDockWidget/*.swift")).sort.map { |path| widget_group.new_file(path) }
+
+shared_resource_files = [
+  "Sources/SharedMetrics/Resources/en.lproj/SharedMetrics.strings",
+  "Sources/SharedMetrics/Resources/zh-Hans.lproj/SharedMetrics.strings"
+].map { |path| shared_group.new_file(File.join(root, path)) }
+app_resource_files = [
+  "Sources/PulseDockApp/Resources/PulseDockApp.xcstrings",
+  "Resources/App/en.lproj/InfoPlist.strings",
+  "Resources/App/zh-Hans.lproj/InfoPlist.strings"
+].map { |path| resources_group.new_file(File.join(root, path)) }
+widget_resource_files = [
+  "Sources/PulseDockWidget/Resources/PulseDockWidget.xcstrings",
+  "Resources/Widget/en.lproj/InfoPlist.strings",
+  "Resources/Widget/zh-Hans.lproj/InfoPlist.strings"
+].map { |path| resources_group.new_file(File.join(root, path)) }
 
 app_info = resources_group.new_file(File.join(root, "Resources/AppInfo.plist"))
 widget_info = resources_group.new_file(File.join(root, "Resources/WidgetInfo.plist"))
@@ -58,8 +75,8 @@ widget_target.product_reference.path = "PulseDockWidgetExtension.appex"
 
 (shared_files + app_files).each { |file| app_target.add_file_references([file]) }
 (shared_files + widget_files).each { |file| widget_target.add_file_references([file]) }
-app_target.add_resources([app_privacy_manifest, app_icon])
-widget_target.add_resources([widget_privacy_manifest])
+app_target.add_resources(shared_resource_files + app_resource_files + [app_privacy_manifest, app_icon])
+widget_target.add_resources(shared_resource_files + widget_resource_files + [widget_privacy_manifest])
 
 app_target.add_system_framework("SwiftUI")
 app_target.add_system_framework("AppKit")

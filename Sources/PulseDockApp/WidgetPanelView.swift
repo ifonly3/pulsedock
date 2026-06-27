@@ -52,26 +52,26 @@ private struct MenuPopoverPreview: View {
                 VStack(alignment: .leading, spacing: 11) {
                     VStack(spacing: 7) {
                         PopoverMetricRow(title: "CPU", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green(for: colorScheme))
-                        PopoverMetricRow(title: "内存", value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue(for: colorScheme))
-                        PopoverMetricRow(title: "网络", value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), tint: Palette.cyan(for: colorScheme))
-                        PopoverMetricRow(title: "磁盘", value: snapshot.diskUsageText, detail: snapshot.diskText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber(for: colorScheme))
+                        PopoverMetricRow(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue(for: colorScheme))
+                        PopoverMetricRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), tint: Palette.cyan(for: colorScheme))
+                        PopoverMetricRow(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, detail: snapshot.diskText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber(for: colorScheme))
                     }
 
                     HStack(spacing: 8) {
                         PopoverSmallStat(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot))
-                        PopoverSmallStat(title: "热状态", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState))
-                        PopoverSmallStat(title: "负载", value: snapshot.loadText, tint: reportedTint(hasReport: snapshot.hasLoadAverageReport, fallback: Palette.green(for: colorScheme)))
+                        PopoverSmallStat(title: PulseDockAppStrings.metricThermalState, value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState))
+                        PopoverSmallStat(title: PulseDockAppStrings.metricLoad, value: snapshot.loadText, tint: reportedTint(hasReport: snapshot.hasLoadAverageReport, fallback: Palette.green(for: colorScheme)))
                     }
 
                     HStack(spacing: 8) {
-                        PopoverSmallStat(title: "网络", value: snapshot.networkPathText, tint: networkTint(snapshot))
-                        PopoverSmallStat(title: "显示器", value: snapshot.displaySummaryText, tint: reportedTint(hasReport: snapshot.hasDisplayReport, fallback: Palette.amber(for: colorScheme)))
-                        PopoverSmallStat(title: "卷", value: snapshot.storageVolumeSummaryText, tint: reportedTint(hasReport: snapshot.hasStorageVolumeReport, fallback: Palette.blue(for: colorScheme)))
+                        PopoverSmallStat(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkPathText, tint: networkTint(snapshot))
+                        PopoverSmallStat(title: PulseDockAppStrings.metricDisplays, value: snapshot.displaySummaryText, tint: reportedTint(hasReport: snapshot.hasDisplayReport, fallback: Palette.amber(for: colorScheme)))
+                        PopoverSmallStat(title: PulseDockAppStrings.metricVolumes, value: snapshot.storageVolumeSummaryText, tint: reportedTint(hasReport: snapshot.hasStorageVolumeReport, fallback: Palette.blue(for: colorScheme)))
                     }
 
                     HStack(spacing: 8) {
-                        PopoverSmallStat(title: "运行", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: Palette.amber(for: colorScheme)))
-                        PopoverSmallStat(title: "内核", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: Palette.cyan(for: colorScheme)))
+                        PopoverSmallStat(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: Palette.amber(for: colorScheme)))
+                        PopoverSmallStat(title: PulseDockAppStrings.metricKernel, value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: Palette.cyan(for: colorScheme)))
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -81,13 +81,13 @@ private struct MenuPopoverPreview: View {
 
             HStack(spacing: 8) {
                 Button(action: openDashboard) {
-                    PopoverActionLabel(icon: "macwindow", title: "打开主窗口")
+                    PopoverActionLabel(icon: "macwindow", title: PulseDockAppStrings.menuOpenMainWindow)
                 }
                 Button(action: togglePause) {
-                    PopoverActionLabel(icon: isPaused ? "play" : "pause", title: isPaused ? "恢复刷新" : "暂停刷新")
+                    PopoverActionLabel(icon: isPaused ? "play" : "pause", title: isPaused ? PulseDockAppStrings.menuResumeRefresh : PulseDockAppStrings.menuPauseRefresh)
                 }
                 Button(action: openSettings) {
-                    PopoverActionLabel(icon: "gearshape", title: "设置")
+                    PopoverActionLabel(icon: "gearshape", title: PulseDockAppStrings.menuSettings)
                 }
             }
             .buttonStyle(.plain)
@@ -119,7 +119,7 @@ private struct MenuPopoverPreview: View {
             let statusTint = isPaused ? Palette.amber(for: colorScheme) : Palette.green(for: colorScheme)
             HStack(spacing: 5) {
                 Circle().fill(statusTint).frame(width: 7, height: 7)
-                Text(isPaused ? "暂停" : "实时")
+                Text(isPaused ? PulseDockAppStrings.menuStatusPaused : PulseDockAppStrings.menuStatusLive)
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(statusTint)
             }
@@ -229,7 +229,7 @@ private struct PopoverMetricRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title), \(value), \(detail)")
-        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? PulseDockAppStrings.notReported)
     }
 }
 

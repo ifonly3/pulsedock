@@ -31,18 +31,19 @@
 - [x] App Group provisioning prerequisite documented for production signing
 - [x] Threshold copy says "阈值判断" / "状态判断" for v1 and does not imply system notifications.
 - [x] Local notifications are deferred to a future opt-in feature.
-- [x] v1 localization decision: zh-Hans only unless full localization audit passes.
+- [x] v1 localization infrastructure declares English and Simplified Chinese resources; global English submission remains blocked until full localization audit passes.
 - [x] Window minimum size lowered and compact layouts verified
 - [x] Disk fallback no longer uses NSHomeDirectory string path
 - [x] Running app naming replaces top-process wording at user-facing boundaries
 - [x] Source folders were renamed to `Sources/PulseDockApp` and `Sources/PulseDockWidget`.
+- [x] Repository-local GitHub Pages sources were added for the support and privacy policy URLs.
 
 ## Still Open
 
 - [ ] Future: design opt-in local threshold notifications in a separate v1.1 feature plan.
 - [ ] If shipping v1 globally, complete a separate full localization sprint before App Store submission.
 - [ ] If shipping v1 without full localization, limit App Store Connect availability to Chinese-language storefronts.
-- [ ] External: publish GitHub Pages privacy/support URLs and verify both return HTTP 200 before App Store submission.
+- [ ] External: publish GitHub Pages privacy/support URLs and run `CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh` before App Store submission.
 - [ ] External: verify App Group sharing with production provisioning, TestFlight, or an App Store-signed archive.
 
 ## Notes

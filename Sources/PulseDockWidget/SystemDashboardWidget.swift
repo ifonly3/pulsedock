@@ -90,7 +90,7 @@ struct SystemDashboardWidget: Widget {
                 }
         }
         .configurationDisplayName("Pulse Dock")
-        .description("在桌面显示 Mac 的 CPU、内存、连接、电池和热状态。")
+        .description(PulseDockWidgetStrings.widgetDescription)
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
         .contentMarginsDisabled()
     }
@@ -124,11 +124,11 @@ private struct SmallWidget: View {
             }
 
             HStack(spacing: 8) {
-                MiniStatus(title: "热", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
+                MiniStatus(title: PulseDockWidgetStrings.miniThermal, value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
                 Spacer()
-                MiniStatus(title: "网", value: snapshot.networkPathText, tint: networkTint(snapshot, for: colorScheme))
+                MiniStatus(title: PulseDockWidgetStrings.miniNetwork, value: snapshot.networkPathText, tint: networkTint(snapshot, for: colorScheme))
                 Spacer()
-                MiniStatus(title: "电", value: compactPowerStatusText(snapshot), tint: powerTint(snapshot, for: colorScheme))
+                MiniStatus(title: PulseDockWidgetStrings.miniPower, value: compactPowerStatusText(snapshot), tint: powerTint(snapshot, for: colorScheme))
             }
         }
         .padding(14)
@@ -159,9 +159,9 @@ private struct MediumWidget: View {
             .frame(width: 166, alignment: .leading)
 
             VStack(spacing: 18) {
-                WidgetRow(title: "内存", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
-                WidgetRow(title: "连接", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
-                WidgetRow(title: "磁盘", value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
+                WidgetRow(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
+                WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
+                WidgetRow(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
             }
             .frame(maxWidth: .infinity)
         }
@@ -176,7 +176,7 @@ private struct MediumStatusStrip: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            MiniStatus(title: "热", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
+            MiniStatus(title: PulseDockWidgetStrings.miniThermal, value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
             MiniStatus(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))
         }
     }
@@ -188,29 +188,29 @@ private struct LargeWidget: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            WidgetHeader(title: "系统状态", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
+            WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
 
             HStack(alignment: .top, spacing: 18) {
                 VStack(alignment: .leading, spacing: 14) {
                     LazyVGrid(columns: largeRingColumns, spacing: 12) {
                         RingMetric(title: "CPU", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
-                        RingMetric(title: "内存", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
-                        RingMetric(title: "磁盘", value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
-                        RingMetric(title: "负载", value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: WidgetColor.green(for: colorScheme))
+                        RingMetric(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
+                        RingMetric(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
+                        RingMetric(title: PulseDockWidgetStrings.metricLoad, value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: WidgetColor.green(for: colorScheme))
                     }
 
                     HStack(spacing: 10) {
                         StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))
-                        StatTile(title: "热状态", value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
+                        StatTile(title: PulseDockWidgetStrings.metricThermalState, value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
                     }
                 }
                 .frame(width: 148, alignment: .topLeading)
 
                 VStack(alignment: .leading, spacing: 12) {
                     LargeWidgetSection {
-                        WidgetRow(title: "连接", value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
-                        WidgetRow(title: "路径", value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
-                        WidgetRow(title: "接口", value: snapshot.networkPathDetailText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
+                        WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
+                        WidgetRow(title: PulseDockWidgetStrings.metricPath, value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
+                        WidgetRow(title: PulseDockWidgetStrings.metricInterface, value: snapshot.networkPathDetailText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
                     }
 
                     LargeInfoGrid(snapshot: snapshot)
@@ -229,11 +229,11 @@ private struct LargeInfoGrid: View {
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
-                StatTile(title: "运行", value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: WidgetColor.amber(for: colorScheme), for: colorScheme))
-                StatTile(title: "系统", value: snapshot.osVersionText, tint: reportedTint(hasReport: snapshot.hasOSVersionReport, fallback: WidgetColor.blue(for: colorScheme), for: colorScheme))
+                StatTile(title: PulseDockWidgetStrings.metricUptime, value: snapshot.uptimeText, tint: reportedTint(hasReport: snapshot.hasUptimeReport, fallback: WidgetColor.amber(for: colorScheme), for: colorScheme))
+                StatTile(title: PulseDockWidgetStrings.metricSystem, value: snapshot.osVersionText, tint: reportedTint(hasReport: snapshot.hasOSVersionReport, fallback: WidgetColor.blue(for: colorScheme), for: colorScheme))
             }
 
-            StatTile(title: "内核", value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: WidgetColor.cyan(for: colorScheme), for: colorScheme))
+            StatTile(title: PulseDockWidgetStrings.metricKernel, value: snapshot.kernelText, tint: reportedTint(hasReport: snapshot.hasKernelReleaseReport, fallback: WidgetColor.cyan(for: colorScheme), for: colorScheme))
         }
     }
 }
@@ -306,11 +306,11 @@ private struct EmptyDataWidget: View {
         }
         .padding(16)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("等待系统监控数据")
+        .accessibilityLabel(PulseDockWidgetStrings.waitingSystemData)
     }
 
     private var loadingLabel: some View {
-        Text("等待数据")
+        Text(PulseDockWidgetStrings.waitingData)
             .font(.system(size: 13, weight: .semibold))
             .foregroundStyle(widgetSecondaryText(for: colorScheme))
             .lineLimit(1)
@@ -482,7 +482,7 @@ private struct RingMetric: View {
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title), \(value)")
-        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? PulseDockWidgetStrings.notReported)
     }
 }
 
@@ -520,7 +520,7 @@ private struct WidgetRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title), \(value)")
-        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? "未报告")
+        .accessibilityValue(progress.map(MetricFormatting.percentage) ?? PulseDockWidgetStrings.notReported)
     }
 }
 
@@ -729,14 +729,14 @@ private func compactPowerStatusText(_ snapshot: MetricSnapshot) -> String {
 
     switch snapshot.batteryPowerSource?.lowercased() {
     case "ac power":
-        return snapshot.batteryIsCharging ? "充电" : "电源"
+        return snapshot.batteryIsCharging ? PulseDockWidgetStrings.compactPowerCharging : PulseDockWidgetStrings.compactPowerAdapter
     case "battery power":
-        return "电池"
+        return PulseDockWidgetStrings.compactPowerBattery
     case "ups power":
         return "UPS"
     case .some:
-        return "外接"
+        return PulseDockWidgetStrings.compactPowerExternal
     default:
-        return "未报告"
+        return PulseDockWidgetStrings.notReported
     }
 }

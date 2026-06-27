@@ -26,7 +26,7 @@ enum HistoryDepthOption: Int, CaseIterable, Identifiable {
 
     var id: Int { rawValue }
     var sampleCount: Int { rawValue }
-    var label: String { "\(rawValue) 次" }
+    var label: String { PulseDockAppStrings.historySampleCount(rawValue) }
 }
 
 private enum DefaultsKeys {
@@ -459,19 +459,19 @@ final class MetricsStore: ObservableObject {
 
     private func reportedApplicationName(_ localizedName: String?) -> String {
         let trimmed = localizedName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmed.isEmpty ? "未报告" : trimmed
+        return trimmed
     }
 
     private func activationPolicyText(_ policy: NSApplication.ActivationPolicy) -> String {
         switch policy {
         case .regular:
-            return "普通"
+            return PulseDockAppStrings.activationPolicyRegular
         case .accessory:
-            return "辅助"
+            return PulseDockAppStrings.activationPolicyAccessory
         case .prohibited:
-            return "后台"
+            return PulseDockAppStrings.activationPolicyBackground
         @unknown default:
-            return "系统未报告"
+            return PulseDockAppStrings.systemDidNotReport
         }
     }
 
