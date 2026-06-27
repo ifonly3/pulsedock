@@ -3226,7 +3226,7 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(sampler.contains("fallbackDisplaysFromScreens()"))
+    #expect(sampler.contains("screenSnapshot.fallbackDisplays"))
     #expect(sampler.contains("NSScreen.screens"))
     #expect(sampler.contains("NSScreen.main"))
 }
@@ -3238,21 +3238,27 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(sampler.contains("let screenRefreshRates = screenRefreshRatesByDisplayID()"))
-    #expect(sampler.contains("modeRefreshRate > 0 ? modeRefreshRate : screenRefreshRates[displayID, default: 0]"))
-    #expect(sampler.contains("private func screenRefreshRatesByDisplayID() -> [CGDirectDisplayID: Double]"))
+    #expect(sampler.contains("let screenSnapshot = screenDisplaySnapshot()"))
+    #expect(sampler.contains("modeRefreshRate > 0 ? modeRefreshRate : screenSnapshot.refreshRatesByDisplayID[displayID, default: 0]"))
+    #expect(sampler.contains("private func screenDisplaySnapshotOnMainThread() -> ScreenDisplaySnapshot"))
     #expect(sampler.contains("NSScreenNumber"))
     #expect(sampler.contains("screen.maximumFramesPerSecond"))
     #expect(sampler.contains("refreshRate: screenRefreshRate(screen)"))
 }
 
-@Test func displaySamplerOnlyUsesNSScreenOnMainThread() throws {
+@Test func systemSamplerRoutesNSScreenMetadataThroughMainThreadInsteadOfDroppingIt() throws {
     let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
     let audit = try fixture("docs/data-capability-audit.md")
 
+    #expect(sampler.contains("private struct ScreenDisplaySnapshot"))
+    #expect(sampler.contains("private func screenDisplaySnapshot() -> ScreenDisplaySnapshot"))
     #expect(sampler.contains("Thread.isMainThread"))
-    #expect(sampler.contains("guard Thread.isMainThread else { return [] }"))
-    #expect(audit.contains("NSScreen fallback sampling is guarded to run only on the main thread."))
+    #expect(sampler.contains("DispatchQueue.main.sync"))
+    #expect(sampler.contains("private func screenDisplaySnapshotOnMainThread() -> ScreenDisplaySnapshot"))
+    #expect(sampler.contains("public func invalidateDisplaysCache()"))
+    #expect(!sampler.contains("guard Thread.isMainThread else { return [] }"))
+    #expect(!sampler.contains("guard Thread.isMainThread else { return [:] }"))
+    #expect(audit.contains("Display metadata that depends on NSScreen is collected through a main-thread snapshot"))
 }
 
 @Test func displayPageShowsSampledModeSizeAndRotation() throws {
@@ -3700,10 +3706,10 @@ import Testing
     )
 
     #expect(metricSnapshot.contains("public var backingScaleFactor: Double"))
-    #expect(sampler.contains("let screenScales = screenScalesByDisplayID()"))
-    #expect(sampler.contains("backingScaleFactor: screenScales[displayID, default: 0]"))
+    #expect(sampler.contains("screenSnapshot.scalesByDisplayID"))
+    #expect(sampler.contains("backingScaleFactor: screenSnapshot.scalesByDisplayID[displayID, default: 0]"))
     #expect(sampler.contains("backingScaleFactor: scale"))
-    #expect(sampler.contains("private func screenScalesByDisplayID() -> [CGDirectDisplayID: Double]"))
+    #expect(sampler.contains("scales[displayID] = Double(scale)"))
     #expect(sampler.contains("screen.backingScaleFactor"))
     #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.displayTableColumns)"))
     #expect(metricSnapshot.contains("public var backingScaleText: String"))
@@ -3733,9 +3739,9 @@ import Testing
     #expect(metricSnapshot.contains("public var colorSpaceModel: String?"))
     #expect(metricSnapshot.contains("public var colorComponentCount: Int"))
     #expect(sampler.contains("private struct DisplayColorSpaceSample"))
-    #expect(sampler.contains("let screenColorSpaces = screenColorSpacesByDisplayID()"))
-    #expect(sampler.contains("colorSpaceModel: screenColorSpaces[displayID]?.model"))
-    #expect(sampler.contains("colorComponentCount: screenColorSpaces[displayID]?.componentCount ?? 0"))
+    #expect(sampler.contains("screenSnapshot.colorSpacesByDisplayID"))
+    #expect(sampler.contains("colorSpaceModel: screenSnapshot.colorSpacesByDisplayID[displayID]?.model"))
+    #expect(sampler.contains("colorComponentCount: screenSnapshot.colorSpacesByDisplayID[displayID]?.componentCount ?? 0"))
     #expect(sampler.contains("colorSpaceModel: colorSpaceModel(screen.colorSpace?.colorSpaceModel)"))
     #expect(sampler.contains("colorComponentCount: screen.colorSpace?.numberOfColorComponents ?? 0"))
     #expect(!sampler.contains("screen.colorSpace?.localizedName"))

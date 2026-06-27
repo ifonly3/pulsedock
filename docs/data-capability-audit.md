@@ -180,7 +180,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - StorageVolumeMetric initializer defaults kind and access to not-reported when only volume capacity is provided.
 - Storage file-system display text reports missing or legacy unknown values as not-reported.
 - Display sampling uses CoreGraphics first and falls back to `NSScreen.screens` when the sandboxed app cannot resolve an active display list. The fallback exposes ordinal display information only.
-- NSScreen fallback sampling is guarded to run only on the main thread.
+- Display metadata that depends on NSScreen is collected through a main-thread snapshot before CoreGraphics display rows are assembled. This preserves Retina scale, color-space model, and refresh fallback when app sampling runs from detached tasks.
 - Display refresh rate uses CoreGraphics display mode first, then `NSScreen.maximumFramesPerSecond` when macOS omits refresh rate from the active display mode.
 - Display backing scale factor uses `NSScreen.backingScaleFactor` mapped by display number. It does not store raw display identifiers in snapshots.
 - Display color information uses `NSScreen.colorSpace` only for generic model and component count. It does not store color profile names.

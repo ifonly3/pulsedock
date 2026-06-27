@@ -49,9 +49,23 @@ private struct TimedSample<Value> {
     var value: Value
 }
 
-private struct DisplayColorSpaceSample {
+private struct DisplayColorSpaceSample: Sendable {
     var model: String
     var componentCount: Int
+}
+
+private struct ScreenDisplaySnapshot: Sendable {
+    var fallbackDisplays: [DisplayMetric]
+    var refreshRatesByDisplayID: [CGDirectDisplayID: Double]
+    var scalesByDisplayID: [CGDirectDisplayID: Double]
+    var colorSpacesByDisplayID: [CGDirectDisplayID: DisplayColorSpaceSample]
+
+    static let empty = ScreenDisplaySnapshot(
+        fallbackDisplays: [],
+        refreshRatesByDisplayID: [:],
+        scalesByDisplayID: [:],
+        colorSpacesByDisplayID: [:]
+    )
 }
 
 private struct StorageVolumeCandidate {
@@ -253,6 +267,13 @@ public final class SystemSampler: @unchecked Sendable {
         defer { sampleLock.unlock() }
 
         previousCPUInfo = []
+    }
+
+    public func invalidateDisplaysCache() {
+        sampleLock.lock()
+        defer { sampleLock.unlock() }
+
+        displaysCache = nil
     }
 
     public func sample(now: Date = Date()) -> MetricSnapshot {
@@ -951,23 +972,21 @@ public final class SystemSampler: @unchecked Sendable {
     }
 
     private func sampleDisplays() -> [DisplayMetric] {
+        let screenSnapshot = screenDisplaySnapshot()
         var displayCount: UInt32 = 0
         guard CGGetActiveDisplayList(0, nil, &displayCount) == .success, displayCount > 0 else {
-            return fallbackDisplaysFromScreens()
+            return screenSnapshot.fallbackDisplays
         }
 
         var displayIDs = [CGDirectDisplayID](repeating: 0, count: Int(displayCount))
         guard CGGetActiveDisplayList(displayCount, &displayIDs, &displayCount) == .success else {
-            return fallbackDisplaysFromScreens()
+            return screenSnapshot.fallbackDisplays
         }
 
-        let screenRefreshRates = screenRefreshRatesByDisplayID()
-        let screenScales = screenScalesByDisplayID()
-        let screenColorSpaces = screenColorSpacesByDisplayID()
         let displays = displayIDs.prefix(Int(displayCount)).enumerated().map { index, displayID in
             let mode = CGDisplayCopyDisplayMode(displayID)
             let modeRefreshRate = mode?.refreshRate ?? 0
-            let refreshRate = modeRefreshRate > 0 ? modeRefreshRate : screenRefreshRates[displayID, default: 0]
+            let refreshRate = modeRefreshRate > 0 ? modeRefreshRate : screenSnapshot.refreshRatesByDisplayID[displayID, default: 0]
             let modeWidth = mode.map { Int($0.width) } ?? Int(CGDisplayPixelsWide(displayID))
             let modeHeight = mode.map { Int($0.height) } ?? Int(CGDisplayPixelsHigh(displayID))
             let screenSize = CGDisplayScreenSize(displayID)
@@ -980,9 +999,9 @@ public final class SystemSampler: @unchecked Sendable {
                 modeWidth: modeWidth,
                 modeHeight: modeHeight,
                 refreshRate: refreshRate,
-                backingScaleFactor: screenScales[displayID, default: 0],
-                colorSpaceModel: screenColorSpaces[displayID]?.model,
-                colorComponentCount: screenColorSpaces[displayID]?.componentCount ?? 0,
+                backingScaleFactor: screenSnapshot.scalesByDisplayID[displayID, default: 0],
+                colorSpaceModel: screenSnapshot.colorSpacesByDisplayID[displayID]?.model,
+                colorComponentCount: screenSnapshot.colorSpacesByDisplayID[displayID]?.componentCount ?? 0,
                 physicalWidthMillimeters: Int(screenSize.width.rounded()),
                 physicalHeightMillimeters: Int(screenSize.height.rounded()),
                 isBuiltin: CGDisplayIsBuiltin(displayID) != 0,
@@ -993,14 +1012,30 @@ public final class SystemSampler: @unchecked Sendable {
                 hasRotationReport: true
             )
         }
-        return displays.isEmpty ? fallbackDisplaysFromScreens() : displays
+        return displays.isEmpty ? screenSnapshot.fallbackDisplays : displays
     }
 
-    private func fallbackDisplaysFromScreens() -> [DisplayMetric] {
+    private func screenDisplaySnapshot() -> ScreenDisplaySnapshot {
 #if canImport(AppKit)
-        guard Thread.isMainThread else { return [] }
+        if Thread.isMainThread {
+            return screenDisplaySnapshotOnMainThread()
+        }
+
+        return DispatchQueue.main.sync {
+            screenDisplaySnapshotOnMainThread()
+        }
+#else
+        return .empty
+#endif
+    }
+
+    private func screenDisplaySnapshotOnMainThread() -> ScreenDisplaySnapshot {
+#if canImport(AppKit)
+        var refreshRates: [CGDirectDisplayID: Double] = [:]
+        var scales: [CGDirectDisplayID: Double] = [:]
+        var colorSpaces: [CGDirectDisplayID: DisplayColorSpaceSample] = [:]
         let mainScreen = NSScreen.main
-        return NSScreen.screens.enumerated().map { index, screen in
+        let fallbackDisplays = NSScreen.screens.enumerated().map { index, screen in
             let scale = screen.backingScaleFactor
             let pointWidth = max(0, Int(screen.frame.width.rounded()))
             let pointHeight = max(0, Int(screen.frame.height.rounded()))
@@ -1008,6 +1043,21 @@ public final class SystemSampler: @unchecked Sendable {
             let pixelHeight = max(0, Int((screen.frame.height * scale).rounded()))
             let isMain = mainScreen.map { screen === $0 } ?? (index == 0)
             let screenSize = physicalScreenSize(screen)
+
+            if let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber {
+                let displayID = CGDirectDisplayID(screenNumber.uint32Value)
+                let refreshRate = screenRefreshRate(screen)
+                if refreshRate > 0 {
+                    refreshRates[displayID] = refreshRate
+                }
+                scales[displayID] = Double(scale)
+                if let model = colorSpaceModel(screen.colorSpace?.colorSpaceModel) {
+                    colorSpaces[displayID] = DisplayColorSpaceSample(
+                        model: model,
+                        componentCount: screen.colorSpace?.numberOfColorComponents ?? 0
+                    )
+                }
+            }
 
             return DisplayMetric(
                 index: index,
@@ -1030,68 +1080,15 @@ public final class SystemSampler: @unchecked Sendable {
                 hasRotationReport: false
             )
         }
+
+        return ScreenDisplaySnapshot(
+            fallbackDisplays: fallbackDisplays,
+            refreshRatesByDisplayID: refreshRates,
+            scalesByDisplayID: scales,
+            colorSpacesByDisplayID: colorSpaces
+        )
 #else
-        return []
-#endif
-    }
-
-    private func screenRefreshRatesByDisplayID() -> [CGDirectDisplayID: Double] {
-#if canImport(AppKit)
-        guard Thread.isMainThread else { return [:] }
-        var rates: [CGDirectDisplayID: Double] = [:]
-        for screen in NSScreen.screens {
-            guard let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber else {
-                continue
-            }
-
-            let refreshRate = screenRefreshRate(screen)
-            guard refreshRate > 0 else { continue }
-            rates[CGDirectDisplayID(screenNumber.uint32Value)] = refreshRate
-        }
-
-        return rates
-#else
-        return [:]
-#endif
-    }
-
-    private func screenScalesByDisplayID() -> [CGDirectDisplayID: Double] {
-#if canImport(AppKit)
-        guard Thread.isMainThread else { return [:] }
-        var scales: [CGDirectDisplayID: Double] = [:]
-        for screen in NSScreen.screens {
-            guard let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber else {
-                continue
-            }
-
-            scales[CGDirectDisplayID(screenNumber.uint32Value)] = Double(screen.backingScaleFactor)
-        }
-
-        return scales
-#else
-        return [:]
-#endif
-    }
-
-    private func screenColorSpacesByDisplayID() -> [CGDirectDisplayID: DisplayColorSpaceSample] {
-#if canImport(AppKit)
-        guard Thread.isMainThread else { return [:] }
-        var colorSpaces: [CGDirectDisplayID: DisplayColorSpaceSample] = [:]
-        for screen in NSScreen.screens {
-            guard let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber,
-                  let model = colorSpaceModel(screen.colorSpace?.colorSpaceModel) else {
-                continue
-            }
-
-            colorSpaces[CGDirectDisplayID(screenNumber.uint32Value)] = DisplayColorSpaceSample(
-                model: model,
-                componentCount: screen.colorSpace?.numberOfColorComponents ?? 0
-            )
-        }
-
-        return colorSpaces
-#else
-        return [:]
+        return .empty
 #endif
     }
 
