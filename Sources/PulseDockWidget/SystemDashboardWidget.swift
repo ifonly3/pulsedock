@@ -136,7 +136,7 @@ struct SystemDashboardWidget: Widget {
                     WidgetBackground()
                 }
         }
-        .configurationDisplayName("Pulse Dock")
+        .configurationDisplayName(PulseDockWidgetStrings.widgetDisplayName)
         .description(PulseDockWidgetStrings.widgetDescription)
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
         .contentMarginsDisabled()
@@ -168,8 +168,8 @@ private struct SmallWidget: View {
             Spacer(minLength: 4)
 
             HStack(spacing: 12) {
-                RingMetric(title: "CPU", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
-                RingMetric(title: "MEM", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
+                RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
+                RingMetric(title: PulseDockWidgetStrings.metricMemoryCompact, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
             }
 
             HStack(spacing: 8) {
@@ -242,7 +242,7 @@ private struct LargeWidget: View {
             HStack(alignment: .top, spacing: 18) {
                 VStack(alignment: .leading, spacing: 14) {
                     LazyVGrid(columns: largeRingColumns, spacing: 12) {
-                        RingMetric(title: "CPU", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
+                        RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
                         RingMetric(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
                         RingMetric(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
                         RingMetric(title: PulseDockWidgetStrings.metricLoad, value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: WidgetColor.green(for: colorScheme))
@@ -457,6 +457,7 @@ private struct WidgetHeader: View {
             Image(systemName: "waveform.path.ecg.rectangle")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(WidgetColor.green(for: colorScheme))
+                .accessibilityHidden(true)
             Text(title)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
@@ -464,6 +465,7 @@ private struct WidgetHeader: View {
             Circle()
                 .fill(WidgetColor.green(for: colorScheme))
                 .frame(width: 6, height: 6)
+                .accessibilityHidden(true)
             Spacer()
             if hasTimeReport {
                 Text(timeText)
@@ -471,6 +473,8 @@ private struct WidgetHeader: View {
                     .foregroundStyle(widgetSecondaryText(for: colorScheme))
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(hasTimeReport ? "\(title), \(timeText)" : title)
     }
 }
 
@@ -485,6 +489,7 @@ private struct CompactWidgetHeader: View {
             Image(systemName: "waveform.path.ecg.rectangle")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(WidgetColor.green(for: colorScheme))
+                .accessibilityHidden(true)
             Text(title)
                 .font(.system(size: 14, weight: .semibold))
                 .lineLimit(1)
@@ -493,7 +498,9 @@ private struct CompactWidgetHeader: View {
             Circle()
                 .fill(WidgetColor.green(for: colorScheme))
                 .frame(width: 6, height: 6)
+                .accessibilityHidden(true)
         }
+        .accessibilityElement(children: .combine)
         .accessibilityLabel(hasTimeReport ? "\(title), \(timeText)" : title)
     }
 }
@@ -510,9 +517,9 @@ private struct RingMetric: View {
             ZStack {
                 Circle()
                     .stroke(widgetTrackFill(for: colorScheme), lineWidth: 6)
-                if let progress {
+                if let progress, let clampedProgress = MetricScales.clampedProgress(progress) {
                     Circle()
-                        .trim(from: 0, to: min(max(progress, 0), 1))
+                        .trim(from: 0, to: clampedProgress)
                         .stroke(tint, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                         .rotationEffect(.degrees(-90))
                 }
@@ -748,8 +755,9 @@ private func reportedProgress(hasReport: Bool, progress: Double) -> Double? {
 }
 
 private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat {
-    let normalizedProgress = min(max(progress, 0), 1)
-    guard normalizedProgress > 0 else { return 0 }
+    guard let normalizedProgress = MetricScales.clampedProgress(progress), normalizedProgress > 0 else {
+        return 0
+    }
     return max(minimumVisibleWidth, totalWidth * normalizedProgress)
 }
 
@@ -782,7 +790,7 @@ private func compactPowerStatusText(_ snapshot: MetricSnapshot) -> String {
     case "battery power":
         return PulseDockWidgetStrings.compactPowerBattery
     case "ups power":
-        return "UPS"
+        return PulseDockWidgetStrings.powerUPS
     case .some:
         return PulseDockWidgetStrings.compactPowerExternal
     default:

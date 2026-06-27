@@ -1,6 +1,10 @@
 import Foundation
 
 enum PulseDockWidgetStrings {
+    static var widgetDisplayName: String {
+        localized("widget.display_name", defaultValue: "Pulse Dock")
+    }
+
     static var widgetDescription: String {
         localized("widget.description", defaultValue: "Show Mac CPU, memory, connection, battery, and thermal status on your desktop.")
     }
@@ -19,6 +23,14 @@ enum PulseDockWidgetStrings {
 
     static var metricMemory: String {
         localized("widget.metric.memory", defaultValue: "Memory")
+    }
+
+    static var metricCPU: String {
+        localized("widget.metric.cpu", defaultValue: "CPU")
+    }
+
+    static var metricMemoryCompact: String {
+        localized("widget.metric.memory_compact", defaultValue: "MEM")
     }
 
     static var metricConnection: String {
@@ -87,6 +99,14 @@ enum PulseDockWidgetStrings {
 
     static var compactPowerExternal: String {
         localized("widget.power.compact.external", defaultValue: "External")
+    }
+
+    static var powerUPS: String {
+        localized("widget.power.ups", defaultValue: "UPS")
+    }
+
+    static var staleData: String {
+        localized("widget.status.stale_data", defaultValue: "Stale data")
     }
 
     static func localized(

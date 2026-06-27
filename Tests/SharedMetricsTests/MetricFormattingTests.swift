@@ -1487,7 +1487,7 @@ import Testing
     #expect(dashboardView.contains("if snapshot.hasMemoryUsageReport && snapshot.hasMemoryCompositionReport {"))
     #expect(widget.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
     #expect(!widget.contains("private func reportedProgress(valueText: String, progress: Double) -> Double?"))
-    #expect(widget.contains("RingMetric(title: \"CPU\", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))"))
+    #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))"))
     #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))"))
     #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))"))
     #expect(widget.contains("WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))"))
@@ -8867,7 +8867,7 @@ import Testing
     #expect(appDelegate.contains("accessibilityDescription: \"Pulse Dock\""))
     #expect(dashboardView.contains("Text(\"Pulse Dock\")"))
     #expect(widgetPanel.contains("Text(\"Pulse Dock\")"))
-    #expect(widget.contains(".configurationDisplayName(\"Pulse Dock\")"))
+    #expect(widget.contains(".configurationDisplayName(PulseDockWidgetStrings.widgetDisplayName)"))
     #expect(widget.contains("WidgetHeader(title: \"Pulse Dock\""))
     #expect(widget.contains("CompactWidgetHeader(title: \"Pulse Dock\""))
     #expect(widget.contains("Text(\"Pulse Dock\")"))
@@ -9332,6 +9332,49 @@ import Testing
     #expect(dashboard.contains("onEditingChanged"))
     #expect(store.contains("private(set) var isRefreshing"))
     #expect(!store.contains("@Published private(set) var isRefreshing"))
+}
+
+@Test func metricScalesRejectsNanProgressBeforeSwiftUITrimAndFrame() {
+    #expect(MetricScales.clampedProgress(Double.nan) == nil)
+    #expect(MetricScales.clampedProgress(Double.infinity) == nil)
+    #expect(MetricScales.clampedProgress(-0.25) == 0)
+    #expect(MetricScales.clampedProgress(1.25) == 1)
+}
+
+@Test func appAndWidgetProgressRenderingUsesFiniteClampHelper() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+    let popover = try fixture("Sources/PulseDockApp/WidgetPanelView.swift")
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+
+    #expect(dashboard.contains("MetricScales.clampedProgress(progress)"))
+    #expect(popover.contains("MetricScales.clampedProgress(progress)"))
+    #expect(widget.contains("MetricScales.clampedProgress(progress)"))
+    #expect(!dashboard.contains("min(max(progress, 0), 1)"))
+    #expect(!popover.contains("min(max(progress, 0), 1)"))
+    #expect(!widget.contains("min(max(progress, 0), 1)"))
+}
+
+@Test func widgetHeaderAndDecorativeMarksHaveAccessibleSemantics() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+
+    #expect(widget.contains("private struct WidgetHeader"))
+    #expect(widget.contains(".accessibilityElement(children: .combine)"))
+    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText)\" : title)"))
+    #expect(widget.contains(".accessibilityHidden(true)"))
+}
+
+@Test func widgetUserFacingShortLabelsAreLocalized() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let strings = try fixture("Sources/PulseDockWidget/PulseDockWidgetStrings.swift")
+
+    #expect(widget.contains(".configurationDisplayName(PulseDockWidgetStrings.widgetDisplayName)"))
+    #expect(widget.contains("PulseDockWidgetStrings.metricCPU"))
+    #expect(widget.contains("PulseDockWidgetStrings.metricMemoryCompact"))
+    #expect(widget.contains("PulseDockWidgetStrings.powerUPS"))
+    #expect(strings.contains("widget.display_name"))
+    #expect(strings.contains("widget.metric.cpu"))
+    #expect(strings.contains("widget.metric.memory_compact"))
+    #expect(strings.contains("widget.power.ups"))
 }
 
 private func fixture(_ path: String) throws -> String {

@@ -1284,9 +1284,9 @@ private struct RingGauge: View {
         ZStack {
             Circle()
                 .stroke(Color.secondary.opacity(0.14), lineWidth: 8)
-            if let progress {
+            if let progress, let clampedProgress = MetricScales.clampedProgress(progress) {
                 Circle()
-                    .trim(from: 0, to: min(max(progress, 0), 1))
+                    .trim(from: 0, to: clampedProgress)
                     .stroke(tint, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .rotationEffect(.degrees(-90))
             }
@@ -1923,8 +1923,9 @@ private func reportedProgress(hasReport: Bool, progress: Double) -> Double? {
 }
 
 private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat {
-    let normalizedProgress = min(max(progress, 0), 1)
-    guard normalizedProgress > 0 else { return 0 }
+    guard let normalizedProgress = MetricScales.clampedProgress(progress), normalizedProgress > 0 else {
+        return 0
+    }
     return max(minimumVisibleWidth, totalWidth * normalizedProgress)
 }
 

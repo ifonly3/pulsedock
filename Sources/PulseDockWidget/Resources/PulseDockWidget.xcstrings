@@ -17,6 +17,22 @@
         }
       }
     },
+    "widget.display_name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulse Dock"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulse Dock"
+          }
+        }
+      }
+    },
     "widget.header.system_status" : {
       "localizations" : {
         "en" : {
@@ -45,6 +61,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "连接"
+          }
+        }
+      }
+    },
+    "widget.metric.cpu" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU"
           }
         }
       }
@@ -119,6 +151,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memory"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内存"
+          }
+        }
+      }
+    },
+    "widget.metric.memory_compact" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MEM"
           }
         },
         "zh-Hans" : {
@@ -349,6 +397,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "外接"
+          }
+        }
+      }
+    },
+    "widget.power.ups" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UPS"
+          }
+        }
+      }
+    },
+    "widget.status.stale_data" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stale data"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据已过期"
           }
         }
       }

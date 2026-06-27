@@ -310,8 +310,9 @@ private func popoverTintFill(_ tint: Color, for colorScheme: ColorScheme) -> Col
 }
 
 private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat {
-    let normalizedProgress = min(max(progress, 0), 1)
-    guard normalizedProgress > 0 else { return 0 }
+    guard let normalizedProgress = MetricScales.clampedProgress(progress), normalizedProgress > 0 else {
+        return 0
+    }
     return max(minimumVisibleWidth, totalWidth * normalizedProgress)
 }
 
