@@ -142,21 +142,6 @@ enum DashboardPage: String, CaseIterable, Identifiable {
     }
 }
 
-private enum DashboardColor {
-    static let canvas = Color(nsColor: .windowBackgroundColor)
-    static let sidebar = Color(nsColor: .controlBackgroundColor).opacity(0.74)
-    static let panel = Color(nsColor: .textBackgroundColor).opacity(0.78)
-    static let panelAlt = Color(nsColor: .controlBackgroundColor).opacity(0.86)
-    static let border = Color(nsColor: .separatorColor).opacity(0.52)
-    static let muted = Color.secondary.opacity(0.74)
-    static let blue = Color(red: 0.14, green: 0.43, blue: 0.95)
-    static let green = Color(red: 0.04, green: 0.62, blue: 0.39)
-    static let amber = Color(red: 0.93, green: 0.54, blue: 0.10)
-    static let red = Color(red: 0.84, green: 0.16, blue: 0.16)
-    static let purple = Color(red: 0.48, green: 0.34, blue: 0.88)
-    static let cyan = Color(red: 0.04, green: 0.56, blue: 0.70)
-}
-
 private struct WindowBackdrop: View {
     @Environment(\.colorScheme) private var colorScheme
 
@@ -204,24 +189,24 @@ private struct DashboardSidebar: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: DashboardSpacing.sm) {
+                HStack(spacing: DashboardSpacing.sm) {
                     Image(systemName: "waveform.path.ecg.rectangle")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(DashboardColor.green)
                     Text("Pulse Dock")
-                        .font(.system(size: 19, weight: .semibold, design: .default))
+                        .font(DashboardTypography.appTitle)
                 }
 
                 Text(PulseDockAppStrings.dashboardSidebarLocalStatus)
-                    .font(.system(size: 12, weight: .medium))
+                    .font(DashboardTypography.caption)
                     .foregroundStyle(DashboardColor.muted)
                     .lineLimit(1)
             }
             .padding(.horizontal, 18)
             .padding(.top, 22)
 
-            VStack(spacing: 4) {
+            VStack(spacing: DashboardSpacing.xs) {
                 ForEach(DashboardPage.allCases) { page in
                     SidebarRow(page: page, isSelected: page == selection) {
                         selection = page
@@ -258,7 +243,7 @@ private struct SidebarRow: View {
                     .font(.system(size: 14, weight: .semibold))
                     .frame(width: 20)
                 Text(page.title)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .medium))
+                    .font(DashboardTypography.body.weight(isSelected ? .semibold : .medium))
                 Spacer()
             }
             .foregroundStyle(isSelected ? Color.primary : Color.secondary)
@@ -318,11 +303,11 @@ private struct DashboardTopBar: View {
 
     var body: some View {
         HStack(spacing: 18) {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: DashboardSpacing.xs) {
                 Text(page.subtitle)
-                    .font(.system(size: 28, weight: .semibold, design: .default))
+                    .font(DashboardTypography.pageTitle)
                 Text(PulseDockAppStrings.dashboardTopBarTagline)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(DashboardTypography.body)
                     .foregroundStyle(DashboardColor.muted)
             }
 
@@ -1290,13 +1275,13 @@ private struct RingGauge: View {
                     .stroke(tint, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .rotationEffect(.degrees(-90))
             }
-            VStack(spacing: 3) {
+            VStack(spacing: DashboardSpacing.xxs) {
                 Text(value)
-                    .font(.system(size: 18, weight: .semibold).monospacedDigit())
+                    .font(DashboardTypography.metricValue)
                     .lineLimit(1)
                     .minimumScaleFactor(0.58)
                 Text(title)
-                    .font(.system(size: 10, weight: .medium))
+                    .font(DashboardTypography.caption)
                     .foregroundStyle(DashboardColor.muted)
             }
         }
@@ -1313,13 +1298,13 @@ private struct TrendRow: View {
     let values: [Double]
 
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
+        HStack(spacing: DashboardSpacing.md) {
+            VStack(alignment: .leading, spacing: DashboardSpacing.xxs) {
                 Text(title)
-                    .font(.system(size: 12, weight: .medium))
+                    .font(DashboardTypography.caption)
                     .foregroundStyle(DashboardColor.muted)
                 Text(value)
-                    .font(.system(size: 17, weight: .semibold).monospacedDigit())
+                    .font(DashboardTypography.metricValue)
             }
             .frame(width: 96, alignment: .leading)
 
@@ -1804,9 +1789,9 @@ private struct ThresholdControlRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: DashboardSpacing.md) {
             Text(title)
-                .font(.system(size: 13, weight: .semibold))
+                .font(DashboardTypography.body.weight(.semibold))
                 .frame(width: 56, alignment: .leading)
             Slider(value: Binding(
                 get: { displayedValue },
@@ -1818,7 +1803,7 @@ private struct ThresholdControlRow: View {
             })
                 .tint(tint)
             Text(MetricFormatting.percentage(displayedValue))
-                .font(.system(size: 12, weight: .semibold).monospacedDigit())
+                .font(DashboardTypography.smallMetricValue)
                 .foregroundStyle(tint)
                 .frame(width: 44, alignment: .trailing)
         }
