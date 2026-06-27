@@ -13,6 +13,7 @@ final class DashboardRouter: ObservableObject {
 }
 
 struct DashboardView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ObservedObject var store: MetricsStore
     @ObservedObject var router: DashboardRouter
 
@@ -34,6 +35,9 @@ struct DashboardView: View {
                             summaryColumns: adaptiveSummaryColumns(for: proxy.size.width),
                             isCompact: isCompact
                         )
+                        .id(router.selectedPage)
+                        .transition(reduceMotion ? .identity : .opacity.combined(with: .move(edge: .trailing)))
+                        .animation(DashboardMotion.page(reduceMotion: reduceMotion), value: router.selectedPage)
                         .padding(.horizontal, 24)
                         .padding(.top, 18)
                         .padding(.bottom, 28)
@@ -232,6 +236,7 @@ private struct DashboardSidebar: View {
 }
 
 private struct SidebarRow: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let page: DashboardPage
     let isSelected: Bool
     let action: () -> Void
@@ -249,10 +254,12 @@ private struct SidebarRow: View {
             .foregroundStyle(isSelected ? Color.primary : Color.secondary)
             .padding(.horizontal, 10)
             .frame(height: 34)
+            .contentShape(Rectangle())
             .background {
                 if isSelected {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
                         .fill(.quaternary.opacity(0.58))
+                        .transition(.opacity)
                 }
             }
             .overlay(alignment: .leading) {
@@ -261,10 +268,12 @@ private struct SidebarRow: View {
                         .fill(DashboardColor.blue)
                         .frame(width: 3, height: 18)
                         .offset(x: -2)
+                        .transition(.opacity)
                 }
             }
         }
         .buttonStyle(.plain)
+        .animation(DashboardMotion.selection(reduceMotion: reduceMotion), value: isSelected)
     }
 }
 
@@ -1260,20 +1269,26 @@ private func widgetPreviewSecondaryText(for colorScheme: ColorScheme) -> Color {
 }
 
 private struct RingGauge: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let title: String
     let value: String
     let progress: Double?
     let tint: Color
 
+    private var clampedProgress: Double? {
+        progress.flatMap(MetricScales.clampedProgress)
+    }
+
     var body: some View {
         ZStack {
             Circle()
                 .stroke(Color.secondary.opacity(0.14), lineWidth: 8)
-            if let progress, let clampedProgress = MetricScales.clampedProgress(progress) {
+            if let clampedProgress {
                 Circle()
                     .trim(from: 0, to: clampedProgress)
                     .stroke(tint, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .rotationEffect(.degrees(-90))
+                    .animation(DashboardMotion.metric(reduceMotion: reduceMotion), value: clampedProgress)
             }
             VStack(spacing: DashboardSpacing.xxs) {
                 Text(value)
@@ -1399,6 +1414,7 @@ private struct CompactMetricLine: View {
 }
 
 private struct StatProgress: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let progress: Double?
     let tint: Color
 
@@ -1411,6 +1427,7 @@ private struct StatProgress: View {
                     Capsule()
                         .fill(tint.gradient)
                         .frame(width: progressFillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 6))
+                        .animation(DashboardMotion.metric(reduceMotion: reduceMotion), value: progress)
                 }
             }
         }
