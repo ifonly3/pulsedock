@@ -24,6 +24,19 @@ validate_bundle_identifier() {
   fi
 }
 
+verify_entitlements() {
+  local bundle_path="$1"
+  local label="$2"
+  local expected_group="group.com.ifonly3.pulsedock"
+  local entitlements
+
+  entitlements="$(codesign -d --entitlements :- "$bundle_path" 2>/dev/null || true)"
+  if ! printf '%s\n' "$entitlements" | grep -Fq "$expected_group"; then
+    echo "error: $label is missing App Group entitlement $expected_group" >&2
+    return 1
+  fi
+}
+
 require_env APP_BUNDLE_IDENTIFIER
 require_env DEVELOPMENT_TEAM
 
@@ -101,6 +114,11 @@ xcodebuild \
   "${ARCHIVE_BUILD_SETTINGS[@]}" \
   "${PROVISIONING_FLAGS[@]}" \
   archive
+
+APP_PRODUCT="$ARCHIVE_PATH/Products/Applications/Pulse Dock.app"
+WIDGET_PRODUCT="$APP_PRODUCT/Contents/PlugIns/PulseDockWidgetExtension.appex"
+verify_entitlements "$APP_PRODUCT" "Pulse Dock.app"
+verify_entitlements "$WIDGET_PRODUCT" "PulseDockWidgetExtension.appex"
 
 xcodebuild \
   -exportArchive \

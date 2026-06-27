@@ -28,6 +28,9 @@ FileUtils.rm_rf(legacy_project_path)
 project = Xcodeproj::Project.new(project_path)
 project.root_object.development_region = "en"
 project.root_object.known_regions = ["en", "zh-Hans", "Base"]
+project.build_configurations.each do |config|
+  config.build_settings["SWIFT_VERSION"] = "6.0"
+end
 
 shared_group = project.new_group("SharedMetrics", "Sources/SharedMetrics")
 app_group = project.new_group("PulseDockApp", "Sources/PulseDockApp")

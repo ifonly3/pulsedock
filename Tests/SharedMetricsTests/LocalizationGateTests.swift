@@ -131,6 +131,47 @@ import Testing
     #expect(release.contains("Source folders: `Sources/PulseDockApp` and `Sources/PulseDockWidget`"))
 }
 
+@Test func releaseBuildGatesVerifyBundleIdentifiersEntitlementsAndSwiftVersion() throws {
+    let project = try fixture("PulseDock.xcodeproj/project.pbxproj")
+    let appGroup = try fixture("Sources/SharedMetrics/PulseDockAppGroup.swift")
+    let appEntitlements = try fixture("Resources/PulseDock.entitlements")
+    let widgetEntitlements = try fixture("Resources/PulseDockWidgetExtension.entitlements")
+    let archiveScript = try fixture("scripts/archive-app-store.sh")
+    let generator = try fixture("scripts/generate-xcodeproj.rb")
+
+    #expect(project.contains("PRODUCT_BUNDLE_IDENTIFIER = com.ifonly3.pulsedock;"))
+    #expect(project.contains("PRODUCT_BUNDLE_IDENTIFIER = com.ifonly3.pulsedock.widget;"))
+    #expect(project.contains("CODE_SIGN_ENTITLEMENTS = Resources/PulseDock.entitlements;"))
+    #expect(project.contains("CODE_SIGN_ENTITLEMENTS = Resources/PulseDockWidgetExtension.entitlements;"))
+    for buildSettings in try projectLevelBuildSettings(in: project) {
+        #expect(buildSettings.contains("SWIFT_VERSION = 6.0;"))
+    }
+    #expect(appGroup.contains(#"appBundleIdentifier = "com.ifonly3.pulsedock""#))
+    #expect(appGroup.contains(#"widgetBundleIdentifier = "com.ifonly3.pulsedock.widget""#))
+    #expect(appEntitlements.contains("group.com.ifonly3.pulsedock"))
+    #expect(widgetEntitlements.contains("group.com.ifonly3.pulsedock"))
+    #expect(archiveScript.contains("verify_entitlements()"))
+    #expect(archiveScript.contains("codesign -d --entitlements :-"))
+    #expect(archiveScript.contains("APP_PRODUCT=\"$ARCHIVE_PATH/Products/Applications/Pulse Dock.app\""))
+    #expect(archiveScript.contains("WIDGET_PRODUCT=\"$APP_PRODUCT/Contents/PlugIns/PulseDockWidgetExtension.appex\""))
+    #expect(archiveScript.contains("verify_entitlements \"$APP_PRODUCT\" \"Pulse Dock.app\""))
+    #expect(archiveScript.contains("verify_entitlements \"$WIDGET_PRODUCT\" \"PulseDockWidgetExtension.appex\""))
+    #expect(archiveScript.contains("group.com.ifonly3.pulsedock"))
+    #expect(generator.contains("project.build_configurations.each do |config|"))
+    #expect(generator.contains(#"config.build_settings["SWIFT_VERSION"] = "6.0""#))
+}
+
+@Test func sharedLocalizationResourcesAreCopiedForAppAndWidgetTargets() throws {
+    let generator = try fixture("scripts/generate-xcodeproj.rb")
+    let package = try fixture("Package.swift")
+
+    #expect(package.contains(#".process("Resources")"#))
+    #expect(generator.contains("Sources/SharedMetrics/Resources/en.lproj/SharedMetrics.strings"))
+    #expect(generator.contains("Sources/SharedMetrics/Resources/zh-Hans.lproj/SharedMetrics.strings"))
+    #expect(generator.contains("app_target.add_resources(shared_resource_files"))
+    #expect(generator.contains("widget_target.add_resources(shared_resource_files"))
+}
+
 @Test func appDelegateMenuStringsUsePulseDockAppLocalizationResources() throws {
     let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
     let appStrings = try fixture("Sources/PulseDockApp/PulseDockAppStrings.swift")
@@ -554,6 +595,42 @@ import Testing
 
 private func localizationAuditScript() throws -> String {
     try fixture("scripts/audit-localization.sh")
+}
+
+private func projectLevelBuildSettings(in project: String) throws -> [String] {
+    let projectConfigurationMatch: Range<String.Index> = try #require(
+        project.range(
+            of: #"([0-9A-F]{24}) /\* Build configuration list for PBXProject "PulseDock" \*/"#,
+            options: .regularExpression
+        )
+    )
+    let matchedConfigurationList = String(project[projectConfigurationMatch])
+    let projectConfigurationListID = try #require(matchedConfigurationList.components(separatedBy: " ").first)
+    let listMarker = "\t\t\(projectConfigurationListID) /* Build configuration list for PBXProject \"PulseDock\" */ = {"
+    let listStart: String.Index = try #require(project.range(of: listMarker)?.upperBound)
+    let listEnd: String.Index = try #require(project[listStart...].range(of: "\n\t\t};")?.lowerBound)
+    let listBlock = String(project[listStart..<listEnd])
+    let configurationIDs = listBlock
+        .split(separator: "\n")
+        .compactMap { line -> String? in
+            let trimmed = String(line).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            guard trimmed.contains("/* Debug */") || trimmed.contains("/* Release */") else {
+                return nil
+            }
+            return trimmed.components(separatedBy: " ").first
+        }
+
+    #expect(configurationIDs.count == 2)
+
+    return try configurationIDs.map { configurationID in
+        let configurationMarker = "\t\t\(configurationID) /* "
+        let configurationStart: String.Index = try #require(project.range(of: configurationMarker)?.lowerBound)
+        let configurationEnd: String.Index = try #require(project[configurationStart...].range(of: "\n\t\t};")?.lowerBound)
+        let configurationBlock = String(project[configurationStart..<configurationEnd])
+        let buildSettingsStart: String.Index = try #require(configurationBlock.range(of: "buildSettings = {")?.upperBound)
+        let buildSettingsEnd: String.Index = try #require(configurationBlock[buildSettingsStart...].range(of: "\n\t\t\t};")?.lowerBound)
+        return String(configurationBlock[buildSettingsStart..<buildSettingsEnd])
+    }
 }
 
 private func expectAppStringEntry(

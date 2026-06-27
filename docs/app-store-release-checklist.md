@@ -217,8 +217,10 @@ The script will:
 - Regenerate the app icon.
 - Regenerate `PulseDock.xcodeproj` with the release bundle IDs, version, build number, and team ID.
 - Archive scheme `PulseDock` for `generic/platform=macOS`.
+- Confirm `scripts/archive-app-store.sh` exits non-zero if either the app or widget archive product is missing `group.com.ifonly3.pulsedock`.
 - Export with `method = app-store-connect`.
 - Write outputs to `dist/PulseDock.xcarchive` and `dist/AppStore`.
+- Keep `dist/` treated as disposable build output; do not submit or review stale bundles from this directory.
 
 After archive/export, check signing and sandbox entitlements:
 
@@ -272,6 +274,7 @@ Before first public App Store submission, run a short TestFlight pass:
 - Add internal testers first.
 - Install on a clean Mac, ideally one not used for development.
 - Verify the main app, menu bar behavior, and widget.
+- After TestFlight install, launch the app once, add the widget, and verify the widget receives a shared snapshot within 60 seconds.
 - Confirm no hidden debug UI, placeholder text, or test bundle IDs remain.
 - Confirm the privacy policy and support links are live and both GitHub Pages URLs return HTTP 200.
 
