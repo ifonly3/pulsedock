@@ -55,7 +55,8 @@ extension MetricSnapshot {
             hasUptimeReport: hasUptimeReport,
             osVersion: osVersion,
             kernelRelease: kernelRelease,
-            timestamp: timestamp
+            timestamp: timestamp,
+            schemaVersion: schemaVersion
         )
     }
 }

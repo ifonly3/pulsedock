@@ -745,6 +745,9 @@ public struct NetworkInterfaceMetric: Codable, Equatable, Sendable, Identifiable
 }
 
 public struct MetricSnapshot: Codable, Equatable, Sendable {
+    public static let currentSchemaVersion = 1
+
+    public var schemaVersion: Int
     public var cpuUsage: Double
     public var cpuCoreUsages: [Double]
     public var hasCPUUsageReport: Bool
@@ -872,8 +875,10 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         hasUptimeReport: Bool = false,
         osVersion: String = "",
         kernelRelease: String = "",
-        timestamp: Date
+        timestamp: Date,
+        schemaVersion: Int = MetricSnapshot.currentSchemaVersion
     ) {
+        self.schemaVersion = schemaVersion
         self.cpuUsage = cpuUsage
         self.cpuCoreUsages = cpuCoreUsages
         self.hasCPUUsageReport = hasCPUUsageReport
@@ -1597,6 +1602,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
 
     enum CodingKeys: String, CodingKey {
+        case schemaVersion
         case cpuUsage
         case cpuCoreUsages
         case hasCPUUsageReport
@@ -1664,6 +1670,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
+        schemaVersion = try values.decodeIfPresent(Int.self, forKey: .schemaVersion) ?? Self.currentSchemaVersion
         cpuUsage = try values.decodeIfPresent(Double.self, forKey: .cpuUsage) ?? Self.placeholder.cpuUsage
         cpuCoreUsages = try values.decodeIfPresent([Double].self, forKey: .cpuCoreUsages) ?? []
         hasCPUUsageReport = try values.decodeIfPresent(Bool.self, forKey: .hasCPUUsageReport)
@@ -1689,8 +1696,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         loadAverage = try values.decodeIfPresent(Double.self, forKey: .loadAverage) ?? Self.placeholder.loadAverage
         loadAverage5 = try values.decodeIfPresent(Double.self, forKey: .loadAverage5) ?? 0
         loadAverage15 = try values.decodeIfPresent(Double.self, forKey: .loadAverage15) ?? 0
-        hasLoadAverageReport = try values.decodeIfPresent(Bool.self, forKey: .hasLoadAverageReport)
-            ?? (loadAverage > 0 || loadAverage5 > 0 || loadAverage15 > 0)
+        hasLoadAverageReport = try values.decodeIfPresent(Bool.self, forKey: .hasLoadAverageReport) ?? (loadAverage > 0 || loadAverage5 > 0 || loadAverage15 > 0)
         thermalState = try values.decodeIfPresent(String.self, forKey: .thermalState) ?? "Unknown"
         batteryPercent = try values.decodeIfPresent(Double.self, forKey: .batteryPercent)
         batteryIsCharging = try values.decodeIfPresent(Bool.self, forKey: .batteryIsCharging) ?? false
@@ -1728,22 +1734,23 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         networkOutBytesPerSecond = try values.decodeIfPresent(UInt64.self, forKey: .networkOutBytesPerSecond) ?? 0
         networkInterfaces = try values.decodeIfPresent([NetworkInterfaceMetric].self, forKey: .networkInterfaces) ?? []
         hasNetworkDirectionByteCounters = decodedHasNetworkDirectionByteCounters
-            ?? (hasNetworkInBytesKey && hasNetworkOutBytesKey)
+            ?? (hasNetworkInBytesKey && hasNetworkOutBytesKey
+                || networkInBytesPerSecond > 0
+                || networkOutBytesPerSecond > 0
+                || networkInterfaces.contains { $0.hasByteCounters })
         hasNetworkByteCounters = decodedHasNetworkByteCounters
             ?? (networkBytesPerSecond > 0
                 || hasNetworkDirectionByteCounters
+                || networkInBytesPerSecond > 0
+                || networkOutBytesPerSecond > 0
                 || networkInterfaces.contains { $0.hasByteCounters })
         diskFreeBytes = try values.decodeIfPresent(UInt64.self, forKey: .diskFreeBytes) ?? 0
         diskTotalBytes = try values.decodeIfPresent(UInt64.self, forKey: .diskTotalBytes) ?? 0
         storageVolumes = try values.decodeIfPresent([StorageVolumeMetric].self, forKey: .storageVolumes) ?? []
-        let hasProcessCountKey = values.contains(.processCount)
-        let hasActiveApplicationCountKey = values.contains(.activeApplicationCount)
-        let hasHiddenApplicationCountKey = values.contains(.hiddenApplicationCount)
         processCount = try values.decodeIfPresent(Int.self, forKey: .processCount) ?? 0
         activeApplicationCount = try values.decodeIfPresent(Int.self, forKey: .activeApplicationCount) ?? 0
         hiddenApplicationCount = try values.decodeIfPresent(Int.self, forKey: .hiddenApplicationCount) ?? 0
-        hasRunningAppCountReport = try values.decodeIfPresent(Bool.self, forKey: .hasRunningAppCountReport)
-            ?? (hasProcessCountKey && hasActiveApplicationCountKey && hasHiddenApplicationCountKey)
+        hasRunningAppCountReport = try values.decodeIfPresent(Bool.self, forKey: .hasRunningAppCountReport) ?? (processCount > 0 || activeApplicationCount > 0 || hiddenApplicationCount > 0)
         runningApps = try values.decodeIfPresent([ProcessMetric].self, forKey: .runningApps) ?? []
         gpuDevices = try values.decodeIfPresent([GPUDeviceMetric].self, forKey: .gpuDevices) ?? []
         displays = try values.decodeIfPresent([DisplayMetric].self, forKey: .displays) ?? []

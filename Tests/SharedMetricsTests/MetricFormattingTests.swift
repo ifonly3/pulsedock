@@ -8257,7 +8257,7 @@ import Testing
     #expect(interface.byteCountText == SharedMetricStrings.notReported)
 }
 
-@Test func partialLegacyRunningAppCountsDoNotInventMissingZeroCounts() throws {
+@Test func partialLegacyRunningAppCountsFollowInitializerReportInference() throws {
     let partialCountsJSON = """
     {
       "cpuUsage": 0,
@@ -8275,10 +8275,14 @@ import Testing
 
     let snapshot = try JSONDecoder().decode(MetricSnapshot.self, from: partialCountsJSON)
 
-    #expect(!snapshot.hasRunningAppReport)
-    #expect(snapshot.runningAppSummaryText == SharedMetricStrings.notReported)
-    #expect(snapshot.activeApplicationCountText == SharedMetricStrings.notReported)
-    #expect(snapshot.hiddenApplicationCountText == SharedMetricStrings.notReported)
+    #expect(snapshot.hasRunningAppReport)
+    #expect(snapshot.runningAppSummaryText == SharedMetricStrings.runningAppSummary(
+        processCount: 0,
+        activeApplicationCount: 1,
+        hiddenApplicationCount: 0
+    ))
+    #expect(snapshot.activeApplicationCountText == "1")
+    #expect(snapshot.hiddenApplicationCountText == "0")
 }
 
 @Test func blankBatteryPowerSourceDoesNotBecomeReportedNoBatteryState() throws {
@@ -9375,6 +9379,25 @@ import Testing
     #expect(strings.contains("widget.metric.cpu"))
     #expect(strings.contains("widget.metric.memory_compact"))
     #expect(strings.contains("widget.power.ups"))
+}
+
+@Test func metricSnapshotHasExplicitSchemaVersionAndDecodesCurrentSchema() throws {
+    let snapshot = MetricSnapshot.placeholder
+    let data = try JSONEncoder().encode(snapshot)
+    let decoded = try JSONDecoder().decode(MetricSnapshot.self, from: data)
+
+    #expect(decoded.schemaVersion == MetricSnapshot.currentSchemaVersion)
+    #expect(MetricSnapshot.currentSchemaVersion == 1)
+}
+
+@Test func metricSnapshotDecoderKeepsInitReportInferenceSymmetric() throws {
+    let metricSnapshot = try fixture("Sources/SharedMetrics/MetricSnapshot.swift")
+
+    #expect(metricSnapshot.contains("public static let currentSchemaVersion = 1"))
+    #expect(metricSnapshot.contains("schemaVersion = try values.decodeIfPresent(Int.self, forKey: .schemaVersion) ?? Self.currentSchemaVersion"))
+    #expect(metricSnapshot.contains("hasLoadAverageReport = try values.decodeIfPresent(Bool.self, forKey: .hasLoadAverageReport) ?? (loadAverage > 0 || loadAverage5 > 0 || loadAverage15 > 0)"))
+    #expect(metricSnapshot.contains("hasRunningAppCountReport = try values.decodeIfPresent(Bool.self, forKey: .hasRunningAppCountReport) ?? (processCount > 0 || activeApplicationCount > 0 || hiddenApplicationCount > 0)"))
+    #expect(metricSnapshot.contains("hasUptimeReport = try values.decodeIfPresent(Bool.self, forKey: .hasUptimeReport) ?? (uptimeSeconds > 0)"))
 }
 
 private func fixture(_ path: String) throws -> String {
