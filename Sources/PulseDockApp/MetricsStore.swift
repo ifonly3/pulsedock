@@ -44,7 +44,7 @@ final class MetricsStore: ObservableObject {
     @Published private(set) var snapshot = MetricSnapshot.placeholder
     @Published private(set) var recentSnapshots: [MetricSnapshot] = [.placeholder]
     @Published private(set) var isPaused = false
-    @Published private(set) var isRefreshing = false
+    private(set) var isRefreshing = false
     @Published private(set) var refreshInterval: RefreshIntervalOption
     @Published private(set) var historyDepth: HistoryDepthOption
     @Published private(set) var cpuAlertThreshold: Double

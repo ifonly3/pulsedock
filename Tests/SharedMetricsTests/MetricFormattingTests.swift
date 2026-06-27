@@ -624,7 +624,8 @@ import Testing
     let networkPage = String(dashboardView[networkStart..<nextStart])
 
     #expect(networkPage.contains("DashboardPanel(title: PulseDockAppStrings.networkTrendTitle, subtitle: PulseDockAppStrings.networkRecentLiveSamplesSubtitle, icon: \"chart.line.uptrend.xyaxis\")"))
-    #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkTotalLabel, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \\.networkBytesPerSecond))"))
+    #expect(networkPage.contains("let networkTrend = networkTrendValues(from: history"))
+    #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkTotalLabel, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrend)"))
     #expect(audit.contains("The Network page trend panel surfaces aggregate throughput alongside download and upload history."))
     #expect(audit.contains("Source-level tests require the Network page trend panel to surface aggregate throughput history."))
 }
@@ -643,7 +644,8 @@ import Testing
     let nextStart = try #require(dashboardView.range(of: "private struct PowerPage")?.lowerBound)
     let networkPage = String(dashboardView[networkStart..<nextStart])
 
-    #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkConnectionLabel, value: snapshot.networkPathText, tint: networkStatusColor(snapshot), values: networkPathTrendValues(from: history))"))
+    #expect(networkPage.contains("let networkPathTrend = networkPathTrendValues(from: history)"))
+    #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkConnectionLabel, value: snapshot.networkPathText, tint: networkStatusColor(snapshot), values: networkPathTrend)"))
     #expect(dashboardView.contains("private func networkPathTrendValues(from history: [MetricSnapshot]) -> [Double]"))
     #expect(dashboardView.contains("history.filter(\\.hasNetworkPathReport).map(networkPathProgress)"))
     #expect(!dashboardView.contains("history.filter { $0.networkPathText != \"未报告\" }.map(networkPathProgress)"))
@@ -1405,9 +1407,10 @@ import Testing
 
     #expect(dashboardView.contains("private func cpuTrendValues(from history: [MetricSnapshot]) -> [Double]"))
     #expect(dashboardView.contains("history.filter(\\.hasCPUUsageReport).map(\\.cpuUsage)"))
-    #expect(dashboardView.contains("MetricCard(title: PulseDockAppStrings.overviewCPUUsageTitle, value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, icon: \"cpu\", tint: DashboardColor.green, badgeText: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), values: cpuTrendValues(from: history))"))
-    #expect(dashboardView.contains("TrendRow(title: \"CPU\", value: snapshot.cpuText, tint: DashboardColor.green, values: cpuTrendValues(from: history))"))
-    #expect(dashboardView.contains("Sparkline(values: cpuTrendValues(from: history), tint: DashboardColor.green, fill: true)"))
+    #expect(dashboardView.contains("let cpuTrend = cpuTrendValues(from: history)"))
+    #expect(dashboardView.contains("MetricCard(title: PulseDockAppStrings.overviewCPUUsageTitle, value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, icon: \"cpu\", tint: DashboardColor.green, badgeText: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), values: cpuTrend)"))
+    #expect(dashboardView.contains("TrendRow(title: \"CPU\", value: snapshot.cpuText, tint: DashboardColor.green, values: cpuTrend)"))
+    #expect(dashboardView.contains("Sparkline(values: cpuTrend, tint: DashboardColor.green, fill: true)"))
     #expect(!dashboardView.contains("history.map(\\.cpuUsage)"))
     #expect(audit.contains("CPU trend charts filter out samples whose CPU counters were not reported, so missing samples do not appear as 0% dips"))
 }
@@ -1429,11 +1432,15 @@ import Testing
     #expect(dashboardView.contains("history.filter(\\.hasDiskUsageReport).map(\\.diskUsage)"))
     #expect(dashboardView.contains("private func networkTrendValues(from history: [MetricSnapshot], keyPath: KeyPath<MetricSnapshot, UInt64>) -> [Double]"))
     #expect(dashboardView.contains("history.filter(\\.hasNetworkByteCounters).map { normalizedRate($0[keyPath: keyPath]) }"))
-    #expect(dashboardView.contains("values: memoryTrendValues(from: history)"))
+    #expect(dashboardView.contains("let memoryTrend = memoryTrendValues(from: history)"))
+    #expect(dashboardView.contains("values: memoryTrend"))
     #expect(dashboardView.contains("values: diskTrendValues(from: history)"))
-    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkBytesPerSecond)"))
-    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkInBytesPerSecond)"))
-    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkOutBytesPerSecond)"))
+    #expect(dashboardView.contains("let networkTrend = networkTrendValues(from: history)"))
+    #expect(dashboardView.contains("values: networkTrend"))
+    #expect(dashboardView.contains("let networkDownloadTrend = networkTrendValues(from: history, keyPath: \\.networkInBytesPerSecond)"))
+    #expect(dashboardView.contains("values: networkDownloadTrend"))
+    #expect(dashboardView.contains("let networkUploadTrend = networkTrendValues(from: history, keyPath: \\.networkOutBytesPerSecond)"))
+    #expect(dashboardView.contains("values: networkUploadTrend"))
     #expect(dashboardView.contains("MetricScales.networkRateProgress(bytesPerSecond: bytesPerSecond)"))
     #expect(!dashboardView.contains("history.map(\\.memoryUsage)"))
     #expect(!dashboardView.contains("history.map(\\.diskUsage)"))
@@ -1673,7 +1680,8 @@ import Testing
 
     #expect(dashboardView.contains("private func networkPathTrendValues(from history: [MetricSnapshot]) -> [Double]"))
     #expect(dashboardView.contains("history.filter(\\.hasNetworkPathReport).map(networkPathProgress)"))
-    #expect(dashboardView.contains("values: networkPathTrendValues(from: history)"))
+    #expect(dashboardView.contains("let networkPathTrend = networkPathTrendValues(from: history)"))
+    #expect(dashboardView.contains("values: networkPathTrend"))
     #expect(!dashboardView.contains("history.filter { $0.networkPathText != \"未报告\" }.map(networkPathProgress)"))
     #expect(!dashboardView.contains("values: history.map(networkPathProgress)"))
     #expect(audit.contains("Network path trend charts filter out unknown path samples while preserving reported offline states as zero-value status samples"))
@@ -4128,7 +4136,8 @@ import Testing
     let metricsStore = try fixture("Sources/PulseDockApp/MetricsStore.swift")
     let audit = try fixture("docs/data-capability-audit.md")
 
-    #expect(metricsStore.contains("@Published private(set) var isRefreshing = false"))
+    #expect(metricsStore.contains("private(set) var isRefreshing = false"))
+    #expect(!metricsStore.contains("@Published private(set) var isRefreshing"))
     #expect(metricsStore.contains("private var pendingRefreshAfterCurrent = false"))
     #expect(metricsStore.contains("guard refreshTask == nil else"))
     #expect(metricsStore.contains("pendingRefreshAfterCurrent = true"))
@@ -4624,7 +4633,8 @@ import Testing
     #expect(dashboardView.contains("switch snapshot.powerStatusTone"))
     #expect(dashboardView.contains("private func powerStatusLevel(_ snapshot: MetricSnapshot) -> StatusLevel"))
     #expect(dashboardView.contains("RingGauge(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, progress: powerGaugeProgress(snapshot), tint: powerTint(snapshot))"))
-    #expect(dashboardView.contains("TrendRow(title: powerTrendTitle(snapshot), value: snapshot.powerStatusText, tint: powerTint(snapshot), values: powerTrendValues(from: history))"))
+    #expect(dashboardView.contains("let powerTrend = powerTrendValues(from: history)"))
+    #expect(dashboardView.contains("TrendRow(title: powerTrendTitle(snapshot), value: snapshot.powerStatusText, tint: powerTint(snapshot), values: powerTrend)"))
     #expect(!dashboardView.contains("RingGauge(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, progress: powerGaugeProgress(snapshot), tint: DashboardColor.green)"))
     #expect(!dashboardView.contains("TrendRow(title: \"电量\", value: snapshot.batteryText, tint: DashboardColor.amber, values: history.compactMap(\\.batteryPercent))"))
     #expect(!dashboardView.contains("status: snapshot.batteryPercent == nil ? .neutral : .normal, source: snapshot.powerSourceText"))
@@ -4647,7 +4657,7 @@ import Testing
     )
 
     #expect(dashboardView.contains("MetricCard(title: PulseDockAppStrings.overviewPowerStatusTitle, value: snapshot.powerStatusText"))
-    #expect(dashboardView.contains("progress: powerGaugeProgress(snapshot), values: powerTrendValues(from: history)"))
+    #expect(dashboardView.contains("progress: powerGaugeProgress(snapshot), values: powerTrend"))
     #expect(!dashboardView.contains("MetricCard(title: PulseDockAppStrings.overviewPowerStatusTitle, value: snapshot.batteryText"))
     #expect(!dashboardView.contains("progress: snapshot.batteryPercent ?? 0"))
 }
@@ -4667,8 +4677,9 @@ import Testing
     #expect(dashboardView.contains("history.compactMap(\\.powerStatusProgress)"))
     #expect(!dashboardView.contains("private func powerTrendValue(_ snapshot: MetricSnapshot) -> Double?"))
     #expect(!dashboardView.contains("case \"battery power\":\n        return 0.45"))
-    #expect(dashboardView.contains("MetricCard(title: PulseDockAppStrings.overviewPowerStatusTitle, value: snapshot.powerStatusText, detail: snapshot.powerSourceText, icon: \"battery.75percent\", tint: powerTint(snapshot), badgeText: snapshot.batteryPercent.map { MetricFormatting.percentage($0) }, progress: powerGaugeProgress(snapshot), values: powerTrendValues(from: history))"))
-    #expect(dashboardView.contains("TrendRow(title: powerTrendTitle(snapshot), value: snapshot.powerStatusText, tint: powerTint(snapshot), values: powerTrendValues(from: history))"))
+    #expect(dashboardView.contains("let powerTrend = powerTrendValues(from: history)"))
+    #expect(dashboardView.contains("MetricCard(title: PulseDockAppStrings.overviewPowerStatusTitle, value: snapshot.powerStatusText, detail: snapshot.powerSourceText, icon: \"battery.75percent\", tint: powerTint(snapshot), badgeText: snapshot.batteryPercent.map { MetricFormatting.percentage($0) }, progress: powerGaugeProgress(snapshot), values: powerTrend)"))
+    #expect(dashboardView.contains("TrendRow(title: powerTrendTitle(snapshot), value: snapshot.powerStatusText, tint: powerTint(snapshot), values: powerTrend)"))
     #expect(!dashboardView.contains("values: history.compactMap(\\.batteryPercent)"))
     #expect(audit.contains("Power progress uses measured battery percent only; AC/UPS/source-only states are displayed as text without invented gauge fill."))
     #expect(audit.contains("Source-level tests require power trend charts and gauges to use measured battery percent only, leaving source-only AC/UPS states without invented fill."))
@@ -9308,6 +9319,19 @@ import Testing
     #expect(sharedStore.contains("SharedSnapshotStore failed to decode latest snapshot"))
     #expect(metricsStore.contains("MetricsStore failed to decode history"))
     #expect(metricsStore.contains("MetricsStore failed to encode history"))
+}
+
+@Test func dashboardAvoidsRepeatedTrendExtractionAndHighFrequencySliderPublishing() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+    let store = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+
+    #expect(dashboard.contains("let cpuTrend = cpuTrendValues(from: history)"))
+    #expect(dashboard.contains("let memoryTrend = memoryTrendValues(from: history)"))
+    #expect(dashboard.contains("let networkTrend = networkTrendValues(from: history)"))
+    #expect(dashboard.contains("@State private var draftRefreshInterval"))
+    #expect(dashboard.contains("onEditingChanged"))
+    #expect(store.contains("private(set) var isRefreshing"))
+    #expect(!store.contains("@Published private(set) var isRefreshing"))
 }
 
 private func fixture(_ path: String) throws -> String {
