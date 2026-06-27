@@ -8,6 +8,11 @@ import SharedMetrics
 struct SystemEntry: TimelineEntry {
     let date: Date
     let snapshot: MetricSnapshot?
+    let snapshotAge: TimeInterval?
+
+    var freshnessTone: WidgetFreshnessTone {
+        WidgetFreshnessTone.resolve(age: snapshotAge)
+    }
 }
 
 private final class WidgetSamplerCache: @unchecked Sendable {
@@ -36,18 +41,20 @@ struct SystemProvider: TimelineProvider {
     private static let sharedSnapshotMaxAge: TimeInterval = 600
 
     func placeholder(in context: Context) -> SystemEntry {
-        SystemEntry(date: Date(), snapshot: Self.representativeSnapshot())
+        SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SystemEntry) -> Void) {
-        completion(SystemEntry(date: Date(), snapshot: Self.representativeSnapshot()))
+        completion(SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SystemEntry>) -> Void) {
         let timelineCompletion = TimelineCompletion(completion: completion)
         DispatchQueue.global(qos: .utility).async {
             let now = Date()
-            let entry = SystemEntry(date: now, snapshot: Self.sampledSnapshotForTimeline(now: now))
+            let snapshot = Self.sampledSnapshotForTimeline(now: now)
+            let age = snapshot.map { now.timeIntervalSince($0.timestamp) }
+            let entry = SystemEntry(date: now, snapshot: snapshot, snapshotAge: age)
             let nextRefresh = Calendar.current.date(byAdding: .minute, value: 5, to: now) ?? now.addingTimeInterval(300)
             timelineCompletion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }
@@ -112,13 +119,13 @@ struct SystemDashboardWidgetView: View {
         if let snapshot = entry.snapshot {
             switch family {
             case .systemSmall:
-                SmallWidget(snapshot: snapshot)
+                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)
             case .systemMedium:
-                MediumWidget(snapshot: snapshot)
+                MediumWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)
             case .systemLarge:
-                LargeWidget(snapshot: snapshot)
+                LargeWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)
             default:
-                SmallWidget(snapshot: snapshot)
+                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)
             }
         } else {
             EmptyDataWidget(family: family)
@@ -160,10 +167,11 @@ private let largeRingColumns = [
 private struct SmallWidget: View {
     @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
+    let freshnessTone: WidgetFreshnessTone
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            WidgetHeader(title: "Pulse Dock", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
+            WidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)
 
             Spacer(minLength: 4)
 
@@ -187,11 +195,12 @@ private struct SmallWidget: View {
 private struct MediumWidget: View {
     @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
+    let freshnessTone: WidgetFreshnessTone
 
     var body: some View {
         HStack(alignment: .center, spacing: 22) {
             VStack(alignment: .leading, spacing: 9) {
-                CompactWidgetHeader(title: "Pulse Dock", timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
+                CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)
                 Text(snapshot.cpuText)
                     .font(.system(size: 52, weight: .semibold).monospacedDigit())
                     .foregroundStyle(widgetPrimaryText(for: colorScheme))
@@ -234,10 +243,11 @@ private struct MediumStatusStrip: View {
 private struct LargeWidget: View {
     @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
+    let freshnessTone: WidgetFreshnessTone
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport)
+            WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)
 
             HStack(alignment: .top, spacing: 18) {
                 VStack(alignment: .leading, spacing: 14) {
@@ -381,7 +391,7 @@ private struct EmptyDataWidget: View {
             Image(systemName: "waveform.path.ecg.rectangle")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(WidgetColor.green(for: colorScheme))
-            Text("Pulse Dock")
+            Text(PulseDockWidgetStrings.widgetDisplayName)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
             Circle()
@@ -451,6 +461,7 @@ private struct WidgetHeader: View {
     let title: String
     let timeText: String
     let hasTimeReport: Bool
+    let freshnessTone: WidgetFreshnessTone
 
     var body: some View {
         HStack(spacing: 7) {
@@ -463,7 +474,7 @@ private struct WidgetHeader: View {
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
                 .lineLimit(1)
             Circle()
-                .fill(WidgetColor.green(for: colorScheme))
+                .fill(freshnessTone.color(for: colorScheme))
                 .frame(width: 6, height: 6)
                 .accessibilityHidden(true)
             Spacer()
@@ -474,7 +485,7 @@ private struct WidgetHeader: View {
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(hasTimeReport ? "\(title), \(timeText)" : title)
+        .accessibilityLabel(hasTimeReport ? "\(title), \(timeText), \(freshnessTone.accessibilityText)" : "\(title), \(freshnessTone.accessibilityText)")
     }
 }
 
@@ -483,6 +494,7 @@ private struct CompactWidgetHeader: View {
     let title: String
     let timeText: String
     let hasTimeReport: Bool
+    let freshnessTone: WidgetFreshnessTone
 
     var body: some View {
         HStack(spacing: 7) {
@@ -496,12 +508,20 @@ private struct CompactWidgetHeader: View {
                 .minimumScaleFactor(0.75)
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
             Circle()
-                .fill(WidgetColor.green(for: colorScheme))
+                .fill(freshnessTone.color(for: colorScheme))
                 .frame(width: 6, height: 6)
                 .accessibilityHidden(true)
+            Spacer(minLength: 4)
+            if hasTimeReport {
+                Text(timeText)
+                    .font(.system(size: 10, weight: .semibold).monospacedDigit())
+                    .foregroundStyle(widgetSecondaryText(for: colorScheme))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(hasTimeReport ? "\(title), \(timeText)" : title)
+        .accessibilityLabel(hasTimeReport ? "\(title), \(timeText), \(freshnessTone.accessibilityText)" : "\(title), \(freshnessTone.accessibilityText)")
     }
 }
 
@@ -648,68 +668,6 @@ private struct WidgetBackground: View {
             Rectangle()
                 .fill(colorScheme == .dark ? Color.white.opacity(0.05) : Color.white.opacity(0.24))
         }
-    }
-}
-
-private func widgetBackgroundColors(for colorScheme: ColorScheme) -> [Color] {
-    if colorScheme == .dark {
-        return [
-            Color(red: 0.09, green: 0.11, blue: 0.12).opacity(0.96),
-            Color(red: 0.07, green: 0.16, blue: 0.16).opacity(0.90),
-            Color(red: 0.06, green: 0.09, blue: 0.11).opacity(0.82)
-        ]
-    }
-
-    return [
-        Color.white.opacity(0.92),
-        Color(red: 0.89, green: 0.95, blue: 0.94).opacity(0.88),
-        Color(red: 0.98, green: 0.93, blue: 0.84).opacity(0.72)
-    ]
-}
-
-private func widgetPanelFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.40)
-}
-
-private func widgetPanelStroke(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.12) : Color.white.opacity(0.58)
-}
-
-private func widgetPrimaryText(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.92) : Color.primary
-}
-
-private func widgetSecondaryText(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.62) : Color.secondary
-}
-
-private func widgetTrackFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.14) : Color.secondary.opacity(0.14)
-}
-
-private func widgetPlaceholderFill(for colorScheme: ColorScheme) -> Color {
-    colorScheme == .dark ? Color.white.opacity(0.16) : Color.secondary.opacity(0.16)
-}
-
-private enum WidgetColor {
-    static func blue(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.36, green: 0.62, blue: 1.00) : Color(red: 0.14, green: 0.43, blue: 0.95)
-    }
-
-    static func green(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.24, green: 0.82, blue: 0.62) : Color(red: 0.04, green: 0.62, blue: 0.39)
-    }
-
-    static func amber(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 1.00, green: 0.68, blue: 0.28) : Color(red: 0.93, green: 0.54, blue: 0.10)
-    }
-
-    static func cyan(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.29, green: 0.78, blue: 0.88) : Color(red: 0.04, green: 0.56, blue: 0.70)
-    }
-
-    static func red(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 1.00, green: 0.42, blue: 0.42) : Color(red: 0.84, green: 0.16, blue: 0.16)
     }
 }
 

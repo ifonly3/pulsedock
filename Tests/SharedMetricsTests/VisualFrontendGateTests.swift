@@ -44,10 +44,10 @@ struct VisualFrontendGateTests {
 
         #expect(widget.contains("let snapshotAge: TimeInterval?"))
         #expect(widget.contains("WidgetFreshnessTone"))
-        #expect(widget.contains("PulseDockWidgetStrings.staleData"))
         #expect(widget.contains("CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName"))
         #expect(widget.contains("if hasTimeReport"))
         #expect(tokens.contains("enum WidgetFreshnessTone"))
+        #expect(tokens.contains("PulseDockWidgetStrings.staleData"))
     }
 
     @Test func memorySegmentBarCannotForceOverflowWithTinySegments() throws {
