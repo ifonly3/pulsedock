@@ -3980,20 +3980,30 @@ import Testing
     #expect(snapshot.uptimeSeconds == 0)
 }
 
-@Test func widgetPlaceholderUsesSkeletonAndTimelineSamplesDirectly() throws {
+@Test func widgetProviderUsesRepresentativePreviewAndCompactTimelineSampling() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
         contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
         encoding: .utf8
     )
+    let sampler = try String(
+        contentsOf: root.appendingPathComponent("Sources/SharedMetrics/SystemSampler.swift"),
+        encoding: .utf8
+    )
     let blockedPlaceholderCopy = ["等待首次同步", "系统会按时间线刷新"]
 
-    #expect(widget.contains("completion(SystemEntry(date: Date(), snapshot: sampledSnapshot()))"))
-    #expect(widget.contains("let entry = SystemEntry(date: now, snapshot: sampledSnapshot())"))
+    #expect(widget.contains("SystemEntry(date: Date(), snapshot: Self.representativeSnapshot())"))
+    #expect(widget.contains("DispatchQueue.global(qos: .utility).async"))
+    #expect(widget.contains("Self.sampledSnapshotForTimeline(now: now)"))
     #expect(widget.contains("private final class WidgetSamplerCache: @unchecked Sendable"))
     #expect(widget.contains("private static let samplerCache = WidgetSamplerCache()"))
-    #expect(widget.contains("Self.samplerCache.sample()"))
-    #expect(widget.contains("return systemSampler.sample()"))
+    #expect(widget.contains("Self.samplerCache.sampleCompact()"))
+    #expect(widget.contains("func sampleCompact() -> MetricSnapshot"))
+    #expect(widget.contains("return systemSampler.sampleWidgetCompact()"))
+    #expect(sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot"))
+    #expect(sampler.contains("gpuDevices: []"))
+    #expect(sampler.contains("displays: []"))
+    #expect(sampler.contains("storageVolumes: []"))
     #expect(!widget.contains("private var isPrimed"))
     #expect(!widget.contains("private var primedSnapshot"))
     #expect(!widget.contains("let sampler = SystemSampler()"))
@@ -4009,11 +4019,12 @@ import Testing
     let audit = try fixture("docs/data-capability-audit.md")
 
     #expect(widget.contains("private final class WidgetSamplerCache: @unchecked Sendable"))
-    #expect(widget.contains("return systemSampler.sample()"))
+    #expect(widget.contains("return systemSampler.sampleWidgetCompact()"))
+    #expect(!widget.contains("return systemSampler.sample()"))
     #expect(!widget.contains("private var isPrimed"))
     #expect(!widget.contains("private var primedSnapshot"))
     #expect(!widget.contains("_ = systemSampler.sample()\n            isPrimed = true\n            return systemSampler.sample()"))
-    #expect(audit.contains("Widget sampler fallback uses a locked in-extension SystemSampler without dead priming state."))
+    #expect(audit.contains("Widget sampler fallback uses compact in-extension sampling without dead priming state."))
 }
 
 @Test func systemSamplerCachesStaticInventoryBetweenLiveRefreshes() throws {
@@ -4151,10 +4162,13 @@ import Testing
     #expect(widget.contains("WidgetRow(title: PulseDockWidgetStrings.metricConnection"))
     #expect(widget.contains("snapshot.networkPathText"))
     #expect(widget.contains("snapshot.networkPathDetailText"))
-    #expect(!widget.contains("snapshot.networkText"))
-    #expect(!widget.contains("snapshot.networkInText"))
-    #expect(!widget.contains("snapshot.networkOutText"))
-    #expect(!widget.contains("networkBytesPerSecond"))
+    let widgetViewRange = try #require(widget.range(of: "struct SystemDashboardWidgetView"))
+    let widgetBundleRange = try #require(widget.range(of: "#if !SWIFT_PACKAGE"))
+    let widgetViews = String(widget[widgetViewRange.lowerBound..<widgetBundleRange.lowerBound])
+    #expect(!widgetViews.contains("snapshot.networkText"))
+    #expect(!widgetViews.contains("snapshot.networkInText"))
+    #expect(!widgetViews.contains("snapshot.networkOutText"))
+    #expect(!widgetViews.contains("networkBytesPerSecond"))
 }
 
 @Test func mediumWidgetSurfacesDeclaredCoreSignals() throws {
@@ -8292,12 +8306,15 @@ import Testing
 @Test func widgetTimelineUsesCompactSnapshotWithoutUnusedInventoryLists() throws {
     let compact = try fixture("Sources/SharedMetrics/MetricSnapshot+WidgetCompact.swift")
     let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
     let audit = try String(
         contentsOf: URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("docs/data-capability-audit.md"),
         encoding: .utf8
     )
 
-    #expect(widget.contains("Self.samplerCache.sample().widgetCompactSnapshot()"))
+    #expect(widget.contains("Self.samplerCache.sampleCompact()"))
+    #expect(widget.contains("Self.sampledSnapshotForTimeline(now: now)"))
+    #expect(sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot"))
     #expect(!widget.contains("private func compactWidgetSnapshot"))
     #expect(compact.contains("networkBytesPerSecond: networkBytesPerSecond"))
     #expect(compact.contains("hasNetworkByteCounters: hasNetworkByteCounters"))
@@ -8310,6 +8327,27 @@ import Testing
     #expect(compact.contains("gpuDevices: []"))
     #expect(compact.contains("displays: []"))
     #expect(audit.contains("Widget timeline entries store compact snapshots that preserve visible network summary signals while stripping detailed process, network interface, storage, GPU, and display inventory lists."))
+}
+
+@Test func widgetProviderDoesNotSynchronouslyRunFullSystemSamplerForSnapshotOrTimeline() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
+
+    #expect(widget.contains("func getSnapshot(in context: Context, completion: @escaping (SystemEntry) -> Void)"))
+    #expect(widget.contains("representativeSnapshot()"))
+    #expect(widget.contains("DispatchQueue.global(qos: .utility).async"))
+    #expect(widget.contains("sampledSnapshotForTimeline(now: now)"))
+    #expect(widget.contains("return systemSampler.sampleWidgetCompact()"))
+    #expect(sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot"))
+    #expect(sampler.contains("let cpu = sampleCPUUsage()"))
+    #expect(sampler.contains("let battery = cachedBattery(now: now)"))
+    #expect(sampler.contains("let disk = sampleDiskSpace()"))
+    #expect(sampler.contains("gpuDevices: []"))
+    #expect(sampler.contains("displays: []"))
+    #expect(sampler.contains("storageVolumes: []"))
+    #expect(!widget.contains("return systemSampler.sample()"))
+    #expect(!widget.contains("completion(SystemEntry(date: Date(), snapshot: sampledSnapshot()))"))
+    #expect(!sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot {\n        sample()"))
 }
 
 @Test func widgetCompactSnapshotPreservesSummarySignalsAndDropsPrivateLists() {
@@ -8403,7 +8441,7 @@ import Testing
     #expect(sharedStore.contains("snapshot.widgetCompactSnapshot()"))
     #expect(sharedStore.contains("do {\n            let data = try JSONEncoder().encode(compact)"))
     #expect(sharedStore.contains("catch {\n#if DEBUG\n            print(\"Pulse Dock failed to encode shared snapshot: \\(error)\")"))
-    #expect(widget.contains("Self.samplerCache.sample().widgetCompactSnapshot()"))
+    #expect(widget.contains("Self.samplerCache.sampleCompact()"))
     #expect(!widget.contains("private func compactWidgetSnapshot"))
 }
 
@@ -8430,7 +8468,7 @@ import Testing
     #expect(metricsStore.contains("let elapsed = snapshot.timestamp.timeIntervalSince(lastSharedSnapshotWriteDate)"))
     #expect(metricsStore.contains("if elapsed >= 0 && elapsed < sharedSnapshotWriteInterval"))
     #expect(widget.contains("sharedSnapshotStore.loadLatestSnapshot(maxAge:"))
-    #expect(widget.contains("?? Self.samplerCache.sample().widgetCompactSnapshot()"))
+    #expect(widget.contains("?? Self.samplerCache.sampleCompact()"))
     #expect(audit.contains("Compact local timeline snapshot shared from the main app through App Group UserDefaults"))
     #expect(audit.contains("The main app writes a compact latest snapshot to App Group UserDefaults on a 60-second throttled cadence"))
     #expect(audit.contains("Shared widget snapshots tolerate small system clock skew while still rejecting stale or far-future data."))
@@ -9024,7 +9062,8 @@ import Testing
     #expect(widget.contains("#if !SWIFT_PACKAGE\n@main\nstruct SystemDashboardWidgetBundle: WidgetBundle"))
     #expect(widget.contains("case .systemLarge:\n                LargeWidget(snapshot: snapshot)"))
     #expect(widget.contains("default:\n                SmallWidget(snapshot: snapshot)"))
-    #expect(widget.contains("return systemSampler.sample()"))
+    #expect(widget.contains("return systemSampler.sampleWidgetCompact()"))
+    #expect(!widget.contains("return systemSampler.sample()"))
 }
 
 @Test func pauseResumeResetsNetworkBaselinesAndRejectsStaleRefreshResults() throws {

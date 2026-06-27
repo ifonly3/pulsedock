@@ -14,37 +14,93 @@ private final class WidgetSamplerCache: @unchecked Sendable {
     private let systemSampler = SystemSampler()
     private let lock = NSLock()
 
-    func sample() -> MetricSnapshot {
+    func sampleCompact() -> MetricSnapshot {
         lock.lock()
         defer { lock.unlock() }
 
-        return systemSampler.sample()
+        return systemSampler.sampleWidgetCompact()
+    }
+}
+
+private struct TimelineCompletion: @unchecked Sendable {
+    let completion: (Timeline<SystemEntry>) -> Void
+
+    func callAsFunction(_ timeline: Timeline<SystemEntry>) {
+        completion(timeline)
     }
 }
 
 struct SystemProvider: TimelineProvider {
     private static let samplerCache = WidgetSamplerCache()
     private static let sharedSnapshotStore = SharedSnapshotStore()
-    private let sharedSnapshotMaxAge: TimeInterval = 600
+    private static let sharedSnapshotMaxAge: TimeInterval = 600
 
     func placeholder(in context: Context) -> SystemEntry {
-        SystemEntry(date: Date(), snapshot: nil)
+        SystemEntry(date: Date(), snapshot: Self.representativeSnapshot())
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SystemEntry) -> Void) {
-        completion(SystemEntry(date: Date(), snapshot: sampledSnapshot()))
+        completion(SystemEntry(date: Date(), snapshot: Self.representativeSnapshot()))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SystemEntry>) -> Void) {
-        let now = Date()
-        let entry = SystemEntry(date: now, snapshot: sampledSnapshot())
-        let nextRefresh = Calendar.current.date(byAdding: .minute, value: 5, to: now) ?? now.addingTimeInterval(300)
-        completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
+        let timelineCompletion = TimelineCompletion(completion: completion)
+        DispatchQueue.global(qos: .utility).async {
+            let now = Date()
+            let entry = SystemEntry(date: now, snapshot: Self.sampledSnapshotForTimeline(now: now))
+            let nextRefresh = Calendar.current.date(byAdding: .minute, value: 5, to: now) ?? now.addingTimeInterval(300)
+            timelineCompletion(Timeline(entries: [entry], policy: .after(nextRefresh)))
+        }
     }
 
-    private func sampledSnapshot() -> MetricSnapshot {
-        Self.sharedSnapshotStore.loadLatestSnapshot(maxAge: sharedSnapshotMaxAge)
-            ?? Self.samplerCache.sample().widgetCompactSnapshot()
+    private static func sampledSnapshotForTimeline(now: Date) -> MetricSnapshot? {
+        Self.sharedSnapshotStore.loadLatestSnapshot(maxAge: Self.sharedSnapshotMaxAge, now: now)
+            ?? Self.samplerCache.sampleCompact()
+    }
+
+    private static func representativeSnapshot() -> MetricSnapshot {
+        MetricSnapshot(
+            cpuUsage: 0.37,
+            cpuCoreUsages: [0.31, 0.42, 0.28, 0.47],
+            hasCPUUsageReport: true,
+            physicalCoreCount: 8,
+            logicalCoreCount: 8,
+            activeProcessorCount: 8,
+            cpuBrandName: "Apple Silicon",
+            memoryUsedBytes: 8_600_000_000,
+            memoryTotalBytes: 17_179_869_184,
+            memoryFreeBytes: 3_200_000_000,
+            memoryWiredBytes: 2_100_000_000,
+            memoryCompressedBytes: 820_000_000,
+            memoryCachedBytes: 4_100_000_000,
+            hasMemoryCompositionReport: true,
+            loadAverage: 1.42,
+            loadAverage5: 1.20,
+            loadAverage15: 1.05,
+            hasLoadAverageReport: true,
+            thermalState: "Nominal",
+            batteryPercent: 0.86,
+            batteryIsCharging: false,
+            batteryPowerSource: "Battery Power",
+            networkBytesPerSecond: 1_200_000,
+            hasNetworkByteCounters: true,
+            hasNetworkDirectionByteCounters: true,
+            networkPathStatus: "satisfied",
+            networkPathSupportsDNS: true,
+            networkPathSupportsIPv4: true,
+            networkPathSupportsIPv6: true,
+            hasNetworkPathSupportReport: true,
+            networkPathInterfaceKinds: ["Wi-Fi"],
+            networkInBytesPerSecond: 900_000,
+            networkOutBytesPerSecond: 300_000,
+            diskFreeBytes: 180_000_000_000,
+            diskTotalBytes: 494_000_000_000,
+            uptimeSeconds: 86_400,
+            hasUptimeReport: true,
+            osVersion: "macOS",
+            kernelRelease: "Darwin",
+            timestamp: Date()
+        ).widgetCompactSnapshot()
     }
 }
 
