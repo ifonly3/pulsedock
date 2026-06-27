@@ -814,8 +814,8 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         cpuCoreUsages: [Double] = [],
         hasCPUUsageReport: Bool = false,
         physicalCoreCount: Int = 0,
-        logicalCoreCount: Int = ProcessInfo.processInfo.activeProcessorCount,
-        activeProcessorCount: Int = ProcessInfo.processInfo.activeProcessorCount,
+        logicalCoreCount: Int = 0,
+        activeProcessorCount: Int = 0,
         cpuBrandName: String? = nil,
         memoryUsedBytes: UInt64,
         memoryTotalBytes: UInt64,
@@ -870,7 +870,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         displays: [DisplayMetric] = [],
         uptimeSeconds: TimeInterval = 0,
         hasUptimeReport: Bool = false,
-        osVersion: String = ProcessInfo.processInfo.operatingSystemVersionString,
+        osVersion: String = "",
         kernelRelease: String = "",
         timestamp: Date
     ) {
@@ -1286,19 +1286,23 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
                 return .critical
             }
 
+            if batteryPercent < 0.5 {
+                return .warning
+            }
+
             if batteryIsCharging {
                 return .normal
             }
 
             switch batteryPowerSource?.lowercased() {
-            case "ac power":
+            case "ac power", "battery power":
                 return .normal
-            case "battery power", "ups power":
+            case "ups power":
                 return .warning
             case .some(let value) where !value.isEmpty:
                 return .neutral
             default:
-                return .warning
+                return .normal
             }
         }
 

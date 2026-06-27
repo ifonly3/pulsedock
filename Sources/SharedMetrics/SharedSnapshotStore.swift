@@ -34,11 +34,21 @@ public struct SharedSnapshotStore: @unchecked Sendable {
         self.defaults = UserDefaults(suiteName: suiteName)
     }
 
-    public func saveLatestSnapshot(_ snapshot: MetricSnapshot) {
-        guard let defaults else { return }
+    @discardableResult
+    public func saveLatestSnapshot(_ snapshot: MetricSnapshot) -> Bool {
+        guard let defaults else { return false }
         let compact = snapshot.widgetCompactSnapshot()
-        guard let data = try? JSONEncoder().encode(compact) else { return }
-        defaults.set(data, forKey: Keys.latestSnapshot)
+
+        do {
+            let data = try JSONEncoder().encode(compact)
+            defaults.set(data, forKey: Keys.latestSnapshot)
+            return true
+        } catch {
+#if DEBUG
+            print("Pulse Dock failed to encode shared snapshot: \(error)")
+#endif
+            return false
+        }
     }
 
     public func loadLatestSnapshot(maxAge: TimeInterval, now: Date = Date()) -> MetricSnapshot? {

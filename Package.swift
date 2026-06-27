@@ -39,9 +39,21 @@ let package = Package(
                 .linkedFramework("WidgetKit")
             ]
         ),
+        .target(
+            name: "PulseDockWidget",
+            dependencies: ["SharedMetrics"],
+            path: "Sources/PulseDockWidget",
+            resources: [
+                .process("Resources")
+            ],
+            linkerSettings: [
+                .linkedFramework("SwiftUI"),
+                .linkedFramework("WidgetKit")
+            ]
+        ),
         .testTarget(
             name: "SharedMetricsTests",
-            dependencies: ["SharedMetrics"]
+            dependencies: ["SharedMetrics", "PulseDockWidget"]
         )
     ]
 )

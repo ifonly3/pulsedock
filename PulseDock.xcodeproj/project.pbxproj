@@ -7,85 +7,87 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		000000000000000000000038 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000037 /* Cocoa.framework */; };
-		000000000000000000000041 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000037 /* Cocoa.framework */; };
-		000000000000000000000042 /* MenuBarPopoverGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* MenuBarPopoverGeometry.swift */; };
-		000000000000000000000043 /* MetricFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000D /* MetricFormatting.swift */; };
-		000000000000000000000044 /* MetricSnapshot+WidgetCompact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* MetricSnapshot+WidgetCompact.swift */; };
-		000000000000000000000045 /* MetricSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000F /* MetricSnapshot.swift */; };
-		000000000000000000000046 /* PulseDockAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* PulseDockAppGroup.swift */; };
-		000000000000000000000047 /* SharedMetricStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000011 /* SharedMetricStrings.swift */; };
-		000000000000000000000048 /* SharedSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* SharedSnapshotStore.swift */; };
-		000000000000000000000049 /* SystemSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000013 /* SystemSampler.swift */; };
-		00000000000000000000004A /* WidgetTimelineKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* WidgetTimelineKind.swift */; };
-		00000000000000000000004B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000015 /* AppDelegate.swift */; };
-		00000000000000000000004C /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* DashboardView.swift */; };
-		00000000000000000000004D /* MetricsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000017 /* MetricsStore.swift */; };
-		00000000000000000000004E /* PulseDockAppStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* PulseDockAppStrings.swift */; };
-		00000000000000000000004F /* PulseDockLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000019 /* PulseDockLinks.swift */; };
-		000000000000000000000050 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* VisualEffectView.swift */; };
-		000000000000000000000051 /* WidgetPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001B /* WidgetPanelView.swift */; };
-		000000000000000000000052 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* main.swift */; };
-		000000000000000000000053 /* MenuBarPopoverGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* MenuBarPopoverGeometry.swift */; };
-		000000000000000000000054 /* MetricFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000D /* MetricFormatting.swift */; };
-		000000000000000000000055 /* MetricSnapshot+WidgetCompact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* MetricSnapshot+WidgetCompact.swift */; };
-		000000000000000000000056 /* MetricSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000F /* MetricSnapshot.swift */; };
-		000000000000000000000057 /* PulseDockAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* PulseDockAppGroup.swift */; };
-		000000000000000000000058 /* SharedMetricStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000011 /* SharedMetricStrings.swift */; };
-		000000000000000000000059 /* SharedSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* SharedSnapshotStore.swift */; };
-		00000000000000000000005A /* SystemSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000013 /* SystemSampler.swift */; };
-		00000000000000000000005B /* WidgetTimelineKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* WidgetTimelineKind.swift */; };
-		00000000000000000000005C /* PulseDockWidgetStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001D /* PulseDockWidgetStrings.swift */; };
-		00000000000000000000005D /* SystemDashboardWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* SystemDashboardWidget.swift */; };
-		00000000000000000000005E /* SharedMetrics.strings in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001F /* SharedMetrics.strings */; };
-		00000000000000000000005F /* SharedMetrics.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* SharedMetrics.strings */; };
-		000000000000000000000060 /* PulseDockApp.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000021 /* PulseDockApp.xcstrings */; };
-		000000000000000000000061 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* InfoPlist.strings */; };
-		000000000000000000000062 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000023 /* InfoPlist.strings */; };
-		000000000000000000000063 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002B /* PrivacyInfo.xcprivacy */; };
-		000000000000000000000064 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002D /* AppIcon.icns */; };
-		000000000000000000000065 /* SharedMetrics.strings in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001F /* SharedMetrics.strings */; };
-		000000000000000000000066 /* SharedMetrics.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* SharedMetrics.strings */; };
-		000000000000000000000067 /* PulseDockWidget.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* PulseDockWidget.xcstrings */; };
-		000000000000000000000068 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000025 /* InfoPlist.strings */; };
-		000000000000000000000069 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* InfoPlist.strings */; };
-		00000000000000000000006A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002C /* PrivacyInfo.xcprivacy */; };
-		00000000000000000000006C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006B /* SwiftUI.framework */; };
-		00000000000000000000006E /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006D /* AppKit.framework */; };
-		000000000000000000000070 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006F /* WidgetKit.framework */; };
-		000000000000000000000072 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000071 /* CoreGraphics.framework */; };
-		000000000000000000000074 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000073 /* IOKit.framework */; };
-		000000000000000000000076 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000075 /* Metal.framework */; };
-		000000000000000000000078 /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000077 /* Network.framework */; };
-		00000000000000000000007A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000079 /* SystemConfiguration.framework */; };
-		00000000000000000000007B /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006B /* SwiftUI.framework */; };
-		00000000000000000000007C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006F /* WidgetKit.framework */; };
-		00000000000000000000007D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000071 /* CoreGraphics.framework */; };
-		00000000000000000000007E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000073 /* IOKit.framework */; };
-		00000000000000000000007F /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000075 /* Metal.framework */; };
-		000000000000000000000080 /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000077 /* Network.framework */; };
-		000000000000000000000081 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000079 /* SystemConfiguration.framework */; };
-		000000000000000000000083 /* PulseDockWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003D /* PulseDockWidgetExtension.appex */; };
+		000000000000000000000039 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000038 /* Cocoa.framework */; };
+		000000000000000000000042 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000038 /* Cocoa.framework */; };
+		000000000000000000000043 /* MenuBarPopoverGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* MenuBarPopoverGeometry.swift */; };
+		000000000000000000000044 /* MetricFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000D /* MetricFormatting.swift */; };
+		000000000000000000000045 /* MetricScales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* MetricScales.swift */; };
+		000000000000000000000046 /* MetricSnapshot+WidgetCompact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000F /* MetricSnapshot+WidgetCompact.swift */; };
+		000000000000000000000047 /* MetricSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* MetricSnapshot.swift */; };
+		000000000000000000000048 /* PulseDockAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000011 /* PulseDockAppGroup.swift */; };
+		000000000000000000000049 /* SharedMetricStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* SharedMetricStrings.swift */; };
+		00000000000000000000004A /* SharedSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000013 /* SharedSnapshotStore.swift */; };
+		00000000000000000000004B /* SystemSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* SystemSampler.swift */; };
+		00000000000000000000004C /* WidgetTimelineKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000015 /* WidgetTimelineKind.swift */; };
+		00000000000000000000004D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* AppDelegate.swift */; };
+		00000000000000000000004E /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000017 /* DashboardView.swift */; };
+		00000000000000000000004F /* MetricsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* MetricsStore.swift */; };
+		000000000000000000000050 /* PulseDockAppStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000019 /* PulseDockAppStrings.swift */; };
+		000000000000000000000051 /* PulseDockLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* PulseDockLinks.swift */; };
+		000000000000000000000052 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001B /* VisualEffectView.swift */; };
+		000000000000000000000053 /* WidgetPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* WidgetPanelView.swift */; };
+		000000000000000000000054 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001D /* main.swift */; };
+		000000000000000000000055 /* MenuBarPopoverGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* MenuBarPopoverGeometry.swift */; };
+		000000000000000000000056 /* MetricFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000D /* MetricFormatting.swift */; };
+		000000000000000000000057 /* MetricScales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* MetricScales.swift */; };
+		000000000000000000000058 /* MetricSnapshot+WidgetCompact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000F /* MetricSnapshot+WidgetCompact.swift */; };
+		000000000000000000000059 /* MetricSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* MetricSnapshot.swift */; };
+		00000000000000000000005A /* PulseDockAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000011 /* PulseDockAppGroup.swift */; };
+		00000000000000000000005B /* SharedMetricStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* SharedMetricStrings.swift */; };
+		00000000000000000000005C /* SharedSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000013 /* SharedSnapshotStore.swift */; };
+		00000000000000000000005D /* SystemSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* SystemSampler.swift */; };
+		00000000000000000000005E /* WidgetTimelineKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000015 /* WidgetTimelineKind.swift */; };
+		00000000000000000000005F /* PulseDockWidgetStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* PulseDockWidgetStrings.swift */; };
+		000000000000000000000060 /* SystemDashboardWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001F /* SystemDashboardWidget.swift */; };
+		000000000000000000000061 /* SharedMetrics.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* SharedMetrics.strings */; };
+		000000000000000000000062 /* SharedMetrics.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000021 /* SharedMetrics.strings */; };
+		000000000000000000000063 /* PulseDockApp.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* PulseDockApp.xcstrings */; };
+		000000000000000000000064 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000023 /* InfoPlist.strings */; };
+		000000000000000000000065 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* InfoPlist.strings */; };
+		000000000000000000000066 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002C /* PrivacyInfo.xcprivacy */; };
+		000000000000000000000067 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002E /* AppIcon.icns */; };
+		000000000000000000000068 /* SharedMetrics.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* SharedMetrics.strings */; };
+		000000000000000000000069 /* SharedMetrics.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000021 /* SharedMetrics.strings */; };
+		00000000000000000000006A /* PulseDockWidget.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000025 /* PulseDockWidget.xcstrings */; };
+		00000000000000000000006B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* InfoPlist.strings */; };
+		00000000000000000000006C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000027 /* InfoPlist.strings */; };
+		00000000000000000000006D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002D /* PrivacyInfo.xcprivacy */; };
+		00000000000000000000006F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006E /* SwiftUI.framework */; };
+		000000000000000000000071 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000070 /* AppKit.framework */; };
+		000000000000000000000073 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000072 /* WidgetKit.framework */; };
+		000000000000000000000075 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000074 /* CoreGraphics.framework */; };
+		000000000000000000000077 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000076 /* IOKit.framework */; };
+		000000000000000000000079 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000078 /* Metal.framework */; };
+		00000000000000000000007B /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007A /* Network.framework */; };
+		00000000000000000000007D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007C /* SystemConfiguration.framework */; };
+		00000000000000000000007E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006E /* SwiftUI.framework */; };
+		00000000000000000000007F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000072 /* WidgetKit.framework */; };
+		000000000000000000000080 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000074 /* CoreGraphics.framework */; };
+		000000000000000000000081 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000076 /* IOKit.framework */; };
+		000000000000000000000082 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000078 /* Metal.framework */; };
+		000000000000000000000083 /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007A /* Network.framework */; };
+		000000000000000000000084 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007C /* SystemConfiguration.framework */; };
+		000000000000000000000086 /* PulseDockWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003E /* PulseDockWidgetExtension.appex */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		000000000000000000000084 /* PBXContainerItemProxy */ = {
+		000000000000000000000087 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 000000000000000000000001 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 000000000000000000000039;
+			remoteGlobalIDString = 00000000000000000000003A;
 			remoteInfo = PulseDockWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		000000000000000000000082 /* Embed App Extensions */ = {
+		000000000000000000000085 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				000000000000000000000083 /* PulseDockWidgetExtension.appex in Embed App Extensions */,
+				000000000000000000000086 /* PulseDockWidgetExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,80 +97,81 @@
 /* Begin PBXFileReference section */
 		00000000000000000000000C /* MenuBarPopoverGeometry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MenuBarPopoverGeometry.swift; sourceTree = "<group>"; };
 		00000000000000000000000D /* MetricFormatting.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetricFormatting.swift; sourceTree = "<group>"; };
-		00000000000000000000000E /* MetricSnapshot+WidgetCompact.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "MetricSnapshot+WidgetCompact.swift"; sourceTree = "<group>"; };
-		00000000000000000000000F /* MetricSnapshot.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetricSnapshot.swift; sourceTree = "<group>"; };
-		000000000000000000000010 /* PulseDockAppGroup.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PulseDockAppGroup.swift; sourceTree = "<group>"; };
-		000000000000000000000011 /* SharedMetricStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SharedMetricStrings.swift; sourceTree = "<group>"; };
-		000000000000000000000012 /* SharedSnapshotStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SharedSnapshotStore.swift; sourceTree = "<group>"; };
-		000000000000000000000013 /* SystemSampler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SystemSampler.swift; sourceTree = "<group>"; };
-		000000000000000000000014 /* WidgetTimelineKind.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetTimelineKind.swift; sourceTree = "<group>"; };
-		000000000000000000000015 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		000000000000000000000016 /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-		000000000000000000000017 /* MetricsStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetricsStore.swift; sourceTree = "<group>"; };
-		000000000000000000000018 /* PulseDockAppStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PulseDockAppStrings.swift; sourceTree = "<group>"; };
-		000000000000000000000019 /* PulseDockLinks.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PulseDockLinks.swift; sourceTree = "<group>"; };
-		00000000000000000000001A /* VisualEffectView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
-		00000000000000000000001B /* WidgetPanelView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetPanelView.swift; sourceTree = "<group>"; };
-		00000000000000000000001C /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		00000000000000000000001D /* PulseDockWidgetStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PulseDockWidgetStrings.swift; sourceTree = "<group>"; };
-		00000000000000000000001E /* SystemDashboardWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SystemDashboardWidget.swift; sourceTree = "<group>"; };
-		00000000000000000000001F /* SharedMetrics.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = SharedMetrics.strings; path = Resources/en.lproj/SharedMetrics.strings; sourceTree = "<group>"; };
-		000000000000000000000020 /* SharedMetrics.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = SharedMetrics.strings; path = "Resources/zh-Hans.lproj/SharedMetrics.strings"; sourceTree = "<group>"; };
-		000000000000000000000021 /* PulseDockApp.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; name = PulseDockApp.xcstrings; path = ../Sources/PulseDockApp/Resources/PulseDockApp.xcstrings; sourceTree = "<group>"; };
-		000000000000000000000022 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = App/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		000000000000000000000023 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "App/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		000000000000000000000024 /* PulseDockWidget.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; name = PulseDockWidget.xcstrings; path = ../Sources/PulseDockWidget/Resources/PulseDockWidget.xcstrings; sourceTree = "<group>"; };
-		000000000000000000000025 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Widget/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		000000000000000000000026 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "Widget/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		000000000000000000000027 /* AppInfo.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = AppInfo.plist; sourceTree = "<group>"; };
-		000000000000000000000028 /* WidgetInfo.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = WidgetInfo.plist; sourceTree = "<group>"; };
-		000000000000000000000029 /* PulseDock.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = PulseDock.entitlements; sourceTree = "<group>"; };
-		00000000000000000000002A /* PulseDockWidgetExtension.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = PulseDockWidgetExtension.entitlements; sourceTree = "<group>"; };
-		00000000000000000000002B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = App/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		00000000000000000000002C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Widget/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		00000000000000000000002D /* AppIcon.icns */ = {isa = PBXFileReference; includeInIndex = 1; path = AppIcon.icns; sourceTree = "<group>"; };
-		000000000000000000000032 /* Pulse Dock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pulse Dock.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		000000000000000000000037 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
-		00000000000000000000003D /* PulseDockWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PulseDockWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		00000000000000000000006B /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
-		00000000000000000000006D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
-		00000000000000000000006F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
-		000000000000000000000071 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
-		000000000000000000000073 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/IOKit.framework; sourceTree = DEVELOPER_DIR; };
-		000000000000000000000075 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
-		000000000000000000000077 /* Network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Network.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Network.framework; sourceTree = DEVELOPER_DIR; };
-		000000000000000000000079 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		00000000000000000000000E /* MetricScales.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetricScales.swift; sourceTree = "<group>"; };
+		00000000000000000000000F /* MetricSnapshot+WidgetCompact.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "MetricSnapshot+WidgetCompact.swift"; sourceTree = "<group>"; };
+		000000000000000000000010 /* MetricSnapshot.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetricSnapshot.swift; sourceTree = "<group>"; };
+		000000000000000000000011 /* PulseDockAppGroup.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PulseDockAppGroup.swift; sourceTree = "<group>"; };
+		000000000000000000000012 /* SharedMetricStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SharedMetricStrings.swift; sourceTree = "<group>"; };
+		000000000000000000000013 /* SharedSnapshotStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SharedSnapshotStore.swift; sourceTree = "<group>"; };
+		000000000000000000000014 /* SystemSampler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SystemSampler.swift; sourceTree = "<group>"; };
+		000000000000000000000015 /* WidgetTimelineKind.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetTimelineKind.swift; sourceTree = "<group>"; };
+		000000000000000000000016 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		000000000000000000000017 /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		000000000000000000000018 /* MetricsStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetricsStore.swift; sourceTree = "<group>"; };
+		000000000000000000000019 /* PulseDockAppStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PulseDockAppStrings.swift; sourceTree = "<group>"; };
+		00000000000000000000001A /* PulseDockLinks.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PulseDockLinks.swift; sourceTree = "<group>"; };
+		00000000000000000000001B /* VisualEffectView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
+		00000000000000000000001C /* WidgetPanelView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetPanelView.swift; sourceTree = "<group>"; };
+		00000000000000000000001D /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		00000000000000000000001E /* PulseDockWidgetStrings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PulseDockWidgetStrings.swift; sourceTree = "<group>"; };
+		00000000000000000000001F /* SystemDashboardWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SystemDashboardWidget.swift; sourceTree = "<group>"; };
+		000000000000000000000020 /* SharedMetrics.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = SharedMetrics.strings; path = Resources/en.lproj/SharedMetrics.strings; sourceTree = "<group>"; };
+		000000000000000000000021 /* SharedMetrics.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = SharedMetrics.strings; path = "Resources/zh-Hans.lproj/SharedMetrics.strings"; sourceTree = "<group>"; };
+		000000000000000000000022 /* PulseDockApp.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; name = PulseDockApp.xcstrings; path = ../Sources/PulseDockApp/Resources/PulseDockApp.xcstrings; sourceTree = "<group>"; };
+		000000000000000000000023 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = App/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		000000000000000000000024 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "App/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		000000000000000000000025 /* PulseDockWidget.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; name = PulseDockWidget.xcstrings; path = ../Sources/PulseDockWidget/Resources/PulseDockWidget.xcstrings; sourceTree = "<group>"; };
+		000000000000000000000026 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Widget/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		000000000000000000000027 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "Widget/zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		000000000000000000000028 /* AppInfo.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = AppInfo.plist; sourceTree = "<group>"; };
+		000000000000000000000029 /* WidgetInfo.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = WidgetInfo.plist; sourceTree = "<group>"; };
+		00000000000000000000002A /* PulseDock.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = PulseDock.entitlements; sourceTree = "<group>"; };
+		00000000000000000000002B /* PulseDockWidgetExtension.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = PulseDockWidgetExtension.entitlements; sourceTree = "<group>"; };
+		00000000000000000000002C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = App/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		00000000000000000000002D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Widget/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		00000000000000000000002E /* AppIcon.icns */ = {isa = PBXFileReference; includeInIndex = 1; path = AppIcon.icns; sourceTree = "<group>"; };
+		000000000000000000000033 /* Pulse Dock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pulse Dock.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000000038 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		00000000000000000000003E /* PulseDockWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PulseDockWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000006E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
+		000000000000000000000070 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
+		000000000000000000000072 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
+		000000000000000000000074 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
+		000000000000000000000076 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/IOKit.framework; sourceTree = DEVELOPER_DIR; };
+		000000000000000000000078 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
+		00000000000000000000007A /* Network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Network.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Network.framework; sourceTree = DEVELOPER_DIR; };
+		00000000000000000000007C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		000000000000000000000034 /* Frameworks */ = {
+		000000000000000000000035 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00000000000000000000006E /* AppKit.framework in Frameworks */,
-				000000000000000000000038 /* Cocoa.framework in Frameworks */,
-				000000000000000000000072 /* CoreGraphics.framework in Frameworks */,
-				000000000000000000000074 /* IOKit.framework in Frameworks */,
-				000000000000000000000076 /* Metal.framework in Frameworks */,
-				000000000000000000000078 /* Network.framework in Frameworks */,
-				00000000000000000000006C /* SwiftUI.framework in Frameworks */,
-				00000000000000000000007A /* SystemConfiguration.framework in Frameworks */,
-				000000000000000000000070 /* WidgetKit.framework in Frameworks */,
+				000000000000000000000071 /* AppKit.framework in Frameworks */,
+				000000000000000000000039 /* Cocoa.framework in Frameworks */,
+				000000000000000000000075 /* CoreGraphics.framework in Frameworks */,
+				000000000000000000000077 /* IOKit.framework in Frameworks */,
+				000000000000000000000079 /* Metal.framework in Frameworks */,
+				00000000000000000000007B /* Network.framework in Frameworks */,
+				00000000000000000000006F /* SwiftUI.framework in Frameworks */,
+				00000000000000000000007D /* SystemConfiguration.framework in Frameworks */,
+				000000000000000000000073 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00000000000000000000003F /* Frameworks */ = {
+		000000000000000000000040 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000041 /* Cocoa.framework in Frameworks */,
-				00000000000000000000007D /* CoreGraphics.framework in Frameworks */,
-				00000000000000000000007E /* IOKit.framework in Frameworks */,
-				00000000000000000000007F /* Metal.framework in Frameworks */,
-				000000000000000000000080 /* Network.framework in Frameworks */,
-				00000000000000000000007B /* SwiftUI.framework in Frameworks */,
-				000000000000000000000081 /* SystemConfiguration.framework in Frameworks */,
-				00000000000000000000007C /* WidgetKit.framework in Frameworks */,
+				000000000000000000000042 /* Cocoa.framework in Frameworks */,
+				000000000000000000000080 /* CoreGraphics.framework in Frameworks */,
+				000000000000000000000081 /* IOKit.framework in Frameworks */,
+				000000000000000000000082 /* Metal.framework in Frameworks */,
+				000000000000000000000083 /* Network.framework in Frameworks */,
+				00000000000000000000007E /* SwiftUI.framework in Frameworks */,
+				000000000000000000000084 /* SystemConfiguration.framework in Frameworks */,
+				00000000000000000000007F /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,8 +193,8 @@
 		000000000000000000000003 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000032 /* Pulse Dock.app */,
-				00000000000000000000003D /* PulseDockWidgetExtension.appex */,
+				000000000000000000000033 /* Pulse Dock.app */,
+				00000000000000000000003E /* PulseDockWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -199,7 +202,7 @@
 		000000000000000000000007 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000036 /* OS X */,
+				000000000000000000000037 /* OS X */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -209,15 +212,16 @@
 			children = (
 				00000000000000000000000C /* MenuBarPopoverGeometry.swift */,
 				00000000000000000000000D /* MetricFormatting.swift */,
-				00000000000000000000000F /* MetricSnapshot.swift */,
-				00000000000000000000000E /* MetricSnapshot+WidgetCompact.swift */,
-				000000000000000000000010 /* PulseDockAppGroup.swift */,
-				00000000000000000000001F /* SharedMetrics.strings */,
+				00000000000000000000000E /* MetricScales.swift */,
+				000000000000000000000010 /* MetricSnapshot.swift */,
+				00000000000000000000000F /* MetricSnapshot+WidgetCompact.swift */,
+				000000000000000000000011 /* PulseDockAppGroup.swift */,
 				000000000000000000000020 /* SharedMetrics.strings */,
-				000000000000000000000011 /* SharedMetricStrings.swift */,
-				000000000000000000000012 /* SharedSnapshotStore.swift */,
-				000000000000000000000013 /* SystemSampler.swift */,
-				000000000000000000000014 /* WidgetTimelineKind.swift */,
+				000000000000000000000021 /* SharedMetrics.strings */,
+				000000000000000000000012 /* SharedMetricStrings.swift */,
+				000000000000000000000013 /* SharedSnapshotStore.swift */,
+				000000000000000000000014 /* SystemSampler.swift */,
+				000000000000000000000015 /* WidgetTimelineKind.swift */,
 			);
 			name = SharedMetrics;
 			path = Sources/SharedMetrics;
@@ -226,14 +230,14 @@
 		000000000000000000000009 /* PulseDockApp */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000015 /* AppDelegate.swift */,
-				000000000000000000000016 /* DashboardView.swift */,
-				00000000000000000000001C /* main.swift */,
-				000000000000000000000017 /* MetricsStore.swift */,
-				000000000000000000000018 /* PulseDockAppStrings.swift */,
-				000000000000000000000019 /* PulseDockLinks.swift */,
-				00000000000000000000001A /* VisualEffectView.swift */,
-				00000000000000000000001B /* WidgetPanelView.swift */,
+				000000000000000000000016 /* AppDelegate.swift */,
+				000000000000000000000017 /* DashboardView.swift */,
+				00000000000000000000001D /* main.swift */,
+				000000000000000000000018 /* MetricsStore.swift */,
+				000000000000000000000019 /* PulseDockAppStrings.swift */,
+				00000000000000000000001A /* PulseDockLinks.swift */,
+				00000000000000000000001B /* VisualEffectView.swift */,
+				00000000000000000000001C /* WidgetPanelView.swift */,
 			);
 			name = PulseDockApp;
 			path = Sources/PulseDockApp;
@@ -242,8 +246,8 @@
 		00000000000000000000000A /* PulseDockWidget */ = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000001D /* PulseDockWidgetStrings.swift */,
-				00000000000000000000001E /* SystemDashboardWidget.swift */,
+				00000000000000000000001E /* PulseDockWidgetStrings.swift */,
+				00000000000000000000001F /* SystemDashboardWidget.swift */,
 			);
 			name = PulseDockWidget;
 			path = Sources/PulseDockWidget;
@@ -252,36 +256,36 @@
 		00000000000000000000000B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000002D /* AppIcon.icns */,
-				000000000000000000000027 /* AppInfo.plist */,
-				000000000000000000000022 /* InfoPlist.strings */,
+				00000000000000000000002E /* AppIcon.icns */,
+				000000000000000000000028 /* AppInfo.plist */,
 				000000000000000000000023 /* InfoPlist.strings */,
-				000000000000000000000025 /* InfoPlist.strings */,
+				000000000000000000000024 /* InfoPlist.strings */,
 				000000000000000000000026 /* InfoPlist.strings */,
-				00000000000000000000002B /* PrivacyInfo.xcprivacy */,
+				000000000000000000000027 /* InfoPlist.strings */,
 				00000000000000000000002C /* PrivacyInfo.xcprivacy */,
-				000000000000000000000029 /* PulseDock.entitlements */,
-				000000000000000000000021 /* PulseDockApp.xcstrings */,
-				000000000000000000000024 /* PulseDockWidget.xcstrings */,
-				00000000000000000000002A /* PulseDockWidgetExtension.entitlements */,
-				000000000000000000000028 /* WidgetInfo.plist */,
+				00000000000000000000002D /* PrivacyInfo.xcprivacy */,
+				00000000000000000000002A /* PulseDock.entitlements */,
+				000000000000000000000022 /* PulseDockApp.xcstrings */,
+				000000000000000000000025 /* PulseDockWidget.xcstrings */,
+				00000000000000000000002B /* PulseDockWidgetExtension.entitlements */,
+				000000000000000000000029 /* WidgetInfo.plist */,
 			);
 			name = Resources;
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		000000000000000000000036 /* OS X */ = {
+		000000000000000000000037 /* OS X */ = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000006D /* AppKit.framework */,
-				000000000000000000000037 /* Cocoa.framework */,
-				000000000000000000000071 /* CoreGraphics.framework */,
-				000000000000000000000073 /* IOKit.framework */,
-				000000000000000000000075 /* Metal.framework */,
-				000000000000000000000077 /* Network.framework */,
-				00000000000000000000006B /* SwiftUI.framework */,
-				000000000000000000000079 /* SystemConfiguration.framework */,
-				00000000000000000000006F /* WidgetKit.framework */,
+				000000000000000000000070 /* AppKit.framework */,
+				000000000000000000000038 /* Cocoa.framework */,
+				000000000000000000000074 /* CoreGraphics.framework */,
+				000000000000000000000076 /* IOKit.framework */,
+				000000000000000000000078 /* Metal.framework */,
+				00000000000000000000007A /* Network.framework */,
+				00000000000000000000006E /* SwiftUI.framework */,
+				00000000000000000000007C /* SystemConfiguration.framework */,
+				000000000000000000000072 /* WidgetKit.framework */,
 			);
 			name = "OS X";
 			sourceTree = "<group>";
@@ -289,32 +293,32 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00000000000000000000002E /* PulseDock */ = {
+		00000000000000000000002F /* PulseDock */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00000000000000000000002F /* Build configuration list for PBXNativeTarget "PulseDock" */;
+			buildConfigurationList = 000000000000000000000030 /* Build configuration list for PBXNativeTarget "PulseDock" */;
 			buildPhases = (
-				000000000000000000000033 /* Sources */,
-				000000000000000000000034 /* Frameworks */,
-				000000000000000000000035 /* Resources */,
-				000000000000000000000082 /* Embed App Extensions */,
+				000000000000000000000034 /* Sources */,
+				000000000000000000000035 /* Frameworks */,
+				000000000000000000000036 /* Resources */,
+				000000000000000000000085 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				000000000000000000000085 /* PBXTargetDependency */,
+				000000000000000000000088 /* PBXTargetDependency */,
 			);
 			name = PulseDock;
 			productName = PulseDock;
-			productReference = 000000000000000000000032 /* Pulse Dock.app */;
+			productReference = 000000000000000000000033 /* Pulse Dock.app */;
 			productType = "com.apple.product-type.application";
 		};
-		000000000000000000000039 /* PulseDockWidgetExtension */ = {
+		00000000000000000000003A /* PulseDockWidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00000000000000000000003A /* Build configuration list for PBXNativeTarget "PulseDockWidgetExtension" */;
+			buildConfigurationList = 00000000000000000000003B /* Build configuration list for PBXNativeTarget "PulseDockWidgetExtension" */;
 			buildPhases = (
-				00000000000000000000003E /* Sources */,
-				00000000000000000000003F /* Frameworks */,
-				000000000000000000000040 /* Resources */,
+				00000000000000000000003F /* Sources */,
+				000000000000000000000040 /* Frameworks */,
+				000000000000000000000041 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -322,7 +326,7 @@
 			);
 			name = PulseDockWidgetExtension;
 			productName = PulseDockWidgetExtension;
-			productReference = 00000000000000000000003D /* PulseDockWidgetExtension.appex */;
+			productReference = 00000000000000000000003E /* PulseDockWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -350,93 +354,95 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				00000000000000000000002E /* PulseDock */,
-				000000000000000000000039 /* PulseDockWidgetExtension */,
+				00000000000000000000002F /* PulseDock */,
+				00000000000000000000003A /* PulseDockWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		000000000000000000000035 /* Resources */ = {
+		000000000000000000000036 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000064 /* AppIcon.icns in Resources */,
-				000000000000000000000061 /* InfoPlist.strings in Resources */,
-				000000000000000000000062 /* InfoPlist.strings in Resources */,
-				000000000000000000000063 /* PrivacyInfo.xcprivacy in Resources */,
-				000000000000000000000060 /* PulseDockApp.xcstrings in Resources */,
-				00000000000000000000005E /* SharedMetrics.strings in Resources */,
-				00000000000000000000005F /* SharedMetrics.strings in Resources */,
+				000000000000000000000067 /* AppIcon.icns in Resources */,
+				000000000000000000000064 /* InfoPlist.strings in Resources */,
+				000000000000000000000065 /* InfoPlist.strings in Resources */,
+				000000000000000000000066 /* PrivacyInfo.xcprivacy in Resources */,
+				000000000000000000000063 /* PulseDockApp.xcstrings in Resources */,
+				000000000000000000000061 /* SharedMetrics.strings in Resources */,
+				000000000000000000000062 /* SharedMetrics.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		000000000000000000000040 /* Resources */ = {
+		000000000000000000000041 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000068 /* InfoPlist.strings in Resources */,
-				000000000000000000000069 /* InfoPlist.strings in Resources */,
-				00000000000000000000006A /* PrivacyInfo.xcprivacy in Resources */,
-				000000000000000000000067 /* PulseDockWidget.xcstrings in Resources */,
-				000000000000000000000065 /* SharedMetrics.strings in Resources */,
-				000000000000000000000066 /* SharedMetrics.strings in Resources */,
+				00000000000000000000006B /* InfoPlist.strings in Resources */,
+				00000000000000000000006C /* InfoPlist.strings in Resources */,
+				00000000000000000000006D /* PrivacyInfo.xcprivacy in Resources */,
+				00000000000000000000006A /* PulseDockWidget.xcstrings in Resources */,
+				000000000000000000000068 /* SharedMetrics.strings in Resources */,
+				000000000000000000000069 /* SharedMetrics.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		000000000000000000000033 /* Sources */ = {
+		000000000000000000000034 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00000000000000000000004B /* AppDelegate.swift in Sources */,
-				00000000000000000000004C /* DashboardView.swift in Sources */,
-				000000000000000000000052 /* main.swift in Sources */,
-				000000000000000000000042 /* MenuBarPopoverGeometry.swift in Sources */,
-				000000000000000000000043 /* MetricFormatting.swift in Sources */,
-				000000000000000000000045 /* MetricSnapshot.swift in Sources */,
-				000000000000000000000044 /* MetricSnapshot+WidgetCompact.swift in Sources */,
-				00000000000000000000004D /* MetricsStore.swift in Sources */,
-				000000000000000000000046 /* PulseDockAppGroup.swift in Sources */,
-				00000000000000000000004E /* PulseDockAppStrings.swift in Sources */,
-				00000000000000000000004F /* PulseDockLinks.swift in Sources */,
-				000000000000000000000047 /* SharedMetricStrings.swift in Sources */,
-				000000000000000000000048 /* SharedSnapshotStore.swift in Sources */,
-				000000000000000000000049 /* SystemSampler.swift in Sources */,
-				000000000000000000000050 /* VisualEffectView.swift in Sources */,
-				000000000000000000000051 /* WidgetPanelView.swift in Sources */,
-				00000000000000000000004A /* WidgetTimelineKind.swift in Sources */,
+				00000000000000000000004D /* AppDelegate.swift in Sources */,
+				00000000000000000000004E /* DashboardView.swift in Sources */,
+				000000000000000000000054 /* main.swift in Sources */,
+				000000000000000000000043 /* MenuBarPopoverGeometry.swift in Sources */,
+				000000000000000000000044 /* MetricFormatting.swift in Sources */,
+				000000000000000000000045 /* MetricScales.swift in Sources */,
+				000000000000000000000047 /* MetricSnapshot.swift in Sources */,
+				000000000000000000000046 /* MetricSnapshot+WidgetCompact.swift in Sources */,
+				00000000000000000000004F /* MetricsStore.swift in Sources */,
+				000000000000000000000048 /* PulseDockAppGroup.swift in Sources */,
+				000000000000000000000050 /* PulseDockAppStrings.swift in Sources */,
+				000000000000000000000051 /* PulseDockLinks.swift in Sources */,
+				000000000000000000000049 /* SharedMetricStrings.swift in Sources */,
+				00000000000000000000004A /* SharedSnapshotStore.swift in Sources */,
+				00000000000000000000004B /* SystemSampler.swift in Sources */,
+				000000000000000000000052 /* VisualEffectView.swift in Sources */,
+				000000000000000000000053 /* WidgetPanelView.swift in Sources */,
+				00000000000000000000004C /* WidgetTimelineKind.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00000000000000000000003E /* Sources */ = {
+		00000000000000000000003F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000053 /* MenuBarPopoverGeometry.swift in Sources */,
-				000000000000000000000054 /* MetricFormatting.swift in Sources */,
-				000000000000000000000056 /* MetricSnapshot.swift in Sources */,
-				000000000000000000000055 /* MetricSnapshot+WidgetCompact.swift in Sources */,
-				000000000000000000000057 /* PulseDockAppGroup.swift in Sources */,
-				00000000000000000000005C /* PulseDockWidgetStrings.swift in Sources */,
-				000000000000000000000058 /* SharedMetricStrings.swift in Sources */,
-				000000000000000000000059 /* SharedSnapshotStore.swift in Sources */,
-				00000000000000000000005D /* SystemDashboardWidget.swift in Sources */,
-				00000000000000000000005A /* SystemSampler.swift in Sources */,
-				00000000000000000000005B /* WidgetTimelineKind.swift in Sources */,
+				000000000000000000000055 /* MenuBarPopoverGeometry.swift in Sources */,
+				000000000000000000000056 /* MetricFormatting.swift in Sources */,
+				000000000000000000000057 /* MetricScales.swift in Sources */,
+				000000000000000000000059 /* MetricSnapshot.swift in Sources */,
+				000000000000000000000058 /* MetricSnapshot+WidgetCompact.swift in Sources */,
+				00000000000000000000005A /* PulseDockAppGroup.swift in Sources */,
+				00000000000000000000005F /* PulseDockWidgetStrings.swift in Sources */,
+				00000000000000000000005B /* SharedMetricStrings.swift in Sources */,
+				00000000000000000000005C /* SharedSnapshotStore.swift in Sources */,
+				000000000000000000000060 /* SystemDashboardWidget.swift in Sources */,
+				00000000000000000000005D /* SystemSampler.swift in Sources */,
+				00000000000000000000005E /* WidgetTimelineKind.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		000000000000000000000085 /* PBXTargetDependency */ = {
+		000000000000000000000088 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = PulseDockWidgetExtension;
-			target = 000000000000000000000039 /* PulseDockWidgetExtension */;
-			targetProxy = 000000000000000000000084 /* PBXContainerItemProxy */;
+			target = 00000000000000000000003A /* PulseDockWidgetExtension */;
+			targetProxy = 000000000000000000000087 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -556,7 +562,7 @@
 			};
 			name = Release;
 		};
-		000000000000000000000030 /* Release */ = {
+		000000000000000000000031 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/PulseDock.entitlements;
@@ -577,7 +583,7 @@
 			};
 			name = Release;
 		};
-		000000000000000000000031 /* Debug */ = {
+		000000000000000000000032 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/PulseDock.entitlements;
@@ -598,7 +604,7 @@
 			};
 			name = Debug;
 		};
-		00000000000000000000003B /* Release */ = {
+		00000000000000000000003C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/PulseDockWidgetExtension.entitlements;
@@ -617,7 +623,7 @@
 			};
 			name = Release;
 		};
-		00000000000000000000003C /* Debug */ = {
+		00000000000000000000003D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/PulseDockWidgetExtension.entitlements;
@@ -648,20 +654,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		00000000000000000000002F /* Build configuration list for PBXNativeTarget "PulseDock" */ = {
+		000000000000000000000030 /* Build configuration list for PBXNativeTarget "PulseDock" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000000000000000000000031 /* Debug */,
-				000000000000000000000030 /* Release */,
+				000000000000000000000032 /* Debug */,
+				000000000000000000000031 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		00000000000000000000003A /* Build configuration list for PBXNativeTarget "PulseDockWidgetExtension" */ = {
+		00000000000000000000003B /* Build configuration list for PBXNativeTarget "PulseDockWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00000000000000000000003C /* Debug */,
-				00000000000000000000003B /* Release */,
+				00000000000000000000003D /* Debug */,
+				00000000000000000000003C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

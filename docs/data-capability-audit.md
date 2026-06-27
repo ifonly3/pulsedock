@@ -58,15 +58,16 @@ This file is an internal product and App Store readiness audit. It should not be
 - `MetricSnapshot.placeholder` is intentionally empty or unknown. It must not contain realistic CPU, memory, network, process, GPU, display, or storage sample values.
 - Widget timelines use direct public-API sampling through a small in-extension sampler cache and then store compact timeline snapshots. The placeholder view is a visual skeleton with a short waiting label only; it must not contain demo values or explanatory waiting-state copy.
 - Widget timeline entries store compact snapshots that preserve visible network summary signals while stripping detailed process, network interface, storage, GPU, and display inventory lists.
-- Widget sampler fallback returns the priming sample instead of taking an immediate second sample with near-zero deltas.
+- Widget sampler fallback uses a locked in-extension SystemSampler without dead priming state.
 - Main app and widget snapshots warm the sampler before publishing delta-based CPU/network readings, so the first visible sample and resume-after-pause sample are not unprimed or stale counter baselines.
 - Refresh ticks that arrive while sampling is in flight queue one follow-up refresh instead of disappearing silently.
 - Sample timestamp display text reports the system-not-reported state for placeholder or missing timestamp snapshots.
 - Widget headers use minute-level sampled time text so narrow widget families stay readable.
 - Widget headers use explicit sample-time reported-state flags instead of comparing sampled time display text.
 - History sample-count labels count only snapshots with reported sample timestamps, so placeholder or legacy missing-time history is not displayed as sampled history.
-- Static inventory sampling is cached for the main refresh loop: mounted volumes, GPU devices, and display topology use a short 15-second TTL while CPU, memory, network, power, thermal, uptime, and load remain sampled on each visible refresh.
-- Static system information is sampled once per sampler instance: physical/logical core counts, CPU brand, OS version, and Darwin kernel release are reused while active processor count, CPU usage, memory, network, power, thermal, uptime, and load remain live readings.
+- Static inventory sampling is cached for the main refresh loop: mounted volumes, GPU devices, and display topology use a short 15-second TTL while CPU, memory, network, thermal, uptime, and load remain sampled on each visible refresh.
+- Battery and power sampling uses a short cache to avoid repeating IOKit power-source IPC on every 1-5 second refresh tick while still keeping visible power state fresh.
+- Static system information is sampled once per sampler instance: physical/logical core counts, CPU brand, OS version, and Darwin kernel release are reused while active processor count, CPU usage, memory, network, thermal, uptime, and load remain live readings.
 - System uptime is sampled and formatted on-device only. It requires the System Boot Time required-reason entry because the shared sampler is used by both the app and Widget extension.
 - Operating system version display text reports the system-not-reported state when only a generic placeholder is available.
 - Legacy snapshots missing operating system version remain not-reported instead of borrowing the current machine OS version during decode.
@@ -128,6 +129,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Medium widget left column uses a first-version-style CPU block with core summary and a compact status strip instead of stacking network detail text.
 - Dashboard widget preview adapts its background, stroke, shadow, and secondary text to light and dark appearances.
 - The main app writes a compact latest snapshot to App Group UserDefaults on a 60-second throttled cadence and asks WidgetKit to reload its timeline kind after shared writes.
+- Shared widget snapshot writes return a success flag and log DEBUG-only encoding failures instead of silently dropping malformed compact snapshots.
 - Shared widget snapshots tolerate small system clock skew while still rejecting stale or far-future data.
 - User-facing fallback text says when the system did not report a value instead of using generic unknown-state wording.
 - Thermal display text is centralized on the shared snapshot model, so dashboard, menu bar, and widget surfaces use the same reported-state fallback.
@@ -150,7 +152,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Missing power-source indicators use neutral tint instead of healthy or warning colors.
 - History power trend uses the current power-status label and neutral tint when power-source data is missing.
 - Power progress uses measured battery percent only; AC/UPS/source-only states are displayed as text without invented gauge fill.
-- Power indicator tint uses the shared power-source tone mapping so battery or UPS power without a percent is warning-colored instead of green.
+- Power indicator tint uses the shared power-source tone mapping so high battery power remains normal, medium battery power is warning, low battery is critical, and source-only battery or UPS power without a percent remains warning-colored.
 - Compact power surfaces show the current providing power source when no battery percentage exists, while battery-specific rows still say that no battery is present.
 - Overview and Status power surfaces use the same current power status fallback instead of treating missing battery percentage as zero battery.
 - The Power page foregrounds the current power status when no battery percentage exists, while detailed battery rows remain explicit about missing battery values.
@@ -304,7 +306,8 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests prevent status popover opening from calling app activation after showing the popover.
 - Source-level tests prevent widget placeholders from showing waiting-state copy.
 - Source-level tests require Widget timeline entries to compact sampled snapshots before storage, keeping unused inventory lists out of WidgetKit entries.
-- Source-level tests require static inventory sampling to be cached in the main refresh loop without caching live CPU, memory, network, or power readings.
+- Source-level tests require static inventory and short-lived battery sampling to be cached in the main refresh loop without caching live CPU, memory, or network readings.
+- Source-level tests require Widget source to compile under SwiftPM with the WidgetBundle entry point disabled for package builds.
 - Source-level tests require static system information to be sampled once per sampler instance without caching active processor count.
 - Source-level tests require medium widgets to avoid duplicating the CPU row and keep three supporting rows for memory, connection, and disk.
 - Source-level tests keep medium widget vertical padding, row spacing, and dark-mode text/track colors from regressing into a crowded layout.
@@ -359,6 +362,8 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require power reported-state checks to use an explicit snapshot flag instead of user-facing text comparisons.
 - Source-level tests require power trend charts and gauges to use measured battery percent only, leaving source-only AC/UPS states without invented fill.
 - Source-level tests require app, widget, and menu bar power tints to use shared power-source tone mapping.
+- Source-level tests require power-source tone mapping to distinguish high, medium, and low battery levels instead of warning-coloring every battery-power state.
+- Source-level tests require power-source numeric conversions to reject non-finite or overflowing values before converting to integer fields.
 - Source-level tests require overview, menu bar, and widget power surfaces to use the current power status instead of always foregrounding battery percentage text.
 - Source-level tests require Overview and Status page power rows to use the current power status when battery percentage is unavailable.
 - Source-level tests require the Power page to foreground the current power status instead of always foregrounding battery percentage text.

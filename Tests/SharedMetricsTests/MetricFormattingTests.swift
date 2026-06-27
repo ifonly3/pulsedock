@@ -15,6 +15,8 @@ import Testing
     #expect(MetricFormatting.bytes(512) == "512 B")
     #expect(MetricFormatting.bytes(2_097_152) == "2.0 MB")
     #expect(MetricFormatting.bytes(13_314_867_200) == "12.4 GB")
+    #expect(MetricFormatting.bytes(1_125_899_906_842_624) == "1.0 PB")
+    #expect(MetricFormatting.compactBytes(1_152_921_504_606_846_976) == "1 EB")
 }
 
 @Test func networkRateFormatterUsesBitsPerSecond() {
@@ -29,6 +31,13 @@ import Testing
     #expect(MetricFormatting.bitRate(bitsPerSecond: 1_000) == "1 Kbps")
     #expect(MetricFormatting.bitRate(bitsPerSecond: 1_000_000) == "1 Mbps")
     #expect(MetricFormatting.networkRate(bytesPerSecond: 125_000) == "1 Mbps")
+}
+
+@Test func networkRateProgressUsesSharedLogarithmicScale() {
+    #expect(MetricScales.networkRateProgress(bytesPerSecond: 0) == 0)
+    #expect(MetricScales.networkRateProgress(bytesPerSecond: 40_000_000) > 0.5)
+    #expect(MetricScales.networkRateProgress(bytesPerSecond: 1_250_000_000) == 1)
+    #expect(MetricScales.networkRateProgress(bytesPerSecond: 2_500_000_000) == 1)
 }
 
 @Test func networkSamplerUsesPublic64BitInterfaceCountersWhenAvailable() throws {
@@ -58,7 +67,9 @@ import Testing
     let audit = try fixture("docs/data-capability-audit.md")
 
     #expect(!sampler.contains("if name.hasPrefix(\"en\") { return name == \"en0\" ? \"Wi-Fi\" : \"Ethernet\" }"))
-    #expect(sampler.contains("if name.hasPrefix(\"en\") { return SharedMetricStrings.networkInterface }"))
+    #expect(sampler.contains("if name.hasPrefix(\"en\") { return \"Network\" }"))
+    #expect(sampler.contains("private func interfaceKindDisplayName(sortKind: String) -> String"))
+    #expect(sampler.contains("case \"Network\": return SharedMetricStrings.networkInterface"))
     #expect(audit.contains("Network interface kind falls back to a generic interface label when SystemConfiguration cannot identify en* devices."))
 }
 
@@ -613,7 +624,7 @@ import Testing
     let networkPage = String(dashboardView[networkStart..<nextStart])
 
     #expect(networkPage.contains("DashboardPanel(title: PulseDockAppStrings.networkTrendTitle, subtitle: PulseDockAppStrings.networkRecentLiveSamplesSubtitle, icon: \"chart.line.uptrend.xyaxis\")"))
-    #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkTotalLabel, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \\.networkBytesPerSecond, baseline: 40_000_000))"))
+    #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkTotalLabel, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \\.networkBytesPerSecond))"))
     #expect(audit.contains("The Network page trend panel surfaces aggregate throughput alongside download and upload history."))
     #expect(audit.contains("Source-level tests require the Network page trend panel to surface aggregate throughput history."))
 }
@@ -641,9 +652,11 @@ import Testing
 }
 
 @Test func minutesFormatterUsesCompactDurations() {
+    #expect(MetricFormatting.minutes(0) == "<1m")
     #expect(MetricFormatting.minutes(28) == "28m")
     #expect(MetricFormatting.minutes(318) == "5h 18m")
     #expect(MetricFormatting.minutes(1_540) == "1d 1h")
+    #expect(MetricFormatting.duration(42) == "<1m")
 }
 
 @Test func displaySnapshotExposesExpectedStrings() {
@@ -1414,13 +1427,14 @@ import Testing
     #expect(dashboardView.contains("history.filter(\\.hasMemoryUsageReport).map(\\.memoryUsage)"))
     #expect(dashboardView.contains("private func diskTrendValues(from history: [MetricSnapshot]) -> [Double]"))
     #expect(dashboardView.contains("history.filter(\\.hasDiskUsageReport).map(\\.diskUsage)"))
-    #expect(dashboardView.contains("private func networkTrendValues(from history: [MetricSnapshot], keyPath: KeyPath<MetricSnapshot, UInt64>, baseline: UInt64) -> [Double]"))
-    #expect(dashboardView.contains("history.filter(\\.hasNetworkByteCounters).map { normalizedRate($0[keyPath: keyPath], baseline: baseline) }"))
+    #expect(dashboardView.contains("private func networkTrendValues(from history: [MetricSnapshot], keyPath: KeyPath<MetricSnapshot, UInt64>) -> [Double]"))
+    #expect(dashboardView.contains("history.filter(\\.hasNetworkByteCounters).map { normalizedRate($0[keyPath: keyPath]) }"))
     #expect(dashboardView.contains("values: memoryTrendValues(from: history)"))
     #expect(dashboardView.contains("values: diskTrendValues(from: history)"))
-    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkBytesPerSecond, baseline: 40_000_000)"))
-    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkInBytesPerSecond, baseline: 20_000_000)"))
-    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkOutBytesPerSecond, baseline: 20_000_000)"))
+    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkBytesPerSecond)"))
+    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkInBytesPerSecond)"))
+    #expect(dashboardView.contains("values: networkTrendValues(from: history, keyPath: \\.networkOutBytesPerSecond)"))
+    #expect(dashboardView.contains("MetricScales.networkRateProgress(bytesPerSecond: bytesPerSecond)"))
     #expect(!dashboardView.contains("history.map(\\.memoryUsage)"))
     #expect(!dashboardView.contains("history.map(\\.diskUsage)"))
     #expect(!dashboardView.contains("history.map { normalizedRate($0.network"))
@@ -1452,9 +1466,9 @@ import Testing
     #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage)"))
     #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage)"))
     #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage)"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond, baseline: 40_000_000))"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkInBytesPerSecond, baseline: 20_000_000))"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkOutBytesPerSecond, baseline: 20_000_000))"))
+    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond))"))
+    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkInBytesPerSecond))"))
+    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkOutBytesPerSecond))"))
     #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot))"))
     #expect(dashboardView.contains("progress: snapshot.loadAverageProgress"))
     #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot))"))
@@ -2465,7 +2479,7 @@ import Testing
     )
 
     #expect(missingSnapshot.uptimeText == SharedMetricStrings.notReported)
-    #expect(reportedZeroSnapshot.uptimeText == "0m")
+    #expect(reportedZeroSnapshot.uptimeText == "<1m")
     #expect(metricSnapshot.contains("public var hasUptimeReport: Bool"))
     #expect(metricSnapshot.contains("guard hasUptimeReport else { return SharedMetricStrings.notReported }"))
     #expect(sampler.contains("hasUptimeReport: true"))
@@ -3973,8 +3987,9 @@ import Testing
     #expect(widget.contains("private final class WidgetSamplerCache: @unchecked Sendable"))
     #expect(widget.contains("private static let samplerCache = WidgetSamplerCache()"))
     #expect(widget.contains("Self.samplerCache.sample()"))
-    #expect(widget.contains("private var isPrimed = false"))
-    #expect(widget.contains("if !isPrimed"))
+    #expect(widget.contains("return systemSampler.sample()"))
+    #expect(!widget.contains("private var isPrimed"))
+    #expect(!widget.contains("private var primedSnapshot"))
     #expect(!widget.contains("let sampler = SystemSampler()"))
     #expect(widget.contains("PlaceholderMetricSkeleton"))
     #expect(widget.contains("Text(PulseDockWidgetStrings.waitingData)"))
@@ -3987,9 +4002,12 @@ import Testing
     let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
     let audit = try fixture("docs/data-capability-audit.md")
 
-    #expect(widget.contains("private var primedSnapshot: MetricSnapshot?"))
+    #expect(widget.contains("private final class WidgetSamplerCache: @unchecked Sendable"))
+    #expect(widget.contains("return systemSampler.sample()"))
+    #expect(!widget.contains("private var isPrimed"))
+    #expect(!widget.contains("private var primedSnapshot"))
     #expect(!widget.contains("_ = systemSampler.sample()\n            isPrimed = true\n            return systemSampler.sample()"))
-    #expect(audit.contains("Widget sampler fallback returns the priming sample instead of taking an immediate second sample with near-zero deltas."))
+    #expect(audit.contains("Widget sampler fallback uses a locked in-extension SystemSampler without dead priming state."))
 }
 
 @Test func systemSamplerCachesStaticInventoryBetweenLiveRefreshes() throws {
@@ -4008,18 +4026,34 @@ import Testing
     #expect(sampler.contains("private var storageCache: TimedSample<StorageSample>?"))
     #expect(sampler.contains("private var gpuDevicesCache: TimedSample<[GPUDeviceMetric]>?"))
     #expect(sampler.contains("private var displaysCache: TimedSample<[DisplayMetric]>?"))
-    #expect(sampler.contains("public init(inventoryCacheInterval: TimeInterval = 15)"))
+    #expect(sampler.contains("private var batteryCache: TimedSample<BatterySample>?"))
+    #expect(sampler.contains("public convenience init(inventoryCacheInterval: TimeInterval = 15, batteryCacheInterval: TimeInterval = 5)"))
     #expect(sampler.contains("let storage = cachedStorage(now: now)"))
     #expect(sampler.contains("let gpuDevices = cachedGPUDevices(now: now)"))
     #expect(sampler.contains("let displays = cachedDisplays(now: now)"))
+    #expect(sampler.contains("let battery = cachedBattery(now: now)"))
     #expect(sampler.contains("private func cachedStorage(now: Date) -> StorageSample"))
     #expect(sampler.contains("private func cachedGPUDevices(now: Date) -> [GPUDeviceMetric]"))
     #expect(sampler.contains("private func cachedDisplays(now: Date) -> [DisplayMetric]"))
+    #expect(sampler.contains("private func cachedBattery(now: Date) -> BatterySample"))
     #expect(sampler.contains("let memory = sampleMemory()"))
     #expect(sampler.contains("let networkInterfaces = sampleNetworkInterfaces(now: now)"))
-    #expect(sampler.contains("let battery = sampleBattery()"))
     #expect(sampler.contains("let cpu = sampleCPUUsage()"))
     #expect(audit.contains("Static inventory sampling is cached for the main refresh loop"))
+}
+
+@Test func systemSamplerFiltersNonFiniteAndOverflowingPowerNumbersBeforeIntegerConversion() throws {
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
+
+    #expect(sampler.contains("currentCapacity: finiteInt(current)"))
+    #expect(sampler.contains("maxCapacity: finiteInt(maximum)"))
+    #expect(sampler.contains("if let value = value as? UInt64 { return Int(exactly: value) }"))
+    #expect(sampler.contains("guard let converted, converted.isFinite else { return nil }"))
+    #expect(sampler.contains("private func finiteInt(_ value: Double?) -> Int?"))
+    #expect(sampler.contains("return validBatteryMinutes(finiteInt((estimate / 60).rounded()))"))
+    #expect(!sampler.contains("current.map(Int.init)"))
+    #expect(!sampler.contains("maximum.map(Int.init)"))
+    #expect(!sampler.contains("if let value = value as? UInt64 { return Int(value) }"))
 }
 
 @Test func systemSamplerCachesStaticSystemInfoWithoutCachingActiveProcessorCount() throws {
@@ -4531,7 +4565,7 @@ import Testing
     #expect(!dashboardView.contains("return snapshot.batteryPercent == nil ? DashboardColor.green : DashboardColor.amber"))
     #expect(!widgetView.contains("return snapshot.batteryPercent == nil ? WidgetColor.green : WidgetColor.amber"))
     #expect(!menuBarPopover.contains("return snapshot.batteryPercent == nil ? Palette.green : Palette.amber"))
-    #expect(audit.contains("Power indicator tint uses the shared power-source tone mapping so battery or UPS power without a percent is warning-colored instead of green."))
+    #expect(audit.contains("Power indicator tint uses the shared power-source tone mapping so high battery power remains normal, medium battery power is warning, low battery is critical, and source-only battery or UPS power without a percent remains warning-colored."))
     #expect(audit.contains("Source-level tests require app, widget, and menu bar power tints to use shared power-source tone mapping."))
 }
 
@@ -5555,6 +5589,9 @@ import Testing
     #expect(appDelegate.contains("final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate"))
     #expect(appDelegate.contains("private var isStatusPopoverClosing = false"))
     #expect(appDelegate.contains("private var statusPopoverSuppressToggleUntil: Date?"))
+    #expect(appDelegate.contains("private enum StatusPopoverTiming"))
+    #expect(appDelegate.contains("static let closeToggleSuppressionInterval: TimeInterval = 0.25"))
+    #expect(appDelegate.contains("StatusPopoverTiming.closeToggleSuppressionInterval"))
     #expect(appDelegate.contains("popover.delegate = self"))
     #expect(appDelegate.contains("popover.animates = true"))
     #expect(toggleBody.contains("shouldSuppressStatusPopoverToggle()"))
@@ -5562,6 +5599,7 @@ import Testing
     #expect(appDelegate.contains("private func closeStatusPopover(_ popover: NSPopover)"))
     #expect(appDelegate.contains("func popoverWillClose(_ notification: Notification)"))
     #expect(appDelegate.contains("func popoverDidClose(_ notification: Notification)"))
+    #expect(!appDelegate.contains("private let statusPopoverToggleSuppressionInterval: TimeInterval = 0.25"))
     #expect(!appDelegate.contains("performClose"))
     #expect(audit.contains("Menu bar popover tracks transient close events and suppresses same-click reopen races when the status item is clicked to close."))
 }
@@ -6409,9 +6447,11 @@ import Testing
     #expect(!metricSnapshot.contains("public struct NetworkInterfaceMetric: Codable, Equatable, Sendable, Identifiable {\n    public var id: String { name }\n    public var name: String"))
     #expect(!sampler.contains("NetworkInterfaceMetric(\n            name:"))
     #expect(!sampler.contains("default: return name"))
+    #expect(sampler.contains("private func interfaceSortKind(_ name: String) -> String"))
+    #expect(sampler.contains("private func interfaceKindDisplayName(sortKind: String) -> String"))
     #expect(sampler.contains("default: return SharedMetricStrings.networkInterface"))
     #expect(sampler.contains("return SharedMetricStrings.other"))
-    #expect(!sampler.contains("return \"Other\""))
+    #expect(sampler.contains("return \"Other\""))
     #expect(!sampler.contains("lhs.name.localizedStandardCompare(rhs.name)"))
     #expect(!dashboardView.contains("interface.name"))
     #expect(audit.contains("Missing or legacy generic network interface names and kinds are displayed as not-reported"))
@@ -8352,7 +8392,11 @@ import Testing
     let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
 
     #expect(compact.contains("public func widgetCompactSnapshot() -> MetricSnapshot"))
+    #expect(sharedStore.contains("@discardableResult"))
+    #expect(sharedStore.contains("public func saveLatestSnapshot(_ snapshot: MetricSnapshot) -> Bool"))
     #expect(sharedStore.contains("snapshot.widgetCompactSnapshot()"))
+    #expect(sharedStore.contains("do {\n            let data = try JSONEncoder().encode(compact)"))
+    #expect(sharedStore.contains("catch {\n#if DEBUG\n            print(\"Pulse Dock failed to encode shared snapshot: \\(error)\")"))
     #expect(widget.contains("Self.samplerCache.sample().widgetCompactSnapshot()"))
     #expect(!widget.contains("private func compactWidgetSnapshot"))
 }
@@ -8372,7 +8416,7 @@ import Testing
     #expect(sharedStore.contains("containerURL(forSecurityApplicationGroupIdentifier: suiteName)"))
     #expect(sharedStore.contains("UserDefaults(suiteName: suiteName)"))
     #expect(!sharedStore.contains("public init(defaults: UserDefaults? = UserDefaults(suiteName: PulseDockAppGroup.suiteName))"))
-    #expect(sharedStore.contains("func saveLatestSnapshot(_ snapshot: MetricSnapshot)"))
+    #expect(sharedStore.contains("func saveLatestSnapshot(_ snapshot: MetricSnapshot) -> Bool"))
     #expect(sharedStore.contains("func loadLatestSnapshot(maxAge: TimeInterval"))
     #expect(metricsStore.contains("private let sharedSnapshotWriteInterval: TimeInterval = 60"))
     #expect(metricsStore.contains("private var lastSharedSnapshotWriteDate: Date?"))
@@ -8404,7 +8448,7 @@ import Testing
         timestamp: Date(timeIntervalSince1970: 1_000)
     )
 
-    store.saveLatestSnapshot(snapshot)
+    #expect(store.saveLatestSnapshot(snapshot) == false)
 
     #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_010)) == nil)
     #expect(sharedStore.contains("guard fileManager.containerURL(forSecurityApplicationGroupIdentifier: suiteName) != nil else"))
@@ -8427,7 +8471,7 @@ import Testing
         timestamp: Date(timeIntervalSince1970: 1_000)
     )
 
-    store.saveLatestSnapshot(snapshot)
+    #expect(store.saveLatestSnapshot(snapshot) == false)
 
     #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_010)) == nil)
     #expect(PulseDockAppGroup.supportsAppGroup(bundleIdentifier: "local.pulsedock") == false)
@@ -8465,7 +8509,7 @@ import Testing
         timestamp: Date(timeIntervalSince1970: 1_000)
     )
 
-    store.saveLatestSnapshot(snapshot)
+    #expect(store.saveLatestSnapshot(snapshot))
     let loaded = try #require(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_030)))
 
     #expect(loaded.cpuUsage == snapshot.cpuUsage)
@@ -8497,7 +8541,7 @@ import Testing
         timestamp: Date(timeIntervalSince1970: 1_000)
     )
 
-    store.saveLatestSnapshot(snapshot)
+    #expect(store.saveLatestSnapshot(snapshot))
 
     #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 995)) != nil)
     #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 600)) == nil)
@@ -8505,10 +8549,34 @@ import Testing
     #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_061)) == nil)
 }
 
+@Test func sharedSnapshotStoreReportsEncodingFailures() throws {
+    let suiteName = "SharedSnapshotStoreTests.\(UUID().uuidString)"
+    let defaults = try #require(UserDefaults(suiteName: suiteName))
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    let store = SharedSnapshotStore(defaults: defaults)
+    let invalidSnapshot = MetricSnapshot(
+        cpuUsage: .nan,
+        hasCPUUsageReport: true,
+        memoryUsedBytes: 1_024,
+        memoryTotalBytes: 2_048,
+        loadAverage: 0.4,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        diskFreeBytes: 1_024,
+        diskTotalBytes: 2_048,
+        timestamp: Date(timeIntervalSince1970: 1_000)
+    )
+
+    #expect(store.saveLatestSnapshot(invalidSnapshot) == false)
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: Date(timeIntervalSince1970: 1_010)) == nil)
+}
+
 @Test func xcodeProjectIncludesSharedSnapshotFoundationFiles() throws {
     let project = try fixture("PulseDock.xcodeproj/project.pbxproj")
 
     #expect(project.contains("PulseDockAppGroup.swift"))
+    #expect(project.contains("MetricScales.swift"))
     #expect(project.contains("MetricSnapshot+WidgetCompact.swift"))
     #expect(project.contains("SharedSnapshotStore.swift"))
 }
@@ -8850,7 +8918,7 @@ import Testing
     )
 
     #expect(metricsStore.contains("timer?.invalidate()\n            timer = nil"))
-    #expect(metricsStore.contains("} else {\n            sampler.resetNetworkBaselines()\n            scheduleTimer()\n            startInitialRefresh()"))
+    #expect(metricsStore.contains("} else {\n            sampler.resetNetworkBaselines()\n            sampler.resetCPUBaselines()\n            scheduleTimer()\n            startInitialRefresh()"))
     #expect(metricsStore.contains("WidgetCenter.shared.reloadTimelines(ofKind: WidgetTimelineKind.pulseDock)"))
     #expect(!metricsStore.contains("WidgetCenter.shared.reloadAllTimelines()"))
     #expect(!widget.contains("Thread.sleep"))
@@ -8881,6 +8949,18 @@ import Testing
         diskFreeBytes: 1,
         timestamp: Date(timeIntervalSince1970: 1)
     )
+    let batteryMedium = MetricSnapshot(
+        cpuUsage: 0,
+        memoryUsedBytes: 1,
+        memoryTotalBytes: 2,
+        loadAverage: 0,
+        thermalState: "Nominal",
+        batteryPercent: 0.32,
+        batteryIsCharging: false,
+        batteryPowerSource: "Battery Power",
+        diskFreeBytes: 1,
+        timestamp: Date(timeIntervalSince1970: 1)
+    )
     let batteryLow = MetricSnapshot(
         cpuUsage: 0,
         memoryUsedBytes: 1,
@@ -8895,7 +8975,8 @@ import Testing
     )
 
     #expect(chargingHigh.powerStatusTone == .normal)
-    #expect(batteryHigh.powerStatusTone == .warning)
+    #expect(batteryHigh.powerStatusTone == .normal)
+    #expect(batteryMedium.powerStatusTone == .warning)
     #expect(batteryLow.powerStatusTone == .critical)
 }
 
@@ -8927,6 +9008,19 @@ import Testing
     #expect(!widget.contains("let kind = \"SystemDashboardWidget\""))
 }
 
+@Test func widgetSourceCompilesUnderSwiftPMWithoutBundleEntryPoint() throws {
+    let package = try fixture("Package.swift")
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+
+    #expect(package.contains(".target(\n            name: \"PulseDockWidget\",\n            dependencies: [\"SharedMetrics\"],\n            path: \"Sources/PulseDockWidget\""))
+    #expect(package.contains("resources: [\n                .process(\"Resources\")\n            ],\n            linkerSettings: [\n                .linkedFramework(\"SwiftUI\"),\n                .linkedFramework(\"WidgetKit\")\n            ]"))
+    #expect(package.contains(".testTarget(\n            name: \"SharedMetricsTests\",\n            dependencies: [\"SharedMetrics\", \"PulseDockWidget\"]"))
+    #expect(widget.contains("#if !SWIFT_PACKAGE\n@main\nstruct SystemDashboardWidgetBundle: WidgetBundle"))
+    #expect(widget.contains("case .systemLarge:\n                LargeWidget(snapshot: snapshot)"))
+    #expect(widget.contains("default:\n                SmallWidget(snapshot: snapshot)"))
+    #expect(widget.contains("return systemSampler.sample()"))
+}
+
 @Test func pauseResumeResetsNetworkBaselinesAndRejectsStaleRefreshResults() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let sampler = try String(contentsOf: root.appendingPathComponent("Sources/SharedMetrics/SystemSampler.swift"), encoding: .utf8)
@@ -8936,7 +9030,10 @@ import Testing
     #expect(sampler.contains("previousNetworkInBytes = nil"))
     #expect(sampler.contains("previousNetworkOutBytes = nil"))
     #expect(sampler.contains("previousNetworkDate = nil"))
+    #expect(sampler.contains("public func resetCPUBaselines()"))
+    #expect(sampler.contains("previousCPUInfo = []"))
     #expect(metricsStore.contains("sampler.resetNetworkBaselines()"))
+    #expect(metricsStore.contains("sampler.resetCPUBaselines()"))
     #expect(metricsStore.contains("private var refreshGeneration = 0"))
     #expect(metricsStore.contains("refreshGeneration += 1"))
     #expect(metricsStore.contains("let generation = refreshGeneration"))

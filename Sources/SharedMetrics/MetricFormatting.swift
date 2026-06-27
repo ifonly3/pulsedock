@@ -8,7 +8,7 @@ public enum MetricFormatting {
     }
 
     public static func bytes(_ bytes: UInt64) -> String {
-        let units = ["B", "KB", "MB", "GB", "TB"]
+        let units = ["B", "KB", "MB", "GB", "TB", "PB", "EB"]
         var value = Double(bytes)
         var unitIndex = 0
 
@@ -25,7 +25,7 @@ public enum MetricFormatting {
     }
 
     public static func compactBytes(_ bytes: UInt64) -> String {
-        let units = ["B", "KB", "MB", "GB", "TB"]
+        let units = ["B", "KB", "MB", "GB", "TB", "PB", "EB"]
         var value = Double(bytes)
         var unitIndex = 0
 
@@ -87,6 +87,10 @@ public enum MetricFormatting {
 
         if hours > 0 {
             return "\(hours)h \(minuteRemainder)m"
+        }
+
+        if minuteRemainder == 0 {
+            return "<1m"
         }
 
         return "\(minuteRemainder)m"

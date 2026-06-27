@@ -361,7 +361,7 @@ private struct OverviewPage: View {
             LazyVGrid(columns: metricColumns, spacing: 12) {
                 MetricCard(title: PulseDockAppStrings.overviewCPUUsageTitle, value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, icon: "cpu", tint: DashboardColor.green, badgeText: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), values: cpuTrendValues(from: history))
                 MetricCard(title: PulseDockAppStrings.overviewMemoryUsageTitle, value: snapshot.memoryUsageText, detail: snapshot.memoryText, icon: "memorychip", tint: DashboardColor.blue, badgeText: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), values: memoryTrendValues(from: history))
-                MetricCard(title: PulseDockAppStrings.overviewNetworkThroughputTitle, value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", icon: "arrow.up.arrow.down", tint: DashboardColor.cyan, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond, baseline: 40_000_000)), values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
+                MetricCard(title: PulseDockAppStrings.overviewNetworkThroughputTitle, value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", icon: "arrow.up.arrow.down", tint: DashboardColor.cyan, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond))
                 MetricCard(title: PulseDockAppStrings.overviewPowerStatusTitle, value: snapshot.powerStatusText, detail: snapshot.powerSourceText, icon: "battery.75percent", tint: powerTint(snapshot), badgeText: snapshot.batteryPercent.map { MetricFormatting.percentage($0) }, progress: powerGaugeProgress(snapshot), values: powerTrendValues(from: history))
             }
 
@@ -399,7 +399,7 @@ private struct OverviewPage: View {
                 TrendRow(title: PulseDockAppStrings.metricCPU, value: snapshot.cpuText, tint: DashboardColor.green, values: cpuTrendValues(from: history))
                 TrendRow(title: PulseDockAppStrings.metricLoad, value: snapshot.loadText, tint: DashboardColor.purple, values: loadTrendValues(from: history))
                 TrendRow(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, tint: DashboardColor.blue, values: memoryTrendValues(from: history))
-                TrendRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
+                TrendRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond))
                 TrendRow(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, tint: DashboardColor.amber, values: diskTrendValues(from: history))
             }
         }
@@ -590,9 +590,9 @@ private struct NetworkPage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             LazyVGrid(columns: metricColumns, spacing: 12) {
-                MetricCard(title: PulseDockAppStrings.networkDownloadTitle, value: snapshot.networkInText, detail: PulseDockAppStrings.networkRealtimeRateDetail, icon: "arrow.down", tint: DashboardColor.blue, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkInBytesPerSecond, baseline: 20_000_000)), values: networkTrendValues(from: history, keyPath: \.networkInBytesPerSecond, baseline: 20_000_000))
-                MetricCard(title: PulseDockAppStrings.networkUploadTitle, value: snapshot.networkOutText, detail: PulseDockAppStrings.networkRealtimeRateDetail, icon: "arrow.up", tint: DashboardColor.green, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkOutBytesPerSecond, baseline: 20_000_000)), values: networkTrendValues(from: history, keyPath: \.networkOutBytesPerSecond, baseline: 20_000_000))
-                MetricCard(title: PulseDockAppStrings.networkTotalThroughputTitle, value: snapshot.networkText, detail: PulseDockAppStrings.networkCombinedTrafficDetail, icon: "network", tint: DashboardColor.cyan, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond, baseline: 40_000_000)), values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
+                MetricCard(title: PulseDockAppStrings.networkDownloadTitle, value: snapshot.networkInText, detail: PulseDockAppStrings.networkRealtimeRateDetail, icon: "arrow.down", tint: DashboardColor.blue, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkInBytesPerSecond)), values: networkTrendValues(from: history, keyPath: \.networkInBytesPerSecond))
+                MetricCard(title: PulseDockAppStrings.networkUploadTitle, value: snapshot.networkOutText, detail: PulseDockAppStrings.networkRealtimeRateDetail, icon: "arrow.up", tint: DashboardColor.green, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkOutBytesPerSecond)), values: networkTrendValues(from: history, keyPath: \.networkOutBytesPerSecond))
+                MetricCard(title: PulseDockAppStrings.networkTotalThroughputTitle, value: snapshot.networkText, detail: PulseDockAppStrings.networkCombinedTrafficDetail, icon: "network", tint: DashboardColor.cyan, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond))
                 MetricCard(title: PulseDockAppStrings.networkConnectionStatusTitle, value: snapshot.networkPathText, detail: snapshot.networkPathDetailText, icon: "checkmark.seal", tint: networkStatusColor(snapshot), badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), values: networkPathTrendValues(from: history))
                 MetricCard(title: PulseDockAppStrings.networkInterfaceTitle, value: snapshot.networkInterfaceSummary, detail: PulseDockAppStrings.networkActiveInterfacesDetail, icon: "wifi", tint: DashboardColor.purple, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), values: [])
             }
@@ -612,10 +612,10 @@ private struct NetworkPage: View {
 
             DashboardPanel(title: PulseDockAppStrings.networkTrendTitle, subtitle: PulseDockAppStrings.networkRecentLiveSamplesSubtitle, icon: "chart.line.uptrend.xyaxis") {
                 VStack(spacing: 14) {
-                    TrendRow(title: PulseDockAppStrings.networkTotalLabel, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
+                    TrendRow(title: PulseDockAppStrings.networkTotalLabel, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond))
                     TrendRow(title: PulseDockAppStrings.networkConnectionLabel, value: snapshot.networkPathText, tint: networkStatusColor(snapshot), values: networkPathTrendValues(from: history))
-                    TrendRow(title: PulseDockAppStrings.networkDownloadTitle, value: snapshot.networkInText, tint: DashboardColor.blue, values: networkTrendValues(from: history, keyPath: \.networkInBytesPerSecond, baseline: 20_000_000))
-                    TrendRow(title: PulseDockAppStrings.networkUploadTitle, value: snapshot.networkOutText, tint: DashboardColor.green, values: networkTrendValues(from: history, keyPath: \.networkOutBytesPerSecond, baseline: 20_000_000))
+                    TrendRow(title: PulseDockAppStrings.networkDownloadTitle, value: snapshot.networkInText, tint: DashboardColor.blue, values: networkTrendValues(from: history, keyPath: \.networkInBytesPerSecond))
+                    TrendRow(title: PulseDockAppStrings.networkUploadTitle, value: snapshot.networkOutText, tint: DashboardColor.green, values: networkTrendValues(from: history, keyPath: \.networkOutBytesPerSecond))
                 }
             }
 
@@ -875,7 +875,7 @@ private struct HistoryAlertsPage: View {
                     TrendRow(title: "CPU", value: snapshot.cpuText, tint: DashboardColor.green, values: cpuTrendValues(from: history))
                     TrendRow(title: PulseDockAppStrings.metricLoad, value: snapshot.loadText, tint: DashboardColor.purple, values: loadTrendValues(from: history))
                     TrendRow(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, tint: DashboardColor.blue, values: memoryTrendValues(from: history))
-                    TrendRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond, baseline: 40_000_000))
+                    TrendRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrendValues(from: history, keyPath: \.networkBytesPerSecond))
                     TrendRow(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, tint: DashboardColor.amber, values: diskTrendValues(from: history))
                     TrendRow(title: PulseDockAppStrings.statusThermalTitle, value: snapshot.thermalText, tint: thermalStatus(snapshot.thermalState).color, values: thermalTrendValues(from: history))
                     TrendRow(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, tint: DashboardColor.green, values: uptimeTrendValues(from: history))
@@ -1874,9 +1874,8 @@ private extension View {
     }
 }
 
-private func normalizedRate(_ bytesPerSecond: UInt64, baseline: UInt64) -> Double {
-    guard baseline > 0 else { return 0 }
-    return min(Double(bytesPerSecond) / Double(baseline), 1)
+private func normalizedRate(_ bytesPerSecond: UInt64) -> Double {
+    MetricScales.networkRateProgress(bytesPerSecond: bytesPerSecond)
 }
 
 private func reportedProgress(hasReport: Bool, progress: Double) -> Double? {
@@ -1918,8 +1917,8 @@ private func diskTrendValues(from history: [MetricSnapshot]) -> [Double] {
     history.filter(\.hasDiskUsageReport).map(\.diskUsage)
 }
 
-private func networkTrendValues(from history: [MetricSnapshot], keyPath: KeyPath<MetricSnapshot, UInt64>, baseline: UInt64) -> [Double] {
-    history.filter(\.hasNetworkByteCounters).map { normalizedRate($0[keyPath: keyPath], baseline: baseline) }
+private func networkTrendValues(from history: [MetricSnapshot], keyPath: KeyPath<MetricSnapshot, UInt64>) -> [Double] {
+    history.filter(\.hasNetworkByteCounters).map { normalizedRate($0[keyPath: keyPath]) }
 }
 
 private func networkPathTrendValues(from history: [MetricSnapshot]) -> [Double] {

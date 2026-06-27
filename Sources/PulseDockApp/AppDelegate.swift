@@ -10,6 +10,11 @@ private enum MenuBarStatusItemLayout {
     static let cpuTitleLength: CGFloat = 72
 }
 
+private enum StatusPopoverTiming {
+    // NSPopover does not expose its close animation duration; this guard avoids reopening against a closing status item anchor.
+    static let closeToggleSuppressionInterval: TimeInterval = 0.25
+}
+
 private struct StatusPopoverPresentation {
     let placement: MenuBarPopoverGeometry.Placement
     let anchorRect: NSRect
@@ -39,7 +44,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var cancellables = Set<AnyCancellable>()
     private let store = MetricsStore()
     private let router = DashboardRouter()
-    private let statusPopoverToggleSuppressionInterval: TimeInterval = 0.25
     private var menuPopoverSize: NSSize {
         NSSize(width: MenuPopoverLayout.width, height: MenuPopoverLayout.height)
     }
@@ -421,7 +425,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
     private func closeStatusPopover(_ popover: NSPopover) {
         isStatusPopoverClosing = true
-        statusPopoverSuppressToggleUntil = Date().addingTimeInterval(statusPopoverToggleSuppressionInterval)
+        statusPopoverSuppressToggleUntil = Date().addingTimeInterval(StatusPopoverTiming.closeToggleSuppressionInterval)
         popover.close()
     }
 
@@ -440,7 +444,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     func popoverWillClose(_ notification: Notification) {
         guard notification.object as? NSPopover === statusPopover else { return }
         isStatusPopoverClosing = true
-        statusPopoverSuppressToggleUntil = Date().addingTimeInterval(statusPopoverToggleSuppressionInterval)
+        statusPopoverSuppressToggleUntil = Date().addingTimeInterval(StatusPopoverTiming.closeToggleSuppressionInterval)
     }
 
     func popoverDidClose(_ notification: Notification) {

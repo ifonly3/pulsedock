@@ -63,6 +63,7 @@ private struct NetworkInterfaceAccumulator {
     var name: String
     var displayName: String
     var kind: String
+    var sortKind: String
     var isUp = false
     var isLoopback = false
     var bytesReceived: UInt64 = 0
@@ -99,6 +100,7 @@ private struct NetworkInterfaceAccumulator {
 private struct NetworkInterfaceDescriptor {
     var displayName: String
     var kind: String
+    var sortKind: String
 }
 
 private struct NetworkInterfaceStats64 {
@@ -112,7 +114,7 @@ private struct NetworkInterfaceStats64 {
     var mtu: Int?
 }
 
-private struct NetworkPathSample: Sendable {
+struct NetworkPathSample: Sendable {
     var status = "unknown"
     var isExpensive = false
     var isConstrained = false
@@ -124,8 +126,12 @@ private struct NetworkPathSample: Sendable {
     var interfaceKinds: [String] = []
 }
 
+protocol NetworkPathObserving: Sendable {
+    var current: NetworkPathSample { get }
+}
+
 #if canImport(Network)
-private final class NetworkPathObserver: @unchecked Sendable {
+private final class NetworkPathObserver: NetworkPathObserving, @unchecked Sendable {
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "local.pulsedock.network-path", qos: .utility)
     private let lock = NSLock()
@@ -193,7 +199,7 @@ private final class NetworkPathObserver: @unchecked Sendable {
     }
 }
 #else
-private final class NetworkPathObserver {
+private final class NetworkPathObserver: NetworkPathObserving {
     var current: NetworkPathSample { NetworkPathSample() }
 }
 #endif
@@ -205,15 +211,31 @@ public final class SystemSampler: @unchecked Sendable {
     private var previousNetworkOutBytes: UInt64?
     private var previousNetworkDate: Date?
     private let inventoryCacheInterval: TimeInterval
+    private let batteryCacheInterval: TimeInterval
     private let systemInfo: SystemInfoSample
     private var storageCache: TimedSample<StorageSample>?
+    private var batteryCache: TimedSample<BatterySample>?
     private var gpuDevicesCache: TimedSample<[GPUDeviceMetric]>?
     private var displaysCache: TimedSample<[DisplayMetric]>?
     private var networkInterfaceDescriptorCache: TimedSample<[String: NetworkInterfaceDescriptor]>?
-    private let networkPathObserver = NetworkPathObserver()
+    private let networkPathObserver: any NetworkPathObserving
 
-    public init(inventoryCacheInterval: TimeInterval = 15) {
+    public convenience init(inventoryCacheInterval: TimeInterval = 15, batteryCacheInterval: TimeInterval = 5) {
+        self.init(
+            inventoryCacheInterval: inventoryCacheInterval,
+            batteryCacheInterval: batteryCacheInterval,
+            networkPathObserver: NetworkPathObserver()
+        )
+    }
+
+    init(
+        inventoryCacheInterval: TimeInterval = 15,
+        batteryCacheInterval: TimeInterval = 5,
+        networkPathObserver: any NetworkPathObserving
+    ) {
         self.inventoryCacheInterval = max(0, inventoryCacheInterval)
+        self.batteryCacheInterval = max(0, batteryCacheInterval)
+        self.networkPathObserver = networkPathObserver
         self.systemInfo = Self.sampleSystemInfo()
     }
 
@@ -226,6 +248,13 @@ public final class SystemSampler: @unchecked Sendable {
         previousNetworkDate = nil
     }
 
+    public func resetCPUBaselines() {
+        sampleLock.lock()
+        defer { sampleLock.unlock() }
+
+        previousCPUInfo = []
+    }
+
     public func sample(now: Date = Date()) -> MetricSnapshot {
         sampleLock.lock()
         defer { sampleLock.unlock() }
@@ -236,7 +265,7 @@ public final class SystemSampler: @unchecked Sendable {
         let networkTotal = networkTotals(from: networkInterfaces)
         let networkRate = sampleNetworkRate(totalBytes: networkTotal, hasByteCounters: hasNetworkByteCounters, now: now)
         let networkPath = networkPathObserver.current
-        let battery = sampleBattery()
+        let battery = cachedBattery(now: now)
         let cpu = sampleCPUUsage()
         let loads = sampleLoadAverages()
         let storage = cachedStorage(now: now)
@@ -530,8 +559,8 @@ public final class SystemSampler: @unchecked Sendable {
             timeRemainingMinutes: timeRemaining,
             cycleCount: intValue(description[kIOBatteryCycleCountKey]),
             health: health,
-            currentCapacity: current.map(Int.init),
-            maxCapacity: maximum.map(Int.init),
+            currentCapacity: finiteInt(current),
+            maxCapacity: finiteInt(maximum),
             designCapacity: intValue(description[kIOPSDesignCapacityKey]),
             voltageMillivolts: intValue(description[kIOPSVoltageKey]) ?? intValue(description[kIOBatteryVoltageKey]),
             amperageMilliamps: intValue(description[kIOBatteryAmperageKey])
@@ -580,12 +609,14 @@ public final class SystemSampler: @unchecked Sendable {
             let flags = Int32(current.pointee.ifa_flags)
             let isUp = (flags & IFF_UP) != 0
             let isLoopback = (flags & IFF_LOOPBACK) != 0
-            let fallbackKind = interfaceKind(name)
+            let fallbackSortKind = interfaceSortKind(name)
+            let fallbackKind = interfaceKindDisplayName(sortKind: fallbackSortKind)
             let descriptor = descriptors[name]
             var record = records[name] ?? NetworkInterfaceAccumulator(
                 name: name,
-                displayName: descriptor?.displayName ?? interfaceDisplayName(forKind: fallbackKind),
-                kind: descriptor?.kind ?? fallbackKind
+                displayName: descriptor?.displayName ?? interfaceDisplayName(forKind: fallbackSortKind),
+                kind: descriptor?.kind ?? fallbackKind,
+                sortKind: descriptor?.sortKind ?? fallbackSortKind
             )
 
             record.isUp = record.isUp || isUp
@@ -632,8 +663,8 @@ public final class SystemSampler: @unchecked Sendable {
                 if lhs.isUp != rhs.isUp {
                     return lhs.isUp
                 }
-                if lhs.kind != rhs.kind {
-                    return lhs.kind.localizedStandardCompare(rhs.kind) == .orderedAscending
+                if lhs.sortKind != rhs.sortKind {
+                    return lhs.sortKind.localizedStandardCompare(rhs.sortKind) == .orderedAscending
                 }
                 return lhs.displayName.localizedStandardCompare(rhs.displayName) == .orderedAscending
             }
@@ -661,10 +692,12 @@ public final class SystemSampler: @unchecked Sendable {
             guard let name = SCNetworkInterfaceGetBSDName(interface) as String? else { continue }
             let systemType = SCNetworkInterfaceGetInterfaceType(interface) as String?
             let systemName = SCNetworkInterfaceGetLocalizedDisplayName(interface) as String?
-            let kind = interfaceKind(systemType: systemType, fallbackName: name)
+            let sortKind = interfaceSortKind(systemType: systemType, fallbackName: name)
+            let kind = interfaceKindDisplayName(sortKind: sortKind)
             descriptors[name] = NetworkInterfaceDescriptor(
-                displayName: interfaceDisplayName(systemName: systemName, kind: kind),
-                kind: kind
+                displayName: interfaceDisplayName(systemName: systemName, kind: sortKind),
+                kind: kind,
+                sortKind: sortKind
             )
         }
 
@@ -796,6 +829,17 @@ public final class SystemSampler: @unchecked Sendable {
         return sample
     }
 
+    private func cachedBattery(now: Date) -> BatterySample {
+        if let batteryCache,
+           isCacheFresh(batteryCache, now: now, interval: batteryCacheInterval) {
+            return batteryCache.value
+        }
+
+        let sample = sampleBattery()
+        batteryCache = TimedSample(timestamp: now, value: sample)
+        return sample
+    }
+
     private func cachedGPUDevices(now: Date) -> [GPUDeviceMetric] {
         if let gpuDevicesCache, isCacheFresh(gpuDevicesCache, now: now) {
             return gpuDevicesCache.value
@@ -816,10 +860,11 @@ public final class SystemSampler: @unchecked Sendable {
         return displays
     }
 
-    private func isCacheFresh<Value>(_ cached: TimedSample<Value>, now: Date) -> Bool {
-        guard inventoryCacheInterval > 0 else { return false }
+    private func isCacheFresh<Value>(_ cached: TimedSample<Value>, now: Date, interval: TimeInterval? = nil) -> Bool {
+        let cacheInterval = interval ?? inventoryCacheInterval
+        guard cacheInterval > 0 else { return false }
         let age = now.timeIntervalSince(cached.timestamp)
-        return age >= 0 && age < inventoryCacheInterval
+        return age >= 0 && age < cacheInterval
     }
 
     private func sampleStorage() -> StorageSample {
@@ -1104,7 +1149,7 @@ public final class SystemSampler: @unchecked Sendable {
               estimate >= 0 else {
             return nil
         }
-        return validBatteryMinutes(Int((estimate / 60).rounded()))
+        return validBatteryMinutes(finiteInt((estimate / 60).rounded()))
     }
 
     private func interfaceDisplayName(systemName: String?, kind: String) -> String {
@@ -1145,11 +1190,15 @@ public final class SystemSampler: @unchecked Sendable {
         case "Bridge": return "Bridge"
         case "Thunderbolt": return "Thunderbolt"
         case "AWDL": return "Apple Wireless Direct"
+        case "Bluetooth": return "Bluetooth"
+        case "Cellular": return "Cellular"
+        case "Other": return SharedMetricStrings.other
+        case "Network": return SharedMetricStrings.networkInterface
         default: return SharedMetricStrings.networkInterface
         }
     }
 
-    private func interfaceKind(systemType: String?, fallbackName name: String) -> String {
+    private func interfaceSortKind(systemType: String?, fallbackName name: String) -> String {
 #if canImport(SystemConfiguration)
         switch systemType {
         case String(kSCNetworkInterfaceTypeIEEE80211):
@@ -1167,21 +1216,37 @@ public final class SystemSampler: @unchecked Sendable {
         case String(kSCNetworkInterfaceTypeWWAN):
             return "Cellular"
         default:
-            return interfaceKind(name)
+            return interfaceSortKind(name)
         }
 #else
-        return interfaceKind(name)
+        return interfaceSortKind(name)
 #endif
     }
 
-    private func interfaceKind(_ name: String) -> String {
+    private func interfaceSortKind(_ name: String) -> String {
         if name == "lo0" { return "Loopback" }
         if name.hasPrefix("utun") || name.hasPrefix("ipsec") || name.hasPrefix("ppp") { return "VPN" }
         if name.hasPrefix("bridge") { return "Bridge" }
         if name.hasPrefix("awdl") || name.hasPrefix("llw") { return "AWDL" }
-        if name.hasPrefix("en") { return SharedMetricStrings.networkInterface }
+        if name.hasPrefix("en") { return "Network" }
         if name.hasPrefix("thunderbolt") { return "Thunderbolt" }
-        return SharedMetricStrings.other
+        return "Other"
+    }
+
+    private func interfaceKindDisplayName(sortKind: String) -> String {
+        switch sortKind {
+        case "Wi-Fi": return "Wi-Fi"
+        case "Ethernet": return "Ethernet"
+        case "VPN": return "VPN"
+        case "Loopback": return "Loopback"
+        case "Bridge": return "Bridge"
+        case "Thunderbolt": return "Thunderbolt"
+        case "AWDL": return "Apple Wireless Direct"
+        case "Bluetooth": return "Bluetooth"
+        case "Cellular": return "Cellular"
+        case "Other": return SharedMetricStrings.other
+        default: return SharedMetricStrings.networkInterface
+        }
     }
 
     private func fileSystemName(forPath path: String) -> String {
@@ -1204,18 +1269,32 @@ public final class SystemSampler: @unchecked Sendable {
 
     private func intValue(_ value: Any?) -> Int? {
         if let value = value as? Int { return value }
-        if let value = value as? Int64 { return Int(value) }
-        if let value = value as? UInt64 { return Int(value) }
-        if let value = value as? NSNumber { return value.intValue }
+        if let value = value as? Int64 { return Int(exactly: value) }
+        if let value = value as? UInt64 { return Int(exactly: value) }
+        if let value = value as? NSNumber { return finiteInt(value.doubleValue) }
         if let value = value as? String { return Int(value) }
         return nil
     }
 
     private func doubleValue(_ value: Any?) -> Double? {
-        if let value = value as? Double { return value }
-        if let value = value as? NSNumber { return value.doubleValue }
-        if let value = value as? String { return Double(value) }
-        return nil
+        let converted: Double?
+        if let value = value as? Double {
+            converted = value
+        } else if let value = value as? NSNumber {
+            converted = value.doubleValue
+        } else if let value = value as? String {
+            converted = Double(value)
+        } else {
+            converted = nil
+        }
+
+        guard let converted, converted.isFinite else { return nil }
+        return converted
+    }
+
+    private func finiteInt(_ value: Double?) -> Int? {
+        guard let value, value.isFinite else { return nil }
+        return Int(exactly: value)
     }
 
     private static func sysctlInteger(_ name: String) -> Int? {

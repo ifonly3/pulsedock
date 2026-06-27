@@ -130,7 +130,7 @@ private struct MenuPopoverPreview: View {
     }
 
     private func normalizedRate(_ bytesPerSecond: UInt64) -> Double {
-        min(Double(bytesPerSecond) / 40_000_000, 1)
+        MetricScales.networkRateProgress(bytesPerSecond: bytesPerSecond)
     }
 
     private func reportedProgress(hasReport: Bool, progress: Double) -> Double? {

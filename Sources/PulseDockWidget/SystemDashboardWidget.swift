@@ -13,23 +13,12 @@ struct SystemEntry: TimelineEntry {
 private final class WidgetSamplerCache: @unchecked Sendable {
     private let systemSampler = SystemSampler()
     private let lock = NSLock()
-    private var isPrimed = false
-    private var primedSnapshot: MetricSnapshot?
 
     func sample() -> MetricSnapshot {
         lock.lock()
         defer { lock.unlock() }
 
-        if !isPrimed {
-            let snapshot = systemSampler.sample()
-            primedSnapshot = snapshot
-            isPrimed = true
-            return snapshot
-        }
-
-        let snapshot = systemSampler.sample()
-        primedSnapshot = snapshot
-        return snapshot
+        return systemSampler.sample()
     }
 }
 
@@ -70,8 +59,10 @@ struct SystemDashboardWidgetView: View {
                 SmallWidget(snapshot: snapshot)
             case .systemMedium:
                 MediumWidget(snapshot: snapshot)
-            default:
+            case .systemLarge:
                 LargeWidget(snapshot: snapshot)
+            default:
+                SmallWidget(snapshot: snapshot)
             }
         } else {
             EmptyDataWidget(family: family)
@@ -96,12 +87,14 @@ struct SystemDashboardWidget: Widget {
     }
 }
 
+#if !SWIFT_PACKAGE
 @main
 struct SystemDashboardWidgetBundle: WidgetBundle {
     var body: some Widget {
         SystemDashboardWidget()
     }
 }
+#endif
 
 private let largeRingColumns = [
     GridItem(.flexible(), spacing: 12),

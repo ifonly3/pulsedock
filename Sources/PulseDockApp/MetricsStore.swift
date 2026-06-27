@@ -123,6 +123,7 @@ final class MetricsStore: ObservableObject {
             timer = nil
         } else {
             sampler.resetNetworkBaselines()
+            sampler.resetCPUBaselines()
             scheduleTimer()
             startInitialRefresh()
         }
@@ -354,7 +355,7 @@ final class MetricsStore: ObservableObject {
         }
 
         lastSharedSnapshotWriteDate = snapshot.timestamp
-        sharedSnapshotStore.saveLatestSnapshot(snapshot)
+        _ = sharedSnapshotStore.saveLatestSnapshot(snapshot)
     }
 
     private func appendHistorySnapshot(_ snapshot: MetricSnapshot) {

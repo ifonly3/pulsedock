@@ -144,23 +144,41 @@ Keep these checks before every release:
 
 ## 7. Local Verification Before Archive
 
-Latest local verification on 2026-06-25:
+Latest local verification on 2026-06-27:
 
-- `swift build` passed.
-- `swift test` passed with 256 Swift Testing tests.
+- `swift build --target PulseDockWidget` passed.
+- `swift test` passed with 316 Swift Testing tests.
 - `scripts/generate-xcodeproj.rb` regenerated `PulseDock.xcodeproj`.
-- `scripts/package-app.sh` produced `dist/Pulse Dock.app`.
-- App and widget binaries are universal (`x86_64 arm64`).
-- `codesign --verify --deep --strict --verbose=2 "dist/Pulse Dock.app"` passed.
+- `xcodebuild -project PulseDock.xcodeproj -scheme PulseDock -configuration Release -destination 'generic/platform=macOS' -derivedDataPath .build/xcode-derived-data CODE_SIGNING_ALLOWED=NO build` passed. Xcode emitted a CoreSimulator version warning, but the generic macOS build succeeded.
+- `scripts/audit-localization.sh` passed with zero Swift Chinese string findings.
+- `scripts/validate-public-pages.sh` passed for repository-local public page sources.
+- `CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh` passed with live HTTP 200 URLs.
 - App and widget each include one `PrivacyInfo.xcprivacy`.
 - `SCREENSHOT_LOCALE=zh-Hans scripts/validate-app-store-screenshots.sh` validated 5 existing Simplified Chinese screenshots.
 - `SCREENSHOT_LOCALE=en scripts/validate-app-store-screenshots.sh` remains the global release gate and will fail until English screenshots are captured.
-- Launch smoke test passed from a clean process state using bundle id `local.pulsedock`.
+- Launch smoke test still needs to be rerun for the next signed local package.
 
 Run these before making the App Store archive:
 
 ```bash
 swift test
+```
+
+```bash
+swift build --target PulseDockWidget
+```
+
+```bash
+scripts/audit-localization.sh
+```
+
+```bash
+scripts/validate-public-pages.sh
+CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh
+```
+
+```bash
+xcodebuild -project PulseDock.xcodeproj -scheme PulseDock -configuration Release -destination 'generic/platform=macOS' -derivedDataPath .build/xcode-derived-data CODE_SIGNING_ALLOWED=NO build
 ```
 
 ```bash
