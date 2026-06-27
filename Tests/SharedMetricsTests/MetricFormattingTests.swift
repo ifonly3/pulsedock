@@ -9276,6 +9276,40 @@ import Testing
     #expect(!widget.contains("WidgetColor.red)"))
 }
 
+@Test func metricsStoreUsesExplicitLifecycleCleanupInsteadOfAssumeIsolatedDeinit() throws {
+    let store = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+    let delegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+
+    #expect(store.contains("func stopForTermination()"))
+    #expect(!store.contains("MainActor.assumeIsolated"))
+    #expect(delegate.contains("store.stopForTermination()"))
+    #expect(delegate.contains("statusPopover?.close()"))
+    #expect(delegate.contains("NSStatusBar.system.removeStatusItem"))
+}
+
+@Test func appRegistersWakeAndScreenChangeRefreshHooks() throws {
+    let store = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+    let delegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+    let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
+
+    #expect(delegate.contains("NSWorkspace.didWakeNotification"))
+    #expect(delegate.contains("NSApplication.didChangeScreenParametersNotification"))
+    #expect(store.contains("func handleSystemWake()"))
+    #expect(store.contains("func handleScreenConfigurationChange()"))
+    #expect(sampler.contains("public func invalidateDisplaysCache()"))
+}
+
+@Test func sharedSnapshotLoadLogsDecodeFailuresInDebugBuilds() throws {
+    let sharedStore = try fixture("Sources/SharedMetrics/SharedSnapshotStore.swift")
+    let metricsStore = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+
+    #expect(sharedStore.contains("do {"))
+    #expect(sharedStore.contains("catch {"))
+    #expect(sharedStore.contains("SharedSnapshotStore failed to decode latest snapshot"))
+    #expect(metricsStore.contains("MetricsStore failed to decode history"))
+    #expect(metricsStore.contains("MetricsStore failed to encode history"))
+}
+
 private func fixture(_ path: String) throws -> String {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     return try String(contentsOf: root.appendingPathComponent(path), encoding: .utf8)

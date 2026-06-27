@@ -91,13 +91,7 @@ final class MetricsStore: ObservableObject {
         }
     }
 
-    deinit {
-        MainActor.assumeIsolated {
-            timer?.invalidate()
-            initialRefreshTask?.cancel()
-            refreshTask?.cancel()
-        }
-    }
+    deinit {}
 
     func start() {
         guard timer == nil else { return }
@@ -106,6 +100,10 @@ final class MetricsStore: ObservableObject {
     }
 
     func stop() {
+        stopForTermination()
+    }
+
+    func stopForTermination() {
         cancelInitialRefresh()
         cancelRefreshTask()
         persistHistoryIfNeeded(at: Date(), force: true)
@@ -127,6 +125,18 @@ final class MetricsStore: ObservableObject {
             scheduleTimer()
             startInitialRefresh()
         }
+    }
+
+    func handleSystemWake() {
+        sampler.resetNetworkBaselines()
+        sampler.resetCPUBaselines()
+        sampler.invalidateDisplaysCache()
+        refresh()
+    }
+
+    func handleScreenConfigurationChange() {
+        sampler.invalidateDisplaysCache()
+        refresh()
     }
 
     func updateRefreshInterval(_ option: RefreshIntervalOption) {
@@ -193,14 +203,21 @@ final class MetricsStore: ObservableObject {
     }
 
     private static func savedHistory(_ defaults: UserDefaults, limit: Int) -> [MetricSnapshot] {
-        guard let data = defaults.data(forKey: DefaultsKeys.historySnapshots),
-              let snapshots = try? JSONDecoder().decode([MetricSnapshot].self, from: data) else {
+        guard let data = defaults.data(forKey: DefaultsKeys.historySnapshots) else {
             return []
         }
 
-        return snapshots
-            .suffix(limit)
-            .map(Self.sanitizedHistorySnapshot)
+        do {
+            let snapshots = try JSONDecoder().decode([MetricSnapshot].self, from: data)
+            return snapshots
+                .suffix(limit)
+                .map(Self.sanitizedHistorySnapshot)
+        } catch {
+#if DEBUG
+            print("MetricsStore failed to decode history: \(error)")
+#endif
+            return []
+        }
     }
 
     private static func sanitizedHistorySnapshot(from snapshot: MetricSnapshot) -> MetricSnapshot {
@@ -392,8 +409,13 @@ final class MetricsStore: ObservableObject {
             return
         }
 
-        if let data = try? JSONEncoder().encode(Array(snapshots)) {
+        do {
+            let data = try JSONEncoder().encode(Array(snapshots))
             defaults.set(data, forKey: DefaultsKeys.historySnapshots)
+        } catch {
+#if DEBUG
+            print("MetricsStore failed to encode history: \(error)")
+#endif
         }
     }
 

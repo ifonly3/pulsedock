@@ -53,11 +53,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         configureMainMenu()
         showDashboardWindow(activating: true)
         createStatusItem()
+        registerSystemEventObservers()
         store.start()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        store.stop()
+        NotificationCenter.default.removeObserver(self)
+        store.stopForTermination()
+        statusPopover?.close()
+        resetStatusPopoverContentHost()
+        dashboardWindow?.orderOut(nil)
         if let statusItem {
             NSStatusBar.system.removeStatusItem(statusItem)
             self.statusItem = nil
@@ -80,6 +85,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         mainMenu.addItem(makeViewMenu())
         mainMenu.addItem(makeWindowMenu())
         NSApp.mainMenu = mainMenu
+    }
+
+    private func registerSystemEventObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleSystemWakeNotification(_:)),
+            name: NSWorkspace.didWakeNotification,
+            object: NSWorkspace.shared
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScreenConfigurationChangeNotification(_:)),
+            name: NSApplication.didChangeScreenParametersNotification,
+            object: nil
+        )
+    }
+
+    @objc private func handleSystemWakeNotification(_ notification: Notification) {
+        store.handleSystemWake()
+    }
+
+    @objc private func handleScreenConfigurationChangeNotification(_ notification: Notification) {
+        store.handleScreenConfigurationChange()
     }
 
     private func makeAppMenu() -> NSMenuItem {

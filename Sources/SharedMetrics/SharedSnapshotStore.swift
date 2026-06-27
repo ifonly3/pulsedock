@@ -53,15 +53,22 @@ public struct SharedSnapshotStore: @unchecked Sendable {
 
     public func loadLatestSnapshot(maxAge: TimeInterval, now: Date = Date()) -> MetricSnapshot? {
         guard let defaults,
-              let data = defaults.data(forKey: Keys.latestSnapshot),
-              let snapshot = try? JSONDecoder().decode(MetricSnapshot.self, from: data) else {
+              let data = defaults.data(forKey: Keys.latestSnapshot) else {
             return nil
         }
 
-        let age = now.timeIntervalSince(snapshot.timestamp)
-        guard age <= maxAge, age >= -acceptedFutureSkew else {
+        do {
+            let snapshot = try JSONDecoder().decode(MetricSnapshot.self, from: data)
+            let age = now.timeIntervalSince(snapshot.timestamp)
+            guard age <= maxAge, age >= -acceptedFutureSkew else {
+                return nil
+            }
+            return snapshot
+        } catch {
+#if DEBUG
+            print("SharedSnapshotStore failed to decode latest snapshot: \(error)")
+#endif
             return nil
         }
-        return snapshot
     }
 }
