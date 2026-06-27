@@ -1326,6 +1326,8 @@ private struct TrendRow: View {
             Sparkline(values: values, tint: tint, fill: true)
                 .frame(height: 46)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
     }
 }
 
@@ -1489,10 +1491,11 @@ private struct CoreUsageTile: View {
 }
 
 private struct MemorySegmentBar: View {
+    private let memorySegmentCount: CGFloat = 3
     let snapshot: MetricSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DashboardSpacing.sm) {
             if snapshot.hasMemoryUsageReport && snapshot.hasMemoryCompositionReport {
                 GeometryReader { proxy in
                     let availableWidth = max(proxy.size.width - 4, 0)
@@ -1516,6 +1519,8 @@ private struct MemorySegmentBar: View {
                 LegendDot(title: PulseDockAppStrings.memoryFreeLabel, color: Color.secondary.opacity(0.38))
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(PulseDockAppStrings.metricMemory), \(snapshot.memoryUsageText)")
     }
 
     private func segment(_ bytes: UInt64, color: Color, in totalWidth: CGFloat) -> some View {
@@ -1525,8 +1530,10 @@ private struct MemorySegmentBar: View {
     }
 
     private func segmentWidth(_ bytes: UInt64, in totalWidth: CGFloat) -> CGFloat {
+        guard totalWidth > 0 else { return 0 }
         let width = CGFloat(normalizedBytes(bytes, total: snapshot.memoryTotalBytes)) * totalWidth
-        return max(width, 8)
+        let minimumVisibleWidth = min(8, totalWidth / memorySegmentCount)
+        return min(max(width, minimumVisibleWidth), totalWidth)
     }
 }
 
@@ -1826,6 +1833,8 @@ private struct ThresholdControlRow: View {
         }
         .padding(12)
         .background(DashboardColor.panelAlt, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(MetricFormatting.percentage(displayedValue))")
     }
 }
 
