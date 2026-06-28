@@ -57,7 +57,7 @@ This file is an internal product and App Store readiness audit. It should not be
 
 - `MetricSnapshot.placeholder` is intentionally empty or unknown. It must not contain realistic CPU, memory, network, process, GPU, display, or storage sample values.
 - Widget timelines prefer shared app snapshots. When a shared snapshot is unavailable, the widget uses compact in-extension sampling that skips GPU devices, display topology, mounted volume enumeration, and running app inventory. The placeholder and gallery snapshot use representative public demo data instead of blocking on live sampling.
-- Widget timeline entries store compact snapshots that preserve visible network summary signals while stripping detailed process, network interface, storage, GPU, and display inventory lists.
+- Widget timeline entries store compact snapshots that preserve visible network path signals while stripping short-window throughput and detailed process, network interface, storage, GPU, and display inventory lists.
 - Widget sampler fallback uses compact in-extension sampling without dead priming state.
 - Main app and widget snapshots warm the sampler before publishing delta-based CPU/network readings, so the first visible sample and resume-after-pause sample are not unprimed or stale counter baselines.
 - Refresh ticks that arrive while sampling is in flight queue one follow-up refresh instead of disappearing silently.

@@ -46,6 +46,10 @@ public enum MetricFormatting {
         return bitRate(bitsPerSecond: bitsPerSecond)
     }
 
+    public static func directionalNetworkRate(bytesPerSecond: UInt64) -> String {
+        networkRate(bytesPerSecond: bytesPerSecond)
+    }
+
     public static func bitRate(bitsPerSecond: Double) -> String {
         guard bitsPerSecond.isFinite else { return SharedMetricStrings.notReported }
         let bitsPerSecond = max(bitsPerSecond, 0)

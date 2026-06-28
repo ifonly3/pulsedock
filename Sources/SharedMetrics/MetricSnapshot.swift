@@ -1429,11 +1429,11 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
     public var networkInText: String {
         guard hasNetworkDirectionByteCounters else { return SharedMetricStrings.notReported }
-        return MetricFormatting.byteRate(bytesPerSecond: networkInBytesPerSecond)
+        return MetricFormatting.directionalNetworkRate(bytesPerSecond: networkInBytesPerSecond)
     }
     public var networkOutText: String {
         guard hasNetworkDirectionByteCounters else { return SharedMetricStrings.notReported }
-        return MetricFormatting.byteRate(bytesPerSecond: networkOutBytesPerSecond)
+        return MetricFormatting.directionalNetworkRate(bytesPerSecond: networkOutBytesPerSecond)
     }
     public var diskText: String {
         guard hasDiskUsageReport else { return SharedMetricStrings.notReported }

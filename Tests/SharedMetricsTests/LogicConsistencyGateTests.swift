@@ -197,3 +197,33 @@ private func fixture(_ relativePath: String) throws -> String {
 
     #expect(decoded.hasNetworkDirectionByteCounters == constructed.hasNetworkDirectionByteCounters)
 }
+
+@Test func networkTotalAndDirectionTextsUseSameUnitFamily() {
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0,
+        hasCPUUsageReport: false,
+        memoryUsedBytes: 0,
+        memoryTotalBytes: 0,
+        loadAverage: 0,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        networkBytesPerSecond: 125_000,
+        hasNetworkByteCounters: true,
+        hasNetworkDirectionByteCounters: true,
+        networkInBytesPerSecond: 62_500,
+        networkOutBytesPerSecond: 62_500,
+        diskFreeBytes: 0,
+        timestamp: Date()
+    )
+
+    #expect(snapshot.networkText == "1 Mbps")
+    #expect(snapshot.networkInText == "500 Kbps")
+    #expect(snapshot.networkOutText == "500 Kbps")
+}
+
+@Test func networkRateProgressDocumentsReferenceCapacity() {
+    #expect(MetricScales.networkRateReferenceBytesPerSecond == 12_500_000_000)
+    #expect(MetricScales.networkRateProgress(bytesPerSecond: 1_250_000_000) < 1)
+    #expect(MetricScales.networkRateProgress(bytesPerSecond: 12_500_000_000) == 1)
+}
