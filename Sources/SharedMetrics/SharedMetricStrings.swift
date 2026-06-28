@@ -274,8 +274,8 @@ enum SharedMetricStrings {
         localized("shared_metrics.power.source.ups", defaultValue: "UPS Power")
     }
 
-    static var powerSourceNoBattery: String {
-        localized("shared_metrics.power.source.no_battery", defaultValue: "No Battery")
+    static var powerSourceExternal: String {
+        localized("shared_metrics.power.source.external", defaultValue: "External Power")
     }
 
     static var powerSourceStateNotReported: String {

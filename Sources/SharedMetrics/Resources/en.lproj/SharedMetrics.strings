@@ -63,7 +63,7 @@
 "shared_metrics.power.source.adapter_charging" = "Power Adapter · Charging";
 "shared_metrics.power.source.battery" = "Battery Power";
 "shared_metrics.power.source.ups" = "UPS Power";
-"shared_metrics.power.source.no_battery" = "No Battery";
+"shared_metrics.power.source.external" = "External Power";
 "shared_metrics.power.source.state_not_reported" = "Power state not reported";
 "shared_metrics.power.status.title.power" = "Power";
 "shared_metrics.power.status.title.battery" = "Battery";

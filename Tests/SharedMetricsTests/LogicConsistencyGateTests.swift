@@ -42,3 +42,48 @@ private func fixture(_ relativePath: String) throws -> String {
     #expect(WidgetTimelinePolicy.requestedRefreshInterval < WidgetTimelinePolicy.agingThreshold)
     #expect(WidgetTimelinePolicy.appReloadThrottle == WidgetTimelinePolicy.requestedRefreshInterval)
 }
+
+@Test func chargingLowBatteryDoesNotRenderCriticalPowerTone() {
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0,
+        hasCPUUsageReport: false,
+        memoryUsedBytes: 0,
+        memoryTotalBytes: 0,
+        loadAverage: 0,
+        thermalState: "Nominal",
+        batteryPercent: 0.19,
+        batteryIsCharging: true,
+        batteryPowerSource: "AC Power",
+        diskFreeBytes: 0,
+        timestamp: Date()
+    )
+
+    #expect(snapshot.powerStatusTone == .normal)
+}
+
+@Test func unknownPowerSourceUsesLocalizedExternalPowerText() {
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0,
+        hasCPUUsageReport: false,
+        memoryUsedBytes: 0,
+        memoryTotalBytes: 0,
+        loadAverage: 0,
+        thermalState: "Nominal",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        batteryPowerSource: "Wireless Power",
+        diskFreeBytes: 0,
+        timestamp: Date()
+    )
+
+    #expect(snapshot.powerSourceText == SharedMetricStrings.powerSourceExternal)
+    #expect(snapshot.powerStatusText == SharedMetricStrings.powerSourceExternal)
+    #expect(snapshot.hasPowerStatusReport)
+}
+
+@Test func powerSourceNoBatteryBranchIsRemovedFromRuntimePath() throws {
+    let snapshot = try fixture("Sources/SharedMetrics/MetricSnapshot.swift")
+
+    #expect(!snapshot.contains("powerSourceNoBattery"))
+    #expect(snapshot.contains("powerSourceExternal"))
+}

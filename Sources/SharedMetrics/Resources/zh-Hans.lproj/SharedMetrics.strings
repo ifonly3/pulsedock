@@ -63,7 +63,7 @@
 "shared_metrics.power.source.adapter_charging" = "电源适配器 · 充电中";
 "shared_metrics.power.source.battery" = "电池供电";
 "shared_metrics.power.source.ups" = "UPS 供电";
-"shared_metrics.power.source.no_battery" = "无电池";
+"shared_metrics.power.source.external" = "外部电源";
 "shared_metrics.power.source.state_not_reported" = "电源状态未报告";
 "shared_metrics.power.status.title.power" = "电源";
 "shared_metrics.power.status.title.battery" = "电池";

@@ -98,7 +98,7 @@ enum PulseDockWidgetStrings {
     }
 
     static var compactPowerExternal: String {
-        localized("widget.power.compact.external", defaultValue: "External")
+        localized("widget.power.compact.external", defaultValue: "External Power")
     }
 
     static var powerUPS: String {

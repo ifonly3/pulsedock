@@ -697,7 +697,6 @@ private struct PowerPage: View {
             DashboardPanel(title: PulseDockAppStrings.batteryInformationTitle, subtitle: PulseDockAppStrings.batteryInformationSubtitle, icon: "bolt") {
                 VStack(spacing: 0) {
                     TableHeader(columns: PulseDockAppStrings.itemCurrentDescriptionTableColumns)
-                    TableRow(values: [snapshot.powerStatusTitle, snapshot.powerStatusText, snapshot.powerSourceText])
                     TableRow(values: [PulseDockAppStrings.batteryRemainingTimeLabel, snapshot.batteryTimeRemainingText, PulseDockAppStrings.sourceSystemEstimate])
                     TableRow(values: [PulseDockAppStrings.batteryCurrentCapacityLabel, snapshot.batteryCurrentCapacityText, PulseDockAppStrings.sourcePowerStatus])
                     TableRow(values: [PulseDockAppStrings.batteryMaxCapacityLabel, snapshot.batteryMaxCapacityText, PulseDockAppStrings.sourcePowerStatus])

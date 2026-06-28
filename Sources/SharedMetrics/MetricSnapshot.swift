@@ -1266,14 +1266,12 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
             return SharedMetricStrings.powerSourceBattery
         case "ups power":
             return SharedMetricStrings.powerSourceUPS
-        case .some(let value) where !value.isEmpty:
-            return value
+        case .some:
+            return SharedMetricStrings.powerSourceExternal
         default:
-            if batteryPercent == nil {
-                guard batteryPowerSource != nil else { return SharedMetricStrings.notReported }
-                return SharedMetricStrings.powerSourceNoBattery
-            }
-            return batteryIsCharging ? SharedMetricStrings.powerSourceAdapterCharging : SharedMetricStrings.powerSourceStateNotReported
+            return batteryPercent == nil
+                ? SharedMetricStrings.notReported
+                : (batteryIsCharging ? SharedMetricStrings.powerSourceAdapterCharging : SharedMetricStrings.powerSourceStateNotReported)
         }
     }
     public var powerStatusText: String {
@@ -1287,6 +1285,10 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
     public var powerStatusTone: MetricStatusTone {
         if let batteryPercent {
+            if batteryIsCharging {
+                return .normal
+            }
+
             if batteryPercent < 0.2 {
                 return .critical
             }
@@ -1295,16 +1297,12 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
                 return .warning
             }
 
-            if batteryIsCharging {
-                return .normal
-            }
-
             switch batteryPowerSource?.lowercased() {
             case "ac power", "battery power":
                 return .normal
             case "ups power":
                 return .warning
-            case .some(let value) where !value.isEmpty:
+            case .some:
                 return .neutral
             default:
                 return .normal
@@ -1316,7 +1314,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
             return .normal
         case "battery power", "ups power":
             return .warning
-        case .some(let value) where !value.isEmpty:
+        case .some:
             return .neutral
         default:
             return .neutral

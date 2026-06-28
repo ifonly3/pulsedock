@@ -4623,8 +4623,8 @@ import Testing
     #expect(snapshot.powerSourceText == SharedMetricStrings.notReported)
     #expect(snapshot.powerStatusText == SharedMetricStrings.notReported)
     #expect(!snapshot.hasPowerStatusReport)
-    #expect(metricSnapshot.contains("guard batteryPowerSource != nil else { return SharedMetricStrings.notReported }"))
-    #expect(metricSnapshot.contains("return SharedMetricStrings.powerSourceNoBattery"))
+    #expect(metricSnapshot.contains("return SharedMetricStrings.powerSourceExternal"))
+    #expect(!metricSnapshot.contains("powerSourceNoBattery"))
     #expect(metricSnapshot.contains("public var batteryPercentText: String"))
     #expect(metricSnapshot.contains("public var hasPowerStatusReport: Bool"))
     #expect(metricSnapshot.contains("public var powerStatusProgress: Double?"))
@@ -4698,11 +4698,15 @@ import Testing
         contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
+    let powerStart = try #require(dashboardView.range(of: "private struct PowerPage")?.lowerBound)
+    let nextStart = try #require(dashboardView.range(of: "private struct ProcessesPage")?.lowerBound)
+    let powerPage = String(dashboardView[powerStart..<nextStart])
 
-    #expect(dashboardView.contains("RingGauge(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, progress: powerGaugeProgress(snapshot)"))
-    #expect(dashboardView.contains("TableRow(values: [snapshot.powerStatusTitle, snapshot.powerStatusText, snapshot.powerSourceText])"))
-    #expect(!dashboardView.contains("RingGauge(title: \"电量\", value: snapshot.batteryText"))
-    #expect(!dashboardView.contains("TableRow(values: [\"电量\", snapshot.batteryText, snapshot.powerSourceText])"))
+    #expect(powerPage.contains("RingGauge(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, progress: powerGaugeProgress(snapshot)"))
+    #expect(!powerPage.contains("[snapshot.powerStatusTitle, snapshot.powerStatusText, snapshot.powerSourceText]"))
+    #expect(powerPage.contains("[PulseDockAppStrings.batteryRemainingTimeLabel, snapshot.batteryTimeRemainingText, PulseDockAppStrings.sourceSystemEstimate]"))
+    #expect(!powerPage.contains("RingGauge(title: \"电量\", value: snapshot.batteryText"))
+    #expect(!powerPage.contains("[\"电量\", snapshot.batteryText, snapshot.powerSourceText]"))
 }
 
 @Test func statusSignalsUseCurrentPowerStatusWhenBatteryPercentIsUnavailable() throws {
@@ -4713,10 +4717,10 @@ import Testing
     )
 
     let powerStatusRows = dashboardView.components(
-        separatedBy: "TableRow(values: [snapshot.powerStatusTitle, snapshot.powerStatusText, snapshot.powerSourceText])"
+        separatedBy: "[snapshot.powerStatusTitle, snapshot.powerStatusText, snapshot.powerSourceText]"
     ).count - 1
-    #expect(powerStatusRows >= 2)
-    #expect(!dashboardView.contains("TableRow(values: [\"电池电量\", snapshot.batteryText, \"电源状态\"])"))
+    #expect(powerStatusRows == 1)
+    #expect(!dashboardView.contains("[\"电池电量\", snapshot.batteryText, \"电源状态\"]"))
 }
 
 @Test func compactPowerSurfacesUseCurrentPowerStatusText() throws {
@@ -7325,7 +7329,7 @@ import Testing
         (symbol: "compactPowerCharging", key: "widget.power.compact.charging", english: "Charging", chinese: "充电"),
         (symbol: "compactPowerAdapter", key: "widget.power.compact.adapter", english: "Power", chinese: "电源"),
         (symbol: "compactPowerBattery", key: "widget.power.compact.battery", english: "Battery", chinese: "电池"),
-        (symbol: "compactPowerExternal", key: "widget.power.compact.external", english: "External", chinese: "外接")
+        (symbol: "compactPowerExternal", key: "widget.power.compact.external", english: "External Power", chinese: "外部电源")
     ]
 
     #expect(widgetStrings.contains("bundle.localizedString(forKey: key, value: defaultValue, table: \"PulseDockWidget\")"))
@@ -8156,7 +8160,7 @@ import Testing
         (symbol: "powerSourceAdapterCharging", key: "shared_metrics.power.source.adapter_charging", english: "Power Adapter · Charging", chinese: "电源适配器 · 充电中"),
         (symbol: "powerSourceBattery", key: "shared_metrics.power.source.battery", english: "Battery Power", chinese: "电池供电"),
         (symbol: "powerSourceUPS", key: "shared_metrics.power.source.ups", english: "UPS Power", chinese: "UPS 供电"),
-        (symbol: "powerSourceNoBattery", key: "shared_metrics.power.source.no_battery", english: "No Battery", chinese: "无电池"),
+        (symbol: "powerSourceExternal", key: "shared_metrics.power.source.external", english: "External Power", chinese: "外部电源"),
         (symbol: "powerSourceStateNotReported", key: "shared_metrics.power.source.state_not_reported", english: "Power state not reported", chinese: "电源状态未报告"),
         (symbol: "powerStatusTitlePower", key: "shared_metrics.power.status.title.power", english: "Power", chinese: "电源"),
         (symbol: "powerStatusTitleBattery", key: "shared_metrics.power.status.title.battery", english: "Battery", chinese: "电池"),

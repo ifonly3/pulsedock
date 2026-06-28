@@ -390,13 +390,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "External"
+            "value" : "External Power"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "外接"
+            "value" : "外部电源"
           }
         }
       }
