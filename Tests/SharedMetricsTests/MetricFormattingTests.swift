@@ -3247,7 +3247,8 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(sampler.contains("let screenSnapshot = screenDisplaySnapshot()"))
+    #expect(sampler.contains("let displayScreenSnapshot = screenDisplaySnapshot()"))
+    #expect(sampler.contains("sampleDisplays(screenSnapshot: screenSnapshot)"))
     #expect(sampler.contains("modeRefreshRate > 0 ? modeRefreshRate : screenSnapshot.refreshRatesByDisplayID[displayID, default: 0]"))
     #expect(sampler.contains("private func screenDisplaySnapshotOnMainThread() -> ScreenDisplaySnapshot"))
     #expect(sampler.contains("NSScreenNumber"))
@@ -4056,11 +4057,11 @@ import Testing
     #expect(sampler.contains("public convenience init(inventoryCacheInterval: TimeInterval = 15, batteryCacheInterval: TimeInterval = 5)"))
     #expect(sampler.contains("let storage = cachedStorage(now: now)"))
     #expect(sampler.contains("let gpuDevices = cachedGPUDevices(now: now)"))
-    #expect(sampler.contains("let displays = cachedDisplays(now: now)"))
+    #expect(sampler.contains("let displays = cachedDisplays(now: now, screenSnapshot: displayScreenSnapshot)"))
     #expect(sampler.contains("let battery = cachedBattery(now: now)"))
     #expect(sampler.contains("private func cachedStorage(now: Date) -> StorageSample"))
     #expect(sampler.contains("private func cachedGPUDevices(now: Date) -> [GPUDeviceMetric]"))
-    #expect(sampler.contains("private func cachedDisplays(now: Date) -> [DisplayMetric]"))
+    #expect(sampler.contains("private func cachedDisplays(now: Date, screenSnapshot: ScreenDisplaySnapshot) -> [DisplayMetric]"))
     #expect(sampler.contains("private func cachedBattery(now: Date) -> BatterySample"))
     #expect(sampler.contains("let memory = sampleMemory()"))
     #expect(sampler.contains("let networkInterfaces = sampleNetworkInterfaces(now: now)"))

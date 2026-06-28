@@ -277,6 +277,8 @@ public final class SystemSampler: @unchecked Sendable {
     }
 
     public func sample(now: Date = Date()) -> MetricSnapshot {
+        let displayScreenSnapshot = screenDisplaySnapshot()
+
         sampleLock.lock()
         defer { sampleLock.unlock() }
 
@@ -294,7 +296,7 @@ public final class SystemSampler: @unchecked Sendable {
             primary.reportedAvailableBytes.map { (free: $0, total: primary.totalBytes) }
         } ?? sampleDiskSpace()
         let gpuDevices = cachedGPUDevices(now: now)
-        let displays = cachedDisplays(now: now)
+        let displays = cachedDisplays(now: now, screenSnapshot: displayScreenSnapshot)
         let uptimeSeconds = ProcessInfo.processInfo.systemUptime
 
         return MetricSnapshot(
@@ -954,12 +956,12 @@ public final class SystemSampler: @unchecked Sendable {
         return devices
     }
 
-    private func cachedDisplays(now: Date) -> [DisplayMetric] {
+    private func cachedDisplays(now: Date, screenSnapshot: ScreenDisplaySnapshot) -> [DisplayMetric] {
         if let displaysCache, isCacheFresh(displaysCache, now: now) {
             return displaysCache.value
         }
 
-        let displays = sampleDisplays()
+        let displays = sampleDisplays(screenSnapshot: screenSnapshot)
         displaysCache = TimedSample(timestamp: now, value: displays)
         return displays
     }
@@ -1054,8 +1056,7 @@ public final class SystemSampler: @unchecked Sendable {
 #endif
     }
 
-    private func sampleDisplays() -> [DisplayMetric] {
-        let screenSnapshot = screenDisplaySnapshot()
+    private func sampleDisplays(screenSnapshot: ScreenDisplaySnapshot) -> [DisplayMetric] {
         var displayCount: UInt32 = 0
         guard CGGetActiveDisplayList(0, nil, &displayCount) == .success, displayCount > 0 else {
             return screenSnapshot.fallbackDisplays
