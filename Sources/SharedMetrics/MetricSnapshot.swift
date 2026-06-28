@@ -1227,30 +1227,28 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
             hasFullReport: hasOSVersionReport && hasUptimeReport && hasKernelReleaseReport
         )
     }
+    public var canonicalThermalState: ThermalState {
+        ThermalState(raw: thermalState)
+    }
     public var thermalText: String {
-        switch thermalState.lowercased() {
-        case "nominal": return SharedMetricStrings.thermalStateNominal
-        case "warm", "fair": return SharedMetricStrings.thermalStateWarm
-        case "hot", "serious": return SharedMetricStrings.thermalStateHot
-        case "critical": return SharedMetricStrings.thermalStateCritical
-        default: return SharedMetricStrings.notReported
+        switch canonicalThermalState {
+        case .nominal: return SharedMetricStrings.thermalStateNominal
+        case .warm: return SharedMetricStrings.thermalStateWarm
+        case .hot: return SharedMetricStrings.thermalStateHot
+        case .critical: return SharedMetricStrings.thermalStateCritical
+        case .unknown: return SharedMetricStrings.notReported
         }
     }
     public var hasThermalStateReport: Bool {
-        switch thermalState.lowercased() {
-        case "nominal", "warm", "fair", "hot", "serious", "critical":
-            return true
-        default:
-            return false
-        }
+        canonicalThermalState.isReported
     }
     public var thermalLimitText: String {
-        switch thermalState.lowercased() {
-        case "critical": return SharedMetricStrings.thermalLimitCritical
-        case "hot", "serious": return SharedMetricStrings.thermalLimitHot
-        case "warm", "fair": return SharedMetricStrings.thermalLimitWarm
-        case "nominal": return SharedMetricStrings.thermalLimitNominal
-        default: return SharedMetricStrings.notReported
+        switch canonicalThermalState {
+        case .critical: return SharedMetricStrings.thermalLimitCritical
+        case .hot: return SharedMetricStrings.thermalLimitHot
+        case .warm: return SharedMetricStrings.thermalLimitWarm
+        case .nominal: return SharedMetricStrings.thermalLimitNominal
+        case .unknown: return SharedMetricStrings.notReported
         }
     }
     public var batteryPercentText: String {
@@ -1326,26 +1324,24 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         guard hasNetworkByteCounters else { return SharedMetricStrings.notReported }
         return MetricFormatting.networkRate(bytesPerSecond: networkBytesPerSecond)
     }
+    public var canonicalNetworkPathState: NetworkPathState {
+        NetworkPathState(raw: networkPathStatus)
+    }
     public var hasNetworkPathReport: Bool {
-        switch networkPathStatus.lowercased() {
-        case "satisfied", "unsatisfied", "requiresconnection", "requires_connection", "requires connection":
-            return true
-        default:
-            return false
-        }
+        canonicalNetworkPathState.isReported
     }
     private var isNetworkPathOffline: Bool {
-        networkPathStatus.lowercased() == "unsatisfied"
+        canonicalNetworkPathState == .unsatisfied
     }
     public var networkPathText: String {
-        switch networkPathStatus.lowercased() {
-        case "satisfied":
+        switch canonicalNetworkPathState {
+        case .satisfied:
             return SharedMetricStrings.networkPathStatusOnline
-        case "unsatisfied":
+        case .unsatisfied:
             return SharedMetricStrings.networkPathStatusOffline
-        case "requiresconnection", "requires_connection", "requires connection":
+        case .requiresConnection:
             return SharedMetricStrings.networkPathStatusRequiresConnection
-        default:
+        case .unknown:
             return SharedMetricStrings.notReported
         }
     }
@@ -1354,16 +1350,16 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
 
         var parts: [String] = []
 
-        switch networkPathStatus.lowercased() {
-        case "satisfied", "requiresconnection", "requires_connection", "requires connection":
+        switch canonicalNetworkPathState {
+        case .satisfied, .requiresConnection:
             if networkPathInterfaceKinds.isEmpty {
                 parts.append(SharedMetricStrings.networkPathLocalNetwork)
             } else {
                 parts.append(networkPathInterfaceKinds.joined(separator: " / "))
             }
-        case "unsatisfied":
+        case .unsatisfied:
             parts.append(SharedMetricStrings.networkPathNoConnection)
-        default:
+        case .unknown:
             parts.append(SharedMetricStrings.notReported)
         }
 
@@ -1394,7 +1390,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
     }
     public var networkRuleStatusText: String {
         guard hasNetworkPathReport else { return SharedMetricStrings.notReported }
-        return networkPathStatus.lowercased() == "satisfied"
+        return canonicalNetworkPathState == .satisfied
             ? SharedMetricStrings.networkRuleNormal
             : SharedMetricStrings.networkRuleAttention
     }

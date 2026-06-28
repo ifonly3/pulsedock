@@ -672,37 +672,36 @@ private struct WidgetBackground: View {
 }
 
 private func thermalTint(_ state: String, for colorScheme: ColorScheme) -> Color {
-    switch state.lowercased() {
-    case "critical", "hot", "serious": WidgetColor.red(for: colorScheme)
-    case "warm", "fair": WidgetColor.amber(for: colorScheme)
-    case "nominal": WidgetColor.green(for: colorScheme)
-    case "unknown": WidgetColor.cyan(for: colorScheme)
-    default: WidgetColor.cyan(for: colorScheme)
+    switch ThermalState(raw: state) {
+    case .critical, .hot: WidgetColor.red(for: colorScheme)
+    case .warm: WidgetColor.amber(for: colorScheme)
+    case .nominal: WidgetColor.green(for: colorScheme)
+    case .unknown: WidgetColor.cyan(for: colorScheme)
     }
 }
 
 private func networkTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color {
-    switch snapshot.networkPathStatus.lowercased() {
-    case "satisfied":
+    switch snapshot.canonicalNetworkPathState {
+    case .satisfied:
         WidgetColor.green(for: colorScheme)
-    case "requiresconnection", "requires_connection", "requires connection":
+    case .requiresConnection:
         WidgetColor.amber(for: colorScheme)
-    case "unsatisfied":
+    case .unsatisfied:
         WidgetColor.red(for: colorScheme)
-    default:
+    case .unknown:
         WidgetColor.cyan(for: colorScheme)
     }
 }
 
 private func networkPathProgress(_ snapshot: MetricSnapshot) -> Double {
-    switch snapshot.networkPathStatus.lowercased() {
-    case "satisfied":
+    switch snapshot.canonicalNetworkPathState {
+    case .satisfied:
         1
-    case "requiresconnection", "requires_connection", "requires connection":
+    case .requiresConnection:
         0.45
-    case "unsatisfied":
+    case .unsatisfied:
         0
-    default:
+    case .unknown:
         0
     }
 }

@@ -2014,14 +2014,14 @@ private func diskCapacitySegments(_ snapshot: MetricSnapshot) -> [CapacitySegmen
 }
 
 private func networkStatusLevel(_ snapshot: MetricSnapshot) -> StatusLevel {
-    switch snapshot.networkPathStatus.lowercased() {
-    case "satisfied":
+    switch snapshot.canonicalNetworkPathState {
+    case .satisfied:
         .normal
-    case "unsatisfied":
+    case .unsatisfied:
         .critical
-    case "requiresconnection", "requires_connection", "requires connection":
+    case .requiresConnection:
         .warning
-    default:
+    case .unknown:
         .neutral
     }
 }
@@ -2031,14 +2031,14 @@ private func networkStatusColor(_ snapshot: MetricSnapshot) -> Color {
 }
 
 private func networkPathProgress(_ snapshot: MetricSnapshot) -> Double {
-    switch snapshot.networkPathStatus.lowercased() {
-    case "satisfied":
+    switch snapshot.canonicalNetworkPathState {
+    case .satisfied:
         1
-    case "requiresconnection", "requires_connection", "requires connection":
+    case .requiresConnection:
         0.45
-    case "unsatisfied":
+    case .unsatisfied:
         0
-    default:
+    case .unknown:
         0
     }
 }
@@ -2100,22 +2100,20 @@ private func thresholdStatusText(hasReport: Bool, usage: Double, threshold: Doub
 }
 
 private func thermalStatus(_ state: String) -> StatusLevel {
-    switch state.lowercased() {
-    case "critical": .critical
-    case "hot", "serious", "warm", "fair": .warning
-    case "nominal": .normal
-    case "unknown": .neutral
-    default: .neutral
+    switch ThermalState(raw: state) {
+    case .critical: .critical
+    case .hot, .warm: .warning
+    case .nominal: .normal
+    case .unknown: .neutral
     }
 }
 
 private func thermalProgress(_ state: String) -> Double? {
-    switch state.lowercased() {
-    case "critical": 1
-    case "hot", "serious": 0.78
-    case "warm", "fair": 0.52
-    case "nominal": 0.24
-    case "unknown": nil
-    default: nil
+    switch ThermalState(raw: state) {
+    case .critical: 1
+    case .hot: 0.78
+    case .warm: 0.52
+    case .nominal: 0.24
+    case .unknown: nil
     }
 }

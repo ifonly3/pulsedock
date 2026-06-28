@@ -249,3 +249,18 @@ private func fixture(_ relativePath: String) throws -> String {
     #expect(metricsStore.contains("lastSharedSnapshotWriteDate = snapshot.timestamp"))
     #expect(!metricsStore.contains("_ = sharedSnapshotStore.saveLatestSnapshot(snapshot)"))
 }
+
+@Test func thermalStateCanonicalizesLegacyAliases() {
+    #expect(ThermalState(raw: "nominal") == .nominal)
+    #expect(ThermalState(raw: "fair") == .warm)
+    #expect(ThermalState(raw: "serious") == .hot)
+    #expect(ThermalState(raw: "unknown") == .unknown)
+}
+
+@Test func networkPathStateCanonicalizesLegacyAliases() {
+    #expect(NetworkPathState(raw: "satisfied") == .satisfied)
+    #expect(NetworkPathState(raw: "requiresConnection") == .requiresConnection)
+    #expect(NetworkPathState(raw: "requires_connection") == .requiresConnection)
+    #expect(NetworkPathState(raw: "requires connection") == .requiresConnection)
+    #expect(NetworkPathState(raw: "unknown") == .unknown)
+}

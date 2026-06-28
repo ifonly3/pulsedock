@@ -157,24 +157,23 @@ private struct MenuPopoverPreview: View {
     }
 
     private func thermalTint(_ state: String) -> Color {
-        switch state.lowercased() {
-        case "critical", "hot", "serious": Palette.red(for: colorScheme)
-        case "warm", "fair": Palette.amber(for: colorScheme)
-        case "nominal": Palette.green(for: colorScheme)
-        case "unknown": Palette.cyan(for: colorScheme)
-        default: Palette.cyan(for: colorScheme)
+        switch ThermalState(raw: state) {
+        case .critical, .hot: Palette.red(for: colorScheme)
+        case .warm: Palette.amber(for: colorScheme)
+        case .nominal: Palette.green(for: colorScheme)
+        case .unknown: Palette.cyan(for: colorScheme)
         }
     }
 
     private func networkTint(_ snapshot: MetricSnapshot) -> Color {
-        switch snapshot.networkPathStatus.lowercased() {
-        case "satisfied":
+        switch snapshot.canonicalNetworkPathState {
+        case .satisfied:
             Palette.green(for: colorScheme)
-        case "requiresconnection", "requires_connection", "requires connection":
+        case .requiresConnection:
             Palette.amber(for: colorScheme)
-        case "unsatisfied":
+        case .unsatisfied:
             Palette.red(for: colorScheme)
-        default:
+        case .unknown:
             Palette.cyan(for: colorScheme)
         }
     }
