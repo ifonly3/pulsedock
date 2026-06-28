@@ -278,7 +278,7 @@
 "app.settings.widget.size.value" = "Small / Medium / Large";
 "app.settings.widget.subtitle" = "Desktop status preview";
 "app.settings.widget.title" = "Widget";
-"app.settings.widget_refresh.detail" = "Scheduled by the system timeline";
+"app.settings.widget_refresh.detail" = "Requested about every 5 minutes by the system timeline";
 "app.settings.widget_refresh.title" = "Widget Refresh";
 "app.source.application_session_list" = "Application session list";
 "app.source.battery_health" = "Battery health";

@@ -64,7 +64,7 @@ final class MetricsStore: ObservableObject {
     private var lastHistoryPersistenceDate: Date?
     private var lastSharedSnapshotWriteDate: Date?
     private let initialSampleWarmUpDelayNanoseconds: UInt64 = 150_000_000
-    private let widgetReloadInterval: TimeInterval = 60
+    private let widgetReloadInterval: TimeInterval = WidgetTimelinePolicy.appReloadThrottle
     private let historyPersistenceInterval: TimeInterval = 15
     private let sharedSnapshotWriteInterval: TimeInterval = 60
 

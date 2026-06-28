@@ -278,7 +278,7 @@
 "app.settings.widget.size.value" = "小 / 中 / 大";
 "app.settings.widget.subtitle" = "桌面状态预览";
 "app.settings.widget.title" = "小组件";
-"app.settings.widget_refresh.detail" = "由系统按时间线调度";
+"app.settings.widget_refresh.detail" = "由系统时间线约每 5 分钟请求一次";
 "app.settings.widget_refresh.title" = "小组件刷新";
 "app.source.application_session_list" = "应用会话列表";
 "app.source.battery_health" = "电池健康";

@@ -26,3 +26,19 @@ private func fixture(_ relativePath: String) throws -> String {
 
     #expect(!gpuLine.localizedCaseInsensitiveContains("widgets"))
 }
+
+@Test func widgetRefreshCopyDoesNotExposeGuaranteedFiveMinuteLabel() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+    let strings = try fixture("Sources/PulseDockApp/PulseDockAppStrings.swift")
+
+    #expect(!dashboard.contains("control: \"5m\""))
+    #expect(dashboard.contains("control: PulseDockAppStrings.settingsWidgetRefreshValue"))
+    #expect(strings.contains("app.settings.widget.refresh.value"))
+    #expect(strings.contains("System Scheduled"))
+}
+
+@Test func widgetTimelinePolicyUsesNonEqualFreshnessThresholds() {
+    #expect(WidgetTimelinePolicy.sharedSnapshotMaxAge < WidgetTimelinePolicy.staleThreshold)
+    #expect(WidgetTimelinePolicy.requestedRefreshInterval < WidgetTimelinePolicy.agingThreshold)
+    #expect(WidgetTimelinePolicy.appReloadThrottle == WidgetTimelinePolicy.requestedRefreshInterval)
+}

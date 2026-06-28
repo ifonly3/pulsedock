@@ -9134,7 +9134,10 @@ import Testing
     #expect(appDelegate.contains("self.statusItem = nil"))
     #expect(!appDelegate.contains("private func statusPopoverSize(for button: NSStatusBarButton) -> NSSize"))
     #expect(!appDelegate.contains("private func statusPopoverPreferredEdge(for button: NSStatusBarButton, contentSize: NSSize) -> NSRectEdge"))
-    #expect(dashboardView.contains("SettingReadOnlyRow(title: PulseDockAppStrings.settingsWidgetRefreshTitle"))
+    #expect(dashboardView.contains("SettingReadOnlyRow("))
+    #expect(dashboardView.contains("title: PulseDockAppStrings.settingsWidgetRefreshTitle"))
+    #expect(dashboardView.contains("control: PulseDockAppStrings.settingsWidgetRefreshValue"))
+    #expect(!dashboardView.contains("control: \"5m\""))
     #expect(dashboardView.contains("private struct SettingReadOnlyRow: View"))
     #expect(dashboardView.contains(".opacity(0.78)"))
 }

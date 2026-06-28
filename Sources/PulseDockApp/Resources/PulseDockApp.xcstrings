@@ -4486,13 +4486,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scheduled by the system timeline"
+            "value": "Requested about every 5 minutes by the system timeline"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "由系统按时间线调度"
+            "value": "由系统时间线约每 5 分钟请求一次"
           }
         }
       }

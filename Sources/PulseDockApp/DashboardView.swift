@@ -1000,7 +1000,11 @@ private struct SettingsPage: View {
                     .toggleStyle(.switch)
                     .labelsHidden()
                 }
-                SettingReadOnlyRow(title: PulseDockAppStrings.settingsWidgetRefreshTitle, detail: PulseDockAppStrings.settingsWidgetRefreshDetail, control: "5m")
+                SettingReadOnlyRow(
+                    title: PulseDockAppStrings.settingsWidgetRefreshTitle,
+                    detail: PulseDockAppStrings.settingsWidgetRefreshDetail,
+                    control: PulseDockAppStrings.settingsWidgetRefreshValue
+                )
                 SettingControlRow(title: PulseDockAppStrings.settingsLocalHistoryTitle, detail: PulseDockAppStrings.settingsLocalHistoryDetail(sampleCount: store.historyDepth.sampleCount)) {
                     Picker(PulseDockAppStrings.settingsLocalHistoryTitle, selection: Binding(
                         get: { store.historyDepth },

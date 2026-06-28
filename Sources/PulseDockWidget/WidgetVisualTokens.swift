@@ -1,4 +1,5 @@
 import SwiftUI
+import SharedMetrics
 
 enum WidgetFreshnessTone {
     case fresh
@@ -7,8 +8,8 @@ enum WidgetFreshnessTone {
 
     static func resolve(age: TimeInterval?) -> WidgetFreshnessTone {
         guard let age, age >= 0 else { return .fresh }
-        if age >= 600 { return .stale }
-        if age >= 300 { return .aging }
+        if age >= WidgetTimelinePolicy.staleThreshold { return .stale }
+        if age >= WidgetTimelinePolicy.agingThreshold { return .aging }
         return .fresh
     }
 

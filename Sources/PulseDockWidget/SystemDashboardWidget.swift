@@ -38,7 +38,7 @@ private struct TimelineCompletion: @unchecked Sendable {
 struct SystemProvider: TimelineProvider {
     private static let samplerCache = WidgetSamplerCache()
     private static let sharedSnapshotStore = SharedSnapshotStore()
-    private static let sharedSnapshotMaxAge: TimeInterval = 600
+    private static let sharedSnapshotMaxAge: TimeInterval = WidgetTimelinePolicy.sharedSnapshotMaxAge
 
     func placeholder(in context: Context) -> SystemEntry {
         SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0)
@@ -55,7 +55,7 @@ struct SystemProvider: TimelineProvider {
             let snapshot = Self.sampledSnapshotForTimeline(now: now)
             let age = snapshot.map { now.timeIntervalSince($0.timestamp) }
             let entry = SystemEntry(date: now, snapshot: snapshot, snapshotAge: age)
-            let nextRefresh = Calendar.current.date(byAdding: .minute, value: 5, to: now) ?? now.addingTimeInterval(300)
+            let nextRefresh = now.addingTimeInterval(WidgetTimelinePolicy.requestedRefreshInterval)
             timelineCompletion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }
     }

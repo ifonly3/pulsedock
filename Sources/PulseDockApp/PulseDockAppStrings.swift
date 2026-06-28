@@ -1016,7 +1016,7 @@ enum PulseDockAppStrings {
     }
 
     static var settingsWidgetRefreshDetail: String {
-        localized("app.settings.widget_refresh.detail", defaultValue: "Scheduled by the system timeline")
+        localized("app.settings.widget_refresh.detail", defaultValue: "Requested about every 5 minutes by the system timeline")
     }
 
     static var settingsLocalHistoryTitle: String {

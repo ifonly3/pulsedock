@@ -568,7 +568,7 @@ import Testing
         (symbol: "settingsMenuBarStatusDetail", key: "app.settings.menu_bar_status.detail", english: "Show current CPU usage", chinese: "显示当前 CPU 占用"),
         (symbol: "settingsMenuBarCPULabel", key: "app.settings.menu_bar_cpu.label", english: "Menu Bar CPU", chinese: "菜单栏 CPU"),
         (symbol: "settingsWidgetRefreshTitle", key: "app.settings.widget_refresh.title", english: "Widget Refresh", chinese: "小组件刷新"),
-        (symbol: "settingsWidgetRefreshDetail", key: "app.settings.widget_refresh.detail", english: "Scheduled by the system timeline", chinese: "由系统按时间线调度"),
+        (symbol: "settingsWidgetRefreshDetail", key: "app.settings.widget_refresh.detail", english: "Requested about every 5 minutes by the system timeline", chinese: "由系统时间线约每 5 分钟请求一次"),
         (symbol: "settingsLocalHistoryTitle", key: "app.settings.local_history.title", english: "Local History", chinese: "本地历史"),
         (symbol: "settingsWidgetTitle", key: "app.settings.widget.title", english: "Widget", chinese: "小组件"),
         (symbol: "settingsWidgetSubtitle", key: "app.settings.widget.subtitle", english: "Desktop status preview", chinese: "桌面状态预览"),
