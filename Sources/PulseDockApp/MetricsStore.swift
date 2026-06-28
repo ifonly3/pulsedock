@@ -372,8 +372,9 @@ final class MetricsStore: ObservableObject {
             }
         }
 
-        lastSharedSnapshotWriteDate = snapshot.timestamp
-        _ = sharedSnapshotStore.saveLatestSnapshot(snapshot)
+        if sharedSnapshotStore.saveLatestSnapshot(snapshot) {
+            lastSharedSnapshotWriteDate = snapshot.timestamp
+        }
     }
 
     private func appendHistorySnapshot(_ snapshot: MetricSnapshot) {

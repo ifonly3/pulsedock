@@ -59,6 +59,9 @@ public struct SharedSnapshotStore: @unchecked Sendable {
 
         do {
             let snapshot = try JSONDecoder().decode(MetricSnapshot.self, from: data)
+            guard snapshot.schemaVersion == MetricSnapshot.currentSchemaVersion else {
+                return nil
+            }
             let age = now.timeIntervalSince(snapshot.timestamp)
             guard age <= maxAge, age >= -acceptedFutureSkew else {
                 return nil

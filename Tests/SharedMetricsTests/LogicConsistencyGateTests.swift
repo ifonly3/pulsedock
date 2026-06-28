@@ -227,3 +227,25 @@ private func fixture(_ relativePath: String) throws -> String {
     #expect(MetricScales.networkRateProgress(bytesPerSecond: 1_250_000_000) < 1)
     #expect(MetricScales.networkRateProgress(bytesPerSecond: 12_500_000_000) == 1)
 }
+
+@Test func sharedSnapshotStoreRejectsUnsupportedSchemaVersion() throws {
+    let suiteName = "logic-consistency-\(UUID().uuidString)"
+    let defaults = try #require(UserDefaults(suiteName: suiteName))
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    let store = SharedSnapshotStore(defaults: defaults)
+
+    var snapshot = MetricSnapshot.placeholder
+    snapshot.schemaVersion = MetricSnapshot.currentSchemaVersion + 1
+    snapshot.timestamp = Date()
+
+    #expect(store.saveLatestSnapshot(snapshot))
+    #expect(store.loadLatestSnapshot(maxAge: 60, now: snapshot.timestamp) == nil)
+}
+
+@Test func metricsStoreUpdatesSharedSnapshotWriteDateOnlyAfterSuccessfulSave() throws {
+    let metricsStore = try fixture("Sources/PulseDockApp/MetricsStore.swift")
+
+    #expect(metricsStore.contains("if sharedSnapshotStore.saveLatestSnapshot(snapshot) {"))
+    #expect(metricsStore.contains("lastSharedSnapshotWriteDate = snapshot.timestamp"))
+    #expect(!metricsStore.contains("_ = sharedSnapshotStore.saveLatestSnapshot(snapshot)"))
+}
