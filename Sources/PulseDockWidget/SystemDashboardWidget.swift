@@ -5,10 +5,17 @@ import SwiftUI
 import SharedMetrics
 #endif
 
+enum SystemEntryKind {
+    case preview
+    case live
+    case empty
+}
+
 struct SystemEntry: TimelineEntry {
     let date: Date
     let snapshot: MetricSnapshot?
     let snapshotAge: TimeInterval?
+    let kind: SystemEntryKind
 
     var freshnessTone: WidgetFreshnessTone {
         WidgetFreshnessTone.resolve(age: snapshotAge)
@@ -41,11 +48,11 @@ struct SystemProvider: TimelineProvider {
     private static let sharedSnapshotMaxAge: TimeInterval = WidgetTimelinePolicy.sharedSnapshotMaxAge
 
     func placeholder(in context: Context) -> SystemEntry {
-        SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0)
+        SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0, kind: .preview)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SystemEntry) -> Void) {
-        completion(SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0))
+        completion(SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0, kind: .preview))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SystemEntry>) -> Void) {
@@ -53,8 +60,12 @@ struct SystemProvider: TimelineProvider {
         DispatchQueue.global(qos: .utility).async {
             let now = Date()
             let snapshot = Self.sampledSnapshotForTimeline(now: now)
-            let age = snapshot.map { now.timeIntervalSince($0.timestamp) }
-            let entry = SystemEntry(date: now, snapshot: snapshot, snapshotAge: age)
+            let entry: SystemEntry
+            if let snapshot {
+                entry = SystemEntry(date: now, snapshot: snapshot, snapshotAge: now.timeIntervalSince(snapshot.timestamp), kind: .live)
+            } else {
+                entry = SystemEntry(date: now, snapshot: nil, snapshotAge: nil, kind: .empty)
+            }
             let nextRefresh = now.addingTimeInterval(WidgetTimelinePolicy.requestedRefreshInterval)
             timelineCompletion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }
@@ -119,13 +130,13 @@ struct SystemDashboardWidgetView: View {
         if let snapshot = entry.snapshot {
             switch family {
             case .systemSmall:
-                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)
+                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone, entryKind: entry.kind)
             case .systemMedium:
-                MediumWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)
+                MediumWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone, entryKind: entry.kind)
             case .systemLarge:
-                LargeWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)
+                LargeWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone, entryKind: entry.kind)
             default:
-                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)
+                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone, entryKind: entry.kind)
             }
         } else {
             EmptyDataWidget(family: family)
@@ -168,10 +179,11 @@ private struct SmallWidget: View {
     @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
     let freshnessTone: WidgetFreshnessTone
+    let entryKind: SystemEntryKind
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            WidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)
+            WidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone, entryKind: entryKind)
 
             Spacer(minLength: 4)
 
@@ -196,11 +208,12 @@ private struct MediumWidget: View {
     @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
     let freshnessTone: WidgetFreshnessTone
+    let entryKind: SystemEntryKind
 
     var body: some View {
         HStack(alignment: .center, spacing: 22) {
             VStack(alignment: .leading, spacing: 9) {
-                CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)
+                CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone, entryKind: entryKind)
                 Text(snapshot.cpuText)
                     .font(.system(size: 52, weight: .semibold).monospacedDigit())
                     .foregroundStyle(widgetPrimaryText(for: colorScheme))
@@ -244,10 +257,11 @@ private struct LargeWidget: View {
     @Environment(\.colorScheme) private var colorScheme
     let snapshot: MetricSnapshot
     let freshnessTone: WidgetFreshnessTone
+    let entryKind: SystemEntryKind
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)
+            WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone, entryKind: entryKind)
 
             HStack(alignment: .top, spacing: 18) {
                 VStack(alignment: .leading, spacing: 14) {
@@ -462,6 +476,7 @@ private struct WidgetHeader: View {
     let timeText: String
     let hasTimeReport: Bool
     let freshnessTone: WidgetFreshnessTone
+    let entryKind: SystemEntryKind
 
     var body: some View {
         HStack(spacing: 7) {
@@ -483,9 +498,32 @@ private struct WidgetHeader: View {
                     .font(.system(size: 10, weight: .semibold).monospacedDigit())
                     .foregroundStyle(widgetSecondaryText(for: colorScheme))
             }
+            if entryKind == .preview {
+                previewLabel
+            }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(hasTimeReport ? "\(title), \(timeText), \(freshnessTone.accessibilityText)" : "\(title), \(freshnessTone.accessibilityText)")
+        .accessibilityLabel(accessibilityLabel)
+    }
+
+    private var previewLabel: some View {
+        Text(PulseDockWidgetStrings.previewData)
+            .font(.system(size: 10, weight: .semibold))
+            .foregroundStyle(widgetSecondaryText(for: colorScheme))
+            .lineLimit(1)
+            .minimumScaleFactor(0.72)
+    }
+
+    private var accessibilityLabel: String {
+        var parts = [title]
+        if hasTimeReport {
+            parts.append(timeText)
+        }
+        if entryKind == .preview {
+            parts.append(PulseDockWidgetStrings.previewData)
+        }
+        parts.append(freshnessTone.accessibilityText)
+        return parts.joined(separator: ", ")
     }
 }
 
@@ -495,6 +533,7 @@ private struct CompactWidgetHeader: View {
     let timeText: String
     let hasTimeReport: Bool
     let freshnessTone: WidgetFreshnessTone
+    let entryKind: SystemEntryKind
 
     var body: some View {
         HStack(spacing: 7) {
@@ -519,9 +558,32 @@ private struct CompactWidgetHeader: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             }
+            if entryKind == .preview {
+                previewLabel
+            }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(hasTimeReport ? "\(title), \(timeText), \(freshnessTone.accessibilityText)" : "\(title), \(freshnessTone.accessibilityText)")
+        .accessibilityLabel(accessibilityLabel)
+    }
+
+    private var previewLabel: some View {
+        Text(PulseDockWidgetStrings.previewData)
+            .font(.system(size: 10, weight: .semibold))
+            .foregroundStyle(widgetSecondaryText(for: colorScheme))
+            .lineLimit(1)
+            .minimumScaleFactor(0.72)
+    }
+
+    private var accessibilityLabel: String {
+        var parts = [title]
+        if hasTimeReport {
+            parts.append(timeText)
+        }
+        if entryKind == .preview {
+            parts.append(PulseDockWidgetStrings.previewData)
+        }
+        parts.append(freshnessTone.accessibilityText)
+        return parts.joined(separator: ", ")
     }
 }
 

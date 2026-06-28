@@ -337,6 +337,22 @@
         }
       }
     },
+    "widget.preview_data" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预览"
+          }
+        }
+      }
+    },
     "widget.power.compact.adapter" : {
       "localizations" : {
         "en" : {

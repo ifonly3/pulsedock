@@ -267,12 +267,13 @@ import Testing
     #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.cpuRecentSampleLabel, value: snapshot.sampleTimeText, status: snapshot.hasSampleTimeReport ? .normal : .neutral)"))
     #expect(widgetPanel.contains("Text(snapshot.sampleTimeText)"))
     #expect(!widgetPanel.contains("snapshot.timestamp.formatted(.dateTime.hour().minute().second())"))
-    #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)"))
-    #expect(widget.contains("CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)"))
-    #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone)"))
+    #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone, entryKind: entryKind)"))
+    #expect(widget.contains("CompactWidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone, entryKind: entryKind)"))
+    #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.headerSystemStatus, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone, entryKind: entryKind)"))
     #expect(widget.contains("let hasTimeReport: Bool"))
     #expect(widget.contains("if hasTimeReport {"))
-    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText), \\(freshnessTone.accessibilityText)\" : \"\\(title), \\(freshnessTone.accessibilityText)\")"))
+    #expect(widget.contains(".accessibilityLabel(accessibilityLabel)"))
+    #expect(widget.contains("private var accessibilityLabel: String"))
     #expect(!widget.contains("timeText != \"未报告\""))
     #expect(!widget.contains("timeText == \"未报告\""))
     #expect(!widget.contains("timeText: snapshot.sampleTimeText"))
@@ -4000,7 +4001,7 @@ import Testing
     )
     let blockedPlaceholderCopy = ["等待首次同步", "系统会按时间线刷新"]
 
-    #expect(widget.contains("SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0)"))
+    #expect(widget.contains("SystemEntry(date: Date(), snapshot: Self.representativeSnapshot(), snapshotAge: 0, kind: .preview)"))
     #expect(widget.contains("DispatchQueue.global(qos: .utility).async"))
     #expect(widget.contains("Self.sampledSnapshotForTimeline(now: now)"))
     #expect(widget.contains("private final class WidgetSamplerCache: @unchecked Sendable"))
@@ -4388,7 +4389,8 @@ import Testing
     #expect(!widget.contains("CompactWidgetHeader(title: \"System\""))
     #expect(!widget.contains("WidgetHeader(title: \"System\", time: snapshot.timestamp)"))
     #expect(widget.contains("Spacer(minLength: 4)"))
-    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText), \\(freshnessTone.accessibilityText)\" : \"\\(title), \\(freshnessTone.accessibilityText)\")"))
+    #expect(widget.contains(".accessibilityLabel(accessibilityLabel)"))
+    #expect(widget.contains("private var accessibilityLabel: String"))
     #expect(!widget.contains(".accessibilityLabel(timeText == \"未报告\" ? title : \"\\(title), \\(timeText)\")"))
     #expect(dashboardView.contains("Text(\"Pulse Dock\")"))
     #expect(!dashboardView.contains("Text(\"System\")\n                    .font(.system(size: 14, weight: .semibold))"))
@@ -9104,8 +9106,8 @@ import Testing
     #expect(package.contains("resources: [\n                .process(\"Resources\")\n            ],\n            linkerSettings: [\n                .linkedFramework(\"SwiftUI\"),\n                .linkedFramework(\"WidgetKit\")\n            ]"))
     #expect(package.contains(".testTarget(\n            name: \"SharedMetricsTests\",\n            dependencies: [\"SharedMetrics\", \"PulseDockWidget\"]"))
     #expect(widget.contains("#if !SWIFT_PACKAGE\n@main\nstruct SystemDashboardWidgetBundle: WidgetBundle"))
-    #expect(widget.contains("case .systemLarge:\n                LargeWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)"))
-    #expect(widget.contains("default:\n                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone)"))
+    #expect(widget.contains("case .systemLarge:\n                LargeWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone, entryKind: entry.kind)"))
+    #expect(widget.contains("default:\n                SmallWidget(snapshot: snapshot, freshnessTone: entry.freshnessTone, entryKind: entry.kind)"))
     #expect(widget.contains("return systemSampler.sampleWidgetCompact()"))
     #expect(!widget.contains("return systemSampler.sample()"))
 }
@@ -9408,7 +9410,8 @@ import Testing
 
     #expect(widget.contains("private struct WidgetHeader"))
     #expect(widget.contains(".accessibilityElement(children: .combine)"))
-    #expect(widget.contains(".accessibilityLabel(hasTimeReport ? \"\\(title), \\(timeText), \\(freshnessTone.accessibilityText)\" : \"\\(title), \\(freshnessTone.accessibilityText)\")"))
+    #expect(widget.contains(".accessibilityLabel(accessibilityLabel)"))
+    #expect(widget.contains("private var accessibilityLabel: String"))
     #expect(widget.contains(".accessibilityHidden(true)"))
 }
 

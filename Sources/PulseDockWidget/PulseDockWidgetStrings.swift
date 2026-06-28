@@ -81,6 +81,10 @@ enum PulseDockWidgetStrings {
         localized("widget.placeholder.waiting_data", defaultValue: "Waiting for data")
     }
 
+    static var previewData: String {
+        localized("widget.preview_data", defaultValue: "Preview")
+    }
+
     static var notReported: String {
         localized("widget.not_reported", defaultValue: "Not reported")
     }

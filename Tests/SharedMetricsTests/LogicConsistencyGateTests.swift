@@ -289,3 +289,14 @@ private func fixture(_ relativePath: String) throws -> String {
     #expect(storageLine.localizedCaseInsensitiveContains("widgets"))
     #expect(audit.contains("Shared widget snapshot writes and WidgetKit reload requests use separate throttles"))
 }
+
+@Test func widgetRepresentativeDataIsExplicitlyMarked() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let strings = try fixture("Sources/PulseDockWidget/PulseDockWidgetStrings.swift")
+
+    #expect(widget.contains("enum SystemEntryKind"))
+    #expect(widget.contains("kind: .preview"))
+    #expect(widget.contains("kind: .live"))
+    #expect(widget.contains("PulseDockWidgetStrings.previewData"))
+    #expect(strings.contains("widget.preview_data"))
+}
