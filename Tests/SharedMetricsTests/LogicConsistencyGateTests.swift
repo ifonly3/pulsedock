@@ -87,3 +87,23 @@ private func fixture(_ relativePath: String) throws -> String {
     #expect(!snapshot.contains("powerSourceNoBattery"))
     #expect(snapshot.contains("powerSourceExternal"))
 }
+
+@Test func statusRuleTablesUseOneVocabulary() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+    let strings = try fixture("Sources/PulseDockApp/PulseDockAppStrings.swift")
+
+    #expect(dashboard.contains("PulseDockAppStrings.localRuleTableTitle"))
+    #expect(dashboard.contains("PulseDockAppStrings.localRuleTableSubtitle"))
+    #expect(dashboard.contains("PulseDockAppStrings.statusWarning"))
+    #expect(!dashboard.contains("PulseDockAppStrings.statusTriggered"))
+    #expect(dashboard.contains("PulseDockAppStrings.statusPerformanceLimitTitle"))
+    #expect(strings.contains("app.dashboard.local_rules.title"))
+}
+
+@Test func processesSummaryLabelsDisplayedRowsExplicitly() throws {
+    let appStrings = try fixture("Sources/PulseDockApp/PulseDockAppStrings.swift")
+
+    #expect(!appStrings.contains("processesListItemsTitle"))
+    #expect(appStrings.contains("processesDisplayedAppsTitle"))
+    #expect(appStrings.contains("Displayed Apps"))
+}

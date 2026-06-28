@@ -255,7 +255,7 @@ import Testing
 
     let processEntries = [
         (symbol: "processesRunningAppsTitle", key: "app.dashboard.processes.running_apps", english: "Running Apps", chinese: "运行中 App"),
-        (symbol: "processesListItemsTitle", key: "app.dashboard.processes.list_items", english: "List Items", chinese: "列表项"),
+        (symbol: "processesDisplayedAppsTitle", key: "app.dashboard.processes.displayed_apps", english: "Displayed Apps", chinese: "显示 App"),
         (symbol: "processesForegroundAppsTitle", key: "app.dashboard.processes.foreground_apps", english: "Foreground Apps", chinese: "前台 App"),
         (symbol: "processesHiddenAppsTitle", key: "app.dashboard.processes.hidden_apps", english: "Hidden Apps", chinese: "隐藏 App"),
         (symbol: "processesDefaultSubtitle", key: "app.dashboard.processes.default_subtitle", english: "Foreground first, sorted by name", chinese: "前台优先 · 按名称排序"),
@@ -487,11 +487,11 @@ import Testing
     let statusEntries = [
         (symbol: "statusThermalTitle", key: "app.dashboard.status.thermal.title", english: "Thermal State", chinese: "热状态"),
         (symbol: "statusThermalSubtitle", key: "app.dashboard.status.thermal.subtitle", english: "System thermal control state", chinese: "系统温控状态"),
-        (symbol: "statusSystemStatusTitle", key: "app.dashboard.status.system_status", english: "System Status", chinese: "系统状态"),
+        (symbol: "statusPerformanceLimitTitle", key: "app.dashboard.status.performance_limit.title", english: "Performance Limit", chinese: "性能限制"),
         (symbol: "statusRealtimeSignalsTitle", key: "app.dashboard.status.realtime_signals.title", english: "Live Signals", chinese: "实时信号"),
         (symbol: "statusRealtimeSignalsSubtitle", key: "app.dashboard.status.realtime_signals.subtitle", english: "Latest sample", chinese: "最近一次采样"),
-        (symbol: "statusRulesTitle", key: "app.dashboard.status.rules.title", english: "Status Rules", chinese: "状态判断"),
-        (symbol: "statusRulesSubtitle", key: "app.dashboard.status.rules.subtitle", english: "Local results for the current sample", chinese: "当前采样的本地结果"),
+        (symbol: "localRuleTableTitle", key: "app.dashboard.local_rules.title", english: "Local Rules", chinese: "本地规则"),
+        (symbol: "localRuleTableSubtitle", key: "app.dashboard.local_rules.subtitle", english: "Current sample evaluated against local thresholds", chinese: "当前采样按本地阈值判断"),
         (symbol: "statusRuleColumnRule", key: "app.dashboard.status.rules.column.rule", english: "Rule", chinese: "规则"),
         (symbol: "statusRuleColumnThreshold", key: "app.dashboard.status.rules.column.threshold", english: "Threshold", chinese: "阈值"),
         (symbol: "statusRuleColumnCurrent", key: "app.dashboard.status.rules.column.current", english: "Current", chinese: "当前"),

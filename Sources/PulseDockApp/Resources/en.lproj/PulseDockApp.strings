@@ -48,8 +48,8 @@
 "app.dashboard.history.rule.cpu_over" = "CPU Over";
 "app.dashboard.history.rule.disk_high" = "Disk High";
 "app.dashboard.history.rule.memory_high" = "Memory High";
-"app.dashboard.history.status_evaluation.subtitle" = "Local result for the current sample";
-"app.dashboard.history.status_evaluation.title" = "Status Evaluation";
+"app.dashboard.local_rules.subtitle" = "Current sample evaluated against local thresholds";
+"app.dashboard.local_rules.title" = "Local Rules";
 "app.dashboard.history.threshold_settings.subtitle" = "Local evaluation rules";
 "app.dashboard.history.threshold_settings.title" = "Threshold Settings";
 "app.dashboard.history.trends.title" = "History Trends";
@@ -142,7 +142,7 @@
 "app.dashboard.processes.default_subtitle" = "Foreground first, sorted by name";
 "app.dashboard.processes.foreground_apps" = "Foreground Apps";
 "app.dashboard.processes.hidden_apps" = "Hidden Apps";
-"app.dashboard.processes.list_items" = "List Items";
+"app.dashboard.processes.displayed_apps" = "Displayed Apps";
 "app.dashboard.processes.running_apps" = "Running Apps";
 "app.dashboard.sidebar.live_sampling" = "Live Sampling";
 "app.dashboard.sidebar.local_status" = "Local Status";
@@ -155,14 +155,11 @@
 "app.dashboard.status.rules.column.rule" = "Rule";
 "app.dashboard.status.rules.column.status" = "Status";
 "app.dashboard.status.rules.column.threshold" = "Threshold";
-"app.dashboard.status.rules.subtitle" = "Local results for the current sample";
-"app.dashboard.status.rules.title" = "Status Rules";
 "app.dashboard.status.signals.column.current_value" = "Current Value";
 "app.dashboard.status.signals.column.name" = "Name";
 "app.dashboard.status.signals.column.source" = "Source";
 "app.dashboard.status.system_signals.subtitle" = "Reported data in this view";
 "app.dashboard.status.system_signals.title" = "System Signals";
-"app.dashboard.status.system_status" = "System Status";
 "app.dashboard.status.thermal.subtitle" = "System thermal control state";
 "app.dashboard.status.thermal.title" = "Thermal State";
 "app.dashboard.storage.capacity_stats.title" = "Capacity Stats";
@@ -304,7 +301,6 @@
 "app.status.normal" = "Normal";
 "app.status.online" = "Online";
 "app.status.supported" = "Supported";
-"app.status.triggered" = "Triggered";
 "app.status.warning" = "Warning";
 "app.system.did_not_report" = "System did not report";
 "app.table.column.current_value" = "Current Value";

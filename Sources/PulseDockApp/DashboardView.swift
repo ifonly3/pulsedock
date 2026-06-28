@@ -784,7 +784,7 @@ private struct ProcessesPage: View {
         VStack(alignment: .leading, spacing: 16) {
             LazyVGrid(columns: summaryColumns, spacing: 12) {
                 SummaryCard(title: PulseDockAppStrings.processesRunningAppsTitle, value: snapshot.runningAppCountText, icon: "app.badge", tint: DashboardColor.blue)
-                SummaryCard(title: PulseDockAppStrings.processesListItemsTitle, value: snapshot.runningAppListCountText, icon: "list.bullet.rectangle", tint: DashboardColor.green)
+                SummaryCard(title: PulseDockAppStrings.processesDisplayedAppsTitle, value: snapshot.runningAppListCountText, icon: "list.bullet.rectangle", tint: DashboardColor.green)
                 SummaryCard(title: PulseDockAppStrings.processesForegroundAppsTitle, value: snapshot.activeApplicationCountText, icon: "cursorarrow.click", tint: DashboardColor.amber)
                 SummaryCard(title: PulseDockAppStrings.processesHiddenAppsTitle, value: snapshot.hiddenApplicationCountText, icon: "eye.slash", tint: DashboardColor.purple)
             }
@@ -818,7 +818,7 @@ private struct SensorsPage: View {
                     VStack(spacing: 14) {
                         RingGauge(title: PulseDockAppStrings.statusThermalTitle, value: snapshot.thermalText, progress: thermalProgress(snapshot.thermalState), tint: thermalStatus(snapshot.thermalState).color)
                             .frame(width: 160, height: 160)
-                        StatusSummaryRow(title: PulseDockAppStrings.statusSystemStatusTitle, value: snapshot.thermalLimitText, status: thermalStatus(snapshot.thermalState))
+                        StatusSummaryRow(title: PulseDockAppStrings.statusPerformanceLimitTitle, value: snapshot.thermalLimitText, status: thermalStatus(snapshot.thermalState))
                     }
                 }
                 .frame(width: 360)
@@ -840,7 +840,7 @@ private struct SensorsPage: View {
                 }
             }
 
-            DashboardPanel(title: PulseDockAppStrings.statusRulesTitle, subtitle: PulseDockAppStrings.statusRulesSubtitle, icon: "checkmark.shield") {
+            DashboardPanel(title: PulseDockAppStrings.localRuleTableTitle, subtitle: PulseDockAppStrings.localRuleTableSubtitle, icon: "checkmark.shield") {
                 VStack(spacing: 0) {
                     TableHeader(columns: PulseDockAppStrings.statusRuleTableColumns)
                     TableRow(values: [PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
@@ -908,12 +908,12 @@ private struct HistoryAlertsPage: View {
                 }
             }
 
-            DashboardPanel(title: PulseDockAppStrings.historyStatusEvaluationTitle, subtitle: PulseDockAppStrings.historyStatusEvaluationSubtitle, icon: "checkmark.shield") {
+            DashboardPanel(title: PulseDockAppStrings.localRuleTableTitle, subtitle: PulseDockAppStrings.localRuleTableSubtitle, icon: "checkmark.shield") {
                 VStack(spacing: 0) {
                     TableHeader(columns: PulseDockAppStrings.statusRuleTableColumns)
-                    TableRow(values: [PulseDockAppStrings.historyRuleCPUOver, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: PulseDockAppStrings.statusTriggered)])
-                    TableRow(values: [PulseDockAppStrings.historyRuleMemoryHigh, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText, thresholdStatusText(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold, warningText: PulseDockAppStrings.statusTriggered)])
-                    TableRow(values: [PulseDockAppStrings.historyRuleDiskHigh, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText, thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold, warningText: PulseDockAppStrings.statusTriggered)])
+                    TableRow(values: [PulseDockAppStrings.historyRuleCPUOver, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
+                    TableRow(values: [PulseDockAppStrings.historyRuleMemoryHigh, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText, thresholdStatusText(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
+                    TableRow(values: [PulseDockAppStrings.historyRuleDiskHigh, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText, thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
                     TableRow(values: [PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkPathText, snapshot.networkRuleStatusText])
                 }
             }

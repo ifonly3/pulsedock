@@ -721,14 +721,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.history.threshold_settings.subtitle", defaultValue: "Local evaluation rules")
     }
 
-    static var historyStatusEvaluationTitle: String {
-        localized("app.dashboard.history.status_evaluation.title", defaultValue: "Status Evaluation")
-    }
-
-    static var historyStatusEvaluationSubtitle: String {
-        localized("app.dashboard.history.status_evaluation.subtitle", defaultValue: "Local result for the current sample")
-    }
-
     static var historyRuleCPUOver: String {
         localized("app.dashboard.history.rule.cpu_over", defaultValue: "CPU Over")
     }
@@ -789,8 +781,8 @@ enum PulseDockAppStrings {
         localized("app.dashboard.processes.running_apps", defaultValue: "Running Apps")
     }
 
-    static var processesListItemsTitle: String {
-        localized("app.dashboard.processes.list_items", defaultValue: "List Items")
+    static var processesDisplayedAppsTitle: String {
+        localized("app.dashboard.processes.displayed_apps", defaultValue: "Displayed Apps")
     }
 
     static var processesForegroundAppsTitle: String {
@@ -838,10 +830,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.status.thermal.subtitle", defaultValue: "System thermal control state")
     }
 
-    static var statusSystemStatusTitle: String {
-        localized("app.dashboard.status.system_status", defaultValue: "System Status")
-    }
-
     static var statusRealtimeSignalsTitle: String {
         localized("app.dashboard.status.realtime_signals.title", defaultValue: "Live Signals")
     }
@@ -850,12 +838,12 @@ enum PulseDockAppStrings {
         localized("app.dashboard.status.realtime_signals.subtitle", defaultValue: "Latest sample")
     }
 
-    static var statusRulesTitle: String {
-        localized("app.dashboard.status.rules.title", defaultValue: "Status Rules")
+    static var localRuleTableTitle: String {
+        localized("app.dashboard.local_rules.title", defaultValue: "Local Rules")
     }
 
-    static var statusRulesSubtitle: String {
-        localized("app.dashboard.status.rules.subtitle", defaultValue: "Local results for the current sample")
+    static var localRuleTableSubtitle: String {
+        localized("app.dashboard.local_rules.subtitle", defaultValue: "Current sample evaluated against local thresholds")
     }
 
     static var statusRuleColumnRule: String {
@@ -921,10 +909,6 @@ enum PulseDockAppStrings {
 
     static var statusCritical: String {
         localized("app.status.critical", defaultValue: "Critical")
-    }
-
-    static var statusTriggered: String {
-        localized("app.status.triggered", defaultValue: "Triggered")
     }
 
     static var statusOnline: String {

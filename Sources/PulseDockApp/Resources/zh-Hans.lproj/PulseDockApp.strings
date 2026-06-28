@@ -48,8 +48,8 @@
 "app.dashboard.history.rule.cpu_over" = "CPU 超过";
 "app.dashboard.history.rule.disk_high" = "磁盘使用高";
 "app.dashboard.history.rule.memory_high" = "内存使用高";
-"app.dashboard.history.status_evaluation.subtitle" = "当前采样的本地结果";
-"app.dashboard.history.status_evaluation.title" = "状态判断";
+"app.dashboard.local_rules.subtitle" = "当前采样按本地阈值判断";
+"app.dashboard.local_rules.title" = "本地规则";
 "app.dashboard.history.threshold_settings.subtitle" = "本地判断规则";
 "app.dashboard.history.threshold_settings.title" = "阈值设置";
 "app.dashboard.history.trends.title" = "历史趋势";
@@ -142,7 +142,7 @@
 "app.dashboard.processes.default_subtitle" = "前台优先 · 按名称排序";
 "app.dashboard.processes.foreground_apps" = "前台 App";
 "app.dashboard.processes.hidden_apps" = "隐藏 App";
-"app.dashboard.processes.list_items" = "列表项";
+"app.dashboard.processes.displayed_apps" = "显示 App";
 "app.dashboard.processes.running_apps" = "运行中 App";
 "app.dashboard.sidebar.live_sampling" = "实时采样";
 "app.dashboard.sidebar.local_status" = "本机状态";
@@ -155,14 +155,11 @@
 "app.dashboard.status.rules.column.rule" = "规则";
 "app.dashboard.status.rules.column.status" = "状态";
 "app.dashboard.status.rules.column.threshold" = "阈值";
-"app.dashboard.status.rules.subtitle" = "当前采样的本地结果";
-"app.dashboard.status.rules.title" = "状态判断";
 "app.dashboard.status.signals.column.current_value" = "当前值";
 "app.dashboard.status.signals.column.name" = "名称";
 "app.dashboard.status.signals.column.source" = "来源";
 "app.dashboard.status.system_signals.subtitle" = "当前显示的数据项";
 "app.dashboard.status.system_signals.title" = "系统信号";
-"app.dashboard.status.system_status" = "系统状态";
 "app.dashboard.status.thermal.subtitle" = "系统温控状态";
 "app.dashboard.status.thermal.title" = "热状态";
 "app.dashboard.storage.capacity_stats.title" = "容量统计";
@@ -304,7 +301,6 @@
 "app.status.normal" = "正常";
 "app.status.online" = "在线";
 "app.status.supported" = "支持";
-"app.status.triggered" = "触发";
 "app.status.warning" = "注意";
 "app.system.did_not_report" = "系统未报告";
 "app.table.column.current_value" = "当前值";

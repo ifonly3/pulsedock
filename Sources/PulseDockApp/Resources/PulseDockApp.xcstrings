@@ -801,34 +801,34 @@
         }
       }
     },
-    "app.dashboard.history.status_evaluation.subtitle": {
+    "app.dashboard.local_rules.subtitle": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Local result for the current sample"
+            "value": "Current sample evaluated against local thresholds"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "当前采样的本地结果"
+            "value": "当前采样按本地阈值判断"
           }
         }
       }
     },
-    "app.dashboard.history.status_evaluation.title": {
+    "app.dashboard.local_rules.title": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Status Evaluation"
+            "value": "Local Rules"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "状态判断"
+            "value": "本地规则"
           }
         }
       }
@@ -2305,18 +2305,18 @@
         }
       }
     },
-    "app.dashboard.processes.list_items": {
+    "app.dashboard.processes.displayed_apps": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "List Items"
+            "value": "Displayed Apps"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "列表项"
+            "value": "显示 App"
           }
         }
       }
@@ -2513,38 +2513,6 @@
         }
       }
     },
-    "app.dashboard.status.rules.subtitle": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Local results for the current sample"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "当前采样的本地结果"
-          }
-        }
-      }
-    },
-    "app.dashboard.status.rules.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Status Rules"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "状态判断"
-          }
-        }
-      }
-    },
     "app.dashboard.status.signals.column.current_value": {
       "localizations": {
         "en": {
@@ -2621,22 +2589,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "系统信号"
-          }
-        }
-      }
-    },
-    "app.dashboard.status.system_status": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "System Status"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "系统状态"
           }
         }
       }
@@ -4893,22 +4845,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "支持"
-          }
-        }
-      }
-    },
-    "app.status.triggered": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Triggered"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "触发"
           }
         }
       }
