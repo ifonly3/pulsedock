@@ -1,5 +1,7 @@
 import SwiftUI
+#if canImport(SharedMetrics)
 import SharedMetrics
+#endif
 
 enum WidgetFreshnessTone {
     case fresh
