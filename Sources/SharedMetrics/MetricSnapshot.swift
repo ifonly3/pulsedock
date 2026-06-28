@@ -917,8 +917,7 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         self.batteryAmperageMilliamps = batteryAmperageMilliamps
         self.networkBytesPerSecond = networkBytesPerSecond
         self.hasNetworkDirectionByteCounters = hasNetworkDirectionByteCounters
-            ?? (hasNetworkByteCounters
-                || networkInBytesPerSecond > 0
+            ?? (networkInBytesPerSecond > 0
                 || networkOutBytesPerSecond > 0
                 || networkInterfaces.contains { $0.hasByteCounters })
         self.hasNetworkByteCounters = hasNetworkByteCounters
@@ -1726,14 +1725,11 @@ public struct MetricSnapshot: Codable, Equatable, Sendable {
         hasNetworkPathSupportReport = try values.decodeIfPresent(Bool.self, forKey: .hasNetworkPathSupportReport)
             ?? (hasNetworkPathDNSKey && hasNetworkPathIPv4Key && hasNetworkPathIPv6Key)
         networkPathInterfaceKinds = try values.decodeIfPresent([String].self, forKey: .networkPathInterfaceKinds) ?? []
-        let hasNetworkInBytesKey = values.contains(.networkInBytesPerSecond)
-        let hasNetworkOutBytesKey = values.contains(.networkOutBytesPerSecond)
         networkInBytesPerSecond = try values.decodeIfPresent(UInt64.self, forKey: .networkInBytesPerSecond) ?? 0
         networkOutBytesPerSecond = try values.decodeIfPresent(UInt64.self, forKey: .networkOutBytesPerSecond) ?? 0
         networkInterfaces = try values.decodeIfPresent([NetworkInterfaceMetric].self, forKey: .networkInterfaces) ?? []
         hasNetworkDirectionByteCounters = decodedHasNetworkDirectionByteCounters
-            ?? (hasNetworkInBytesKey && hasNetworkOutBytesKey
-                || networkInBytesPerSecond > 0
+            ?? (networkInBytesPerSecond > 0
                 || networkOutBytesPerSecond > 0
                 || networkInterfaces.contains { $0.hasByteCounters })
         hasNetworkByteCounters = decodedHasNetworkByteCounters

@@ -221,6 +221,7 @@ final class MetricsStore: ObservableObject {
     }
 
     private static func sanitizedHistorySnapshot(from snapshot: MetricSnapshot) -> MetricSnapshot {
+        // History persistence keeps trend fields only; it intentionally strips names and inventory lists.
         MetricSnapshot(
             cpuUsage: snapshot.cpuUsage,
             cpuCoreUsages: snapshot.cpuCoreUsages,

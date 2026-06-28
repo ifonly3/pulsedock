@@ -2,6 +2,8 @@ import Foundation
 
 extension MetricSnapshot {
     public func widgetCompactSnapshot() -> MetricSnapshot {
+        // Keep fields that widgets can render in either shared-store or fallback sampling paths.
+        // Strip detailed inventory lists and running app rows because those can contain user-created names.
         MetricSnapshot(
             cpuUsage: cpuUsage,
             cpuCoreUsages: cpuCoreUsages,
@@ -12,9 +14,14 @@ extension MetricSnapshot {
             cpuBrandName: nil,
             memoryUsedBytes: memoryUsedBytes,
             memoryTotalBytes: memoryTotalBytes,
+            memoryFreeBytes: memoryFreeBytes,
+            memoryWiredBytes: memoryWiredBytes,
+            memoryCompressedBytes: memoryCompressedBytes,
+            memoryCachedBytes: memoryCachedBytes,
             memorySwapUsedBytes: memorySwapUsedBytes,
             memorySwapTotalBytes: memorySwapTotalBytes,
             memorySwapAvailableBytes: memorySwapAvailableBytes,
+            hasMemoryCompositionReport: hasMemoryCompositionReport,
             loadAverage: loadAverage,
             loadAverage5: loadAverage5,
             loadAverage15: loadAverage15,
@@ -24,8 +31,13 @@ extension MetricSnapshot {
             batteryIsCharging: batteryIsCharging,
             batteryPowerSource: batteryPowerSource,
             batteryTimeRemainingMinutes: batteryTimeRemainingMinutes,
+            batteryCycleCount: batteryCycleCount,
+            batteryHealth: batteryHealth,
             batteryCurrentCapacity: batteryCurrentCapacity,
             batteryMaxCapacity: batteryMaxCapacity,
+            batteryDesignCapacity: batteryDesignCapacity,
+            batteryVoltageMillivolts: batteryVoltageMillivolts,
+            batteryAmperageMilliamps: batteryAmperageMilliamps,
             networkBytesPerSecond: networkBytesPerSecond,
             hasNetworkByteCounters: hasNetworkByteCounters,
             hasNetworkDirectionByteCounters: hasNetworkDirectionByteCounters,

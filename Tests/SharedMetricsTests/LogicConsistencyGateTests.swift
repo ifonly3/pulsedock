@@ -107,3 +107,93 @@ private func fixture(_ relativePath: String) throws -> String {
     #expect(appStrings.contains("processesDisplayedAppsTitle"))
     #expect(appStrings.contains("Displayed Apps"))
 }
+
+@Test func widgetCompactSnapshotPreservesWidgetFallbackVisibleFields() {
+    let snapshot = MetricSnapshot(
+        cpuUsage: 0.2,
+        hasCPUUsageReport: true,
+        memoryUsedBytes: 8_000,
+        memoryTotalBytes: 16_000,
+        memoryFreeBytes: 2_000,
+        memoryWiredBytes: 1_000,
+        memoryCompressedBytes: 500,
+        memoryCachedBytes: 3_000,
+        memorySwapUsedBytes: 128,
+        memorySwapTotalBytes: 256,
+        memorySwapAvailableBytes: 128,
+        hasMemoryCompositionReport: true,
+        loadAverage: 0,
+        thermalState: "Nominal",
+        batteryPercent: 0.62,
+        batteryIsCharging: false,
+        batteryPowerSource: "Battery Power",
+        batteryCycleCount: 12,
+        batteryHealth: "Good",
+        batteryCurrentCapacity: 82,
+        batteryMaxCapacity: 90,
+        batteryDesignCapacity: 100,
+        batteryVoltageMillivolts: 12_000,
+        batteryAmperageMilliamps: -300,
+        diskFreeBytes: 0,
+        timestamp: Date()
+    )
+
+    let compact = snapshot.widgetCompactSnapshot()
+
+    #expect(compact.hasMemoryCompositionReport)
+    #expect(compact.memoryFreeBytes == 2_000)
+    #expect(compact.memoryWiredBytes == 1_000)
+    #expect(compact.memoryCompressedBytes == 500)
+    #expect(compact.memoryCachedBytes == 3_000)
+    #expect(compact.batteryCycleCount == 12)
+    #expect(compact.batteryHealth == "Good")
+    #expect(compact.batteryCurrentCapacity == 82)
+    #expect(compact.batteryMaxCapacity == 90)
+    #expect(compact.batteryDesignCapacity == 100)
+    #expect(compact.batteryVoltageMillivolts == 12_000)
+    #expect(compact.batteryAmperageMilliamps == -300)
+}
+
+@Test func decodedNetworkDirectionCountersMatchInitializerFallback() throws {
+    let json = """
+    {
+      "cpuUsage": 0,
+      "hasCPUUsageReport": false,
+      "memoryUsedBytes": 0,
+      "memoryTotalBytes": 0,
+      "loadAverage": 0,
+      "thermalState": "Unknown",
+      "batteryPercent": null,
+      "batteryIsCharging": false,
+      "networkBytesPerSecond": 0,
+      "hasNetworkByteCounters": false,
+      "networkInBytesPerSecond": 0,
+      "networkOutBytesPerSecond": 0,
+      "networkPathStatus": "unknown",
+      "diskFreeBytes": 0,
+      "diskTotalBytes": 0,
+      "uptimeSeconds": 0,
+      "timestamp": 0
+    }
+    """
+
+    let decoded = try JSONDecoder().decode(MetricSnapshot.self, from: Data(json.utf8))
+    let constructed = MetricSnapshot(
+        cpuUsage: 0,
+        hasCPUUsageReport: false,
+        memoryUsedBytes: 0,
+        memoryTotalBytes: 0,
+        loadAverage: 0,
+        thermalState: "Unknown",
+        batteryPercent: nil,
+        batteryIsCharging: false,
+        networkBytesPerSecond: 0,
+        hasNetworkByteCounters: false,
+        networkInBytesPerSecond: 0,
+        networkOutBytesPerSecond: 0,
+        diskFreeBytes: 0,
+        timestamp: Date(timeIntervalSince1970: 0)
+    )
+
+    #expect(decoded.hasNetworkDirectionByteCounters == constructed.hasNetworkDirectionByteCounters)
+}
