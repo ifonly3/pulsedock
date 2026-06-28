@@ -225,7 +225,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
     private func createDashboardWindow() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 1320, height: 860),
+            contentRect: initialDashboardWindowFrame(),
             styleMask: [.titled, .closable, .miniaturizable, .resizable],
             backing: .buffered,
             defer: false
@@ -235,8 +235,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         window.minSize = NSSize(width: 960, height: 640)
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: DashboardView(store: store, router: router))
-        window.center()
         dashboardWindow = window
+    }
+
+    private func initialDashboardWindowFrame() -> NSRect {
+        let fallbackFrame = NSRect(x: 0, y: 0, width: 1320, height: 860)
+        let visibleFrame = NSScreen.main?.visibleFrame ?? fallbackFrame
+        let width = min(1320, visibleFrame.width - 48)
+        let height = min(860, visibleFrame.height - 48)
+        let clampedWidth = max(960, width)
+        let clampedHeight = max(640, height)
+
+        return NSRect(
+            x: visibleFrame.midX - clampedWidth / 2,
+            y: visibleFrame.midY - clampedHeight / 2,
+            width: clampedWidth,
+            height: clampedHeight
+        )
     }
 
     private func createStatusItem() {

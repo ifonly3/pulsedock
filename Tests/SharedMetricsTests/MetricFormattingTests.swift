@@ -8665,6 +8665,18 @@ import Testing
     #expect(!appDelegate.contains("window.minSize = NSSize(width: 1180, height: 760)"))
 }
 
+@Test func mainWindowInitialFrameFitsVisibleScreenArea() throws {
+    let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+
+    #expect(appDelegate.contains("private func initialDashboardWindowFrame() -> NSRect"))
+    #expect(appDelegate.contains("let visibleFrame = NSScreen.main?.visibleFrame"))
+    #expect(appDelegate.contains("let width = min(1320, visibleFrame.width - 48)"))
+    #expect(appDelegate.contains("let height = min(860, visibleFrame.height - 48)"))
+    #expect(appDelegate.contains("contentRect: initialDashboardWindowFrame()"))
+    #expect(!appDelegate.contains("contentRect: NSRect(x: 0, y: 0, width: 1320, height: 860)"))
+    #expect(!appDelegate.contains("window.center()"))
+}
+
 @Test func mainKeepsAppDelegateStrongForRunLoopLifetime() throws {
     let main = try fixture("Sources/PulseDockApp/main.swift")
 
@@ -9152,14 +9164,15 @@ import Testing
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let appDelegate = try String(contentsOf: root.appendingPathComponent("Sources/PulseDockApp/AppDelegate.swift"), encoding: .utf8)
     let autosavePosition = appDelegate.range(of: "window.setFrameAutosaveName(\"PulseDockMainWindow\")")?.lowerBound
-    let centerPosition = appDelegate.range(of: "window.center()")?.lowerBound
+    let contentPosition = appDelegate.range(of: "window.contentView = NSHostingView")?.lowerBound
 
     #expect(appDelegate.contains("window.setFrameAutosaveName(\"PulseDockMainWindow\")"))
     #expect(autosavePosition != nil)
-    #expect(centerPosition != nil)
-    if let autosavePosition, let centerPosition {
-        #expect(autosavePosition < centerPosition)
+    #expect(contentPosition != nil)
+    if let autosavePosition, let contentPosition {
+        #expect(autosavePosition < contentPosition)
     }
+    #expect(!appDelegate.contains("window.center()"))
 }
 
 @Test func memorySegmentBarUsesAvailableWidthInsteadOfMagicConstant() throws {
@@ -9197,6 +9210,16 @@ import Testing
     #expect(componentBody(named: "TableRow", in: dashboard).contains(".accessibilityLabel(values.joined(separator: \", \"))"))
     #expect(componentBody(named: "StatLine", in: dashboard).contains(".accessibilityValue(progress.map(MetricFormatting.percentage) ?? PulseDockAppStrings.notReported)"))
     #expect(componentBody(named: "CoreUsageTile", in: dashboard).contains(".accessibilityLabel(\"Core \\(index), \\(MetricFormatting.percentage(value))\")"))
+}
+
+@Test func dashboardStatusRowsKeepLongValuesReadableOnOneLine() throws {
+    let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+    let statusRow = componentBody(named: "StatusSummaryRow", in: dashboard)
+
+    #expect(statusRow.contains(".lineLimit(1)"))
+    #expect(statusRow.contains(".minimumScaleFactor(0.78)"))
+    #expect(statusRow.contains(".layoutPriority(1)"))
+    #expect(statusRow.contains("Spacer(minLength: 8)"))
 }
 
 @Test func popoverAndWidgetMetricsExposeAccessibilitySemantics() throws {
