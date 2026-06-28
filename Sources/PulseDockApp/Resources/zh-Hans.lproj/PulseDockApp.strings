@@ -110,7 +110,7 @@
 "app.dashboard.page.cpu.subtitle" = "处理器负载与核心";
 "app.dashboard.page.cpu.title" = "CPU";
 "app.dashboard.page.gpu.subtitle" = "图形设备与屏幕";
-"app.dashboard.page.gpu.title" = "GPU / 显示";
+"app.dashboard.page.gpu.title" = "GPU / 显示器";
 "app.dashboard.page.history.subtitle" = "本地采样历史与阈值判断";
 "app.dashboard.page.history.title" = "历史";
 "app.dashboard.page.memory.subtitle" = "占用、缓存与压缩";
@@ -256,7 +256,7 @@
 "app.settings.menu_bar_cpu.label" = "菜单栏 CPU";
 "app.settings.menu_bar_status.detail" = "显示当前 CPU 占用";
 "app.settings.menu_bar_status.title" = "菜单栏状态";
-"app.settings.privacy_policy.detail" = "本地采样、无账号、无追踪";
+"app.settings.privacy_policy.detail" = "本地采样、无账号、无追踪、无分析、无远程探测";
 "app.settings.privacy_policy.title" = "隐私政策";
 "app.settings.refresh_display.subtitle" = "低唤醒、可读性优先";
 "app.settings.refresh_display.title" = "刷新与显示";

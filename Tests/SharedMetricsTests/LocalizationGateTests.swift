@@ -297,7 +297,7 @@ import Testing
     let entries = [
         (symbol: "dashboardPageOverviewTitle", key: "app.dashboard.page.overview.title", english: "Overview", chinese: "总览"),
         (symbol: "dashboardPageCPUTitle", key: "app.dashboard.page.cpu.title", english: "CPU", chinese: "CPU"),
-        (symbol: "dashboardPageGPUTitle", key: "app.dashboard.page.gpu.title", english: "GPU / Display", chinese: "GPU / 显示"),
+        (symbol: "dashboardPageGPUTitle", key: "app.dashboard.page.gpu.title", english: "GPU / Displays", chinese: "GPU / 显示器"),
         (symbol: "dashboardPageMemoryTitle", key: "app.dashboard.page.memory.title", english: "Memory", chinese: "内存"),
         (symbol: "dashboardPageStorageTitle", key: "app.dashboard.page.storage.title", english: "Storage", chinese: "存储"),
         (symbol: "dashboardPageNetworkTitle", key: "app.dashboard.page.network.title", english: "Network", chinese: "网络"),
@@ -552,7 +552,7 @@ import Testing
         (symbol: "settingsSupportPrivacyTitle", key: "app.settings.support_privacy.title", english: "Support & Privacy", chinese: "支持与隐私"),
         (symbol: "settingsSupportPrivacySubtitle", key: "app.settings.support_privacy.subtitle", english: "Review information and public links", chinese: "审核信息与公开入口"),
         (symbol: "settingsPrivacyPolicyTitle", key: "app.settings.privacy_policy.title", english: "Privacy Policy", chinese: "隐私政策"),
-        (symbol: "settingsPrivacyPolicyDetail", key: "app.settings.privacy_policy.detail", english: "Local sampling, no account, no tracking", chinese: "本地采样、无账号、无追踪"),
+        (symbol: "settingsPrivacyPolicyDetail", key: "app.settings.privacy_policy.detail", english: "Local sampling, no account, no tracking, no analytics, no remote probes", chinese: "本地采样、无账号、无追踪、无分析、无远程探测"),
         (symbol: "settingsSupportTitle", key: "app.settings.support.title", english: "Support", chinese: "支持"),
         (symbol: "settingsSupportDetail", key: "app.settings.support.detail", english: "Contact channels and version support information", chinese: "联系渠道与版本支持信息"),
         (symbol: "settingsDataSourcesTitle", key: "app.settings.data_sources.title", english: "Data Sources", chinese: "数据来源"),

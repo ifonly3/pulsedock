@@ -110,7 +110,7 @@
 "app.dashboard.page.cpu.subtitle" = "Processor load and cores";
 "app.dashboard.page.cpu.title" = "CPU";
 "app.dashboard.page.gpu.subtitle" = "Graphics devices and displays";
-"app.dashboard.page.gpu.title" = "GPU / Display";
+"app.dashboard.page.gpu.title" = "GPU / Displays";
 "app.dashboard.page.history.subtitle" = "Local sample history and thresholds";
 "app.dashboard.page.history.title" = "History";
 "app.dashboard.page.memory.subtitle" = "Usage, cache, and compression";
@@ -256,7 +256,7 @@
 "app.settings.menu_bar_cpu.label" = "Menu Bar CPU";
 "app.settings.menu_bar_status.detail" = "Show current CPU usage";
 "app.settings.menu_bar_status.title" = "Menu Bar Status";
-"app.settings.privacy_policy.detail" = "Local sampling, no account, no tracking";
+"app.settings.privacy_policy.detail" = "Local sampling, no account, no tracking, no analytics, no remote probes";
 "app.settings.privacy_policy.title" = "Privacy Policy";
 "app.settings.refresh_display.subtitle" = "Low wakeups, readability first";
 "app.settings.refresh_display.title" = "Refresh & Display";

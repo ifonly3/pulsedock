@@ -58,7 +58,7 @@ scripts/archive-app-store.sh
 
 ## Privacy
 
-Pulse Dock samples local system metrics on device. It does not create accounts, collect personal data, track users, run analytics, or send remote probes. Release privacy details live in `docs/data-capability-audit.md` and `docs/app-store-release-checklist.md`.
+Pulse Dock samples local system metrics on device. It does not create accounts, collect personal data, track users, run analytics, or send remote probes. Local sampling, no account, no tracking, no analytics, and no remote probes are the product privacy baseline. Release privacy details live in `docs/data-capability-audit.md` and `docs/app-store-release-checklist.md`.
 
 - Privacy policy URL: `https://ifonly3.github.io/pulsedock/privacy-policy/`
 - Support URL: `https://ifonly3.github.io/pulsedock/support/`

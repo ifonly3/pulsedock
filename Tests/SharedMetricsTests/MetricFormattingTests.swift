@@ -7309,8 +7309,8 @@ import Testing
     let widgetStrings = try fixture("Sources/PulseDockWidget/PulseDockWidgetStrings.swift")
     let widgetStringCatalog = try fixture("Sources/PulseDockWidget/Resources/PulseDockWidget.xcstrings")
     let expectedEntries = [
-        (symbol: "widgetDescription", key: "widget.description", english: "Show Mac CPU, memory, connection, battery, and thermal status on your desktop.", chinese: "在桌面显示 Mac 的 CPU、内存、连接、电池和热状态。"),
-        (symbol: "miniThermal", key: "widget.mini.thermal", english: "Heat", chinese: "热"),
+        (symbol: "widgetDescription", key: "widget.description", english: "Show Mac CPU, memory, disk, connection, power, load, thermal, uptime, system, and kernel status on your desktop.", chinese: "在桌面显示 Mac 的 CPU、内存、磁盘、连接、电源、负载、热状态、运行时间、系统和内核状态。"),
+        (symbol: "miniThermal", key: "widget.mini.thermal", english: "Thermal", chinese: "热状态"),
         (symbol: "miniNetwork", key: "widget.mini.network", english: "Net", chinese: "网"),
         (symbol: "miniPower", key: "widget.mini.power", english: "Pwr", chinese: "电"),
         (symbol: "metricMemory", key: "widget.metric.memory", english: "Memory", chinese: "内存"),
@@ -8894,7 +8894,7 @@ import Testing
     let sharedScheme = try String(contentsOf: root.appendingPathComponent("PulseDock.xcodeproj/xcshareddata/xcschemes/PulseDock.xcscheme"), encoding: .utf8)
 
     #expect(appInfo.contains("<string>Pulse Dock</string>"))
-    #expect(widgetInfo.contains("<string>Pulse Dock Widget</string>"))
+    #expect(widgetInfo.contains("<string>Pulse Dock</string>"))
     #expect(appDelegate.contains("window.title = \"Pulse Dock\""))
     #expect(appDelegate.contains("accessibilityDescription: \"Pulse Dock\""))
     #expect(dashboardView.contains("Text(\"Pulse Dock\")"))

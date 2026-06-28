@@ -10,7 +10,7 @@ enum PulseDockAppStrings {
     }
 
     static var dashboardPageGPUTitle: String {
-        localized("app.dashboard.page.gpu.title", defaultValue: "GPU / Display")
+        localized("app.dashboard.page.gpu.title", defaultValue: "GPU / Displays")
     }
 
     static var dashboardPageMemoryTitle: String {
@@ -928,7 +928,7 @@ enum PulseDockAppStrings {
     }
 
     static var settingsPrivacyPolicyDetail: String {
-        localized("app.settings.privacy_policy.detail", defaultValue: "Local sampling, no account, no tracking")
+        localized("app.settings.privacy_policy.detail", defaultValue: "Local sampling, no account, no tracking, no analytics, no remote probes")
     }
 
     static var settingsSupportTitle: String {

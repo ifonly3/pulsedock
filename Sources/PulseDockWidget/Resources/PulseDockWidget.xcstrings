@@ -6,13 +6,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show Mac CPU, memory, connection, battery, and thermal status on your desktop."
+            "value" : "Show Mac CPU, memory, disk, connection, power, load, thermal, uptime, system, and kernel status on your desktop."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在桌面显示 Mac 的 CPU、内存、连接、电池和热状态。"
+            "value" : "在桌面显示 Mac 的 CPU、内存、磁盘、连接、电源、负载、热状态、运行时间、系统和内核状态。"
           }
         }
       }
@@ -278,13 +278,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heat"
+            "value" : "Thermal"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "热"
+            "value" : "热状态"
           }
         }
       }

@@ -264,3 +264,28 @@ private func fixture(_ relativePath: String) throws -> String {
     #expect(NetworkPathState(raw: "requires connection") == .requiresConnection)
     #expect(NetworkPathState(raw: "unknown") == .unknown)
 }
+
+@Test func lowRiskCopyDriftUsesApprovedVocabulary() throws {
+    let appStrings = try fixture("Sources/PulseDockApp/PulseDockAppStrings.swift")
+    let widgetStrings = try fixture("Sources/PulseDockWidget/PulseDockWidgetStrings.swift")
+    let widgetInfo = try fixture("Resources/WidgetInfo.plist")
+    let readme = try fixture("README.md")
+
+    #expect(appStrings.contains("defaultValue: \"GPU / Displays\""))
+    #expect(!appStrings.contains("defaultValue: \"GPU / Display\""))
+    #expect(widgetStrings.contains("defaultValue: \"Thermal\""))
+    #expect(!widgetStrings.contains("defaultValue: \"Heat\""))
+    #expect(widgetInfo.contains("<string>Pulse Dock</string>"))
+    #expect(readme.contains("Local sampling, no account, no tracking, no analytics, and no remote probes"))
+}
+
+@Test func dataCapabilityAuditMentionsStorageWidgetsAndSeparateWidgetCadences() throws {
+    let audit = try fixture("docs/data-capability-audit.md")
+    let storageLine = audit
+        .split(separator: "\n")
+        .first { $0.contains("| Storage |") }
+        .map(String.init) ?? ""
+
+    #expect(storageLine.localizedCaseInsensitiveContains("widgets"))
+    #expect(audit.contains("Shared widget snapshot writes and WidgetKit reload requests use separate throttles"))
+}

@@ -6,11 +6,11 @@ enum PulseDockWidgetStrings {
     }
 
     static var widgetDescription: String {
-        localized("widget.description", defaultValue: "Show Mac CPU, memory, connection, battery, and thermal status on your desktop.")
+        localized("widget.description", defaultValue: "Show Mac CPU, memory, disk, connection, power, load, thermal, uptime, system, and kernel status on your desktop.")
     }
 
     static var miniThermal: String {
-        localized("widget.mini.thermal", defaultValue: "Heat")
+        localized("widget.mini.thermal", defaultValue: "Thermal")
     }
 
     static var miniNetwork: String {

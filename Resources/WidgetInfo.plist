@@ -11,7 +11,7 @@
     <string>zh-Hans</string>
   </array>
   <key>CFBundleDisplayName</key>
-  <string>Pulse Dock Widget</string>
+  <string>Pulse Dock</string>
   <key>CFBundleExecutable</key>
   <string>$(EXECUTABLE_NAME)</string>
   <key>CFBundleIdentifier</key>
@@ -19,7 +19,7 @@
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>
-  <string>Pulse Dock Widget</string>
+  <string>Pulse Dock</string>
   <key>CFBundlePackageType</key>
   <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
   <key>CFBundleShortVersionString</key>

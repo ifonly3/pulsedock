@@ -1798,13 +1798,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "GPU / Display"
+            "value": "GPU / Displays"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "GPU / 显示"
+            "value": "GPU / 显示器"
           }
         }
       }
@@ -4134,13 +4134,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Local sampling, no account, no tracking"
+            "value": "Local sampling, no account, no tracking, no analytics, no remote probes"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "本地采样、无账号、无追踪"
+            "value": "本地采样、无账号、无追踪、无分析、无远程探测"
           }
         }
       }
