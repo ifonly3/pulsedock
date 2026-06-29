@@ -104,8 +104,8 @@ private func fixture(_ relativePath: String) throws -> String {
     let appStrings = try fixture("Sources/PulseDockApp/PulseDockAppStrings.swift")
 
     #expect(!appStrings.contains("processesListItemsTitle"))
-    #expect(appStrings.contains("processesDisplayedAppsTitle"))
-    #expect(appStrings.contains("Displayed Apps"))
+    #expect(!appStrings.contains("processesDisplayedAppsTitle"))
+    #expect(!appStrings.contains("Displayed Apps"))
 }
 
 @Test func widgetCompactSnapshotPreservesWidgetFallbackVisibleFields() {

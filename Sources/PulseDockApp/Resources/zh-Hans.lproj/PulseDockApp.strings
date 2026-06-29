@@ -93,10 +93,8 @@
 "app.dashboard.network.system_path.subtitle" = "系统网络路径";
 "app.dashboard.network.total_throughput.title" = "总吞吐";
 "app.dashboard.network.upload.title" = "上传";
-"app.dashboard.overview.cpu_status.title" = "CPU 状态";
 "app.dashboard.overview.cpu_usage.title" = "CPU 使用率";
 "app.dashboard.overview.disk_available.title" = "磁盘可用";
-"app.dashboard.overview.memory_status.title" = "内存状态";
 "app.dashboard.overview.memory_usage.title" = "内存占用";
 "app.dashboard.overview.network_throughput.title" = "网络吞吐";
 "app.dashboard.overview.power_status.title" = "电源状态";
@@ -135,7 +133,6 @@
 "app.dashboard.processes.default_subtitle" = "前台优先 · 按名称排序";
 "app.dashboard.processes.foreground_apps" = "前台 App";
 "app.dashboard.processes.hidden_apps" = "隐藏 App";
-"app.dashboard.processes.displayed_apps" = "显示 App";
 "app.dashboard.processes.running_apps" = "运行中 App";
 "app.dashboard.sidebar.local_status" = "本机状态";
 "app.dashboard.source.threshold_format" = "阈值 %@";
@@ -143,7 +140,6 @@
 "app.dashboard.status.performance_limit.title" = "性能限制";
 "app.dashboard.status.realtime_signals.subtitle" = "最近一次采样";
 "app.dashboard.status.realtime_signals.title" = "实时信号";
-"app.dashboard.status.rules.column.current" = "当前";
 "app.dashboard.status.rules.column.rule" = "规则";
 "app.dashboard.status.rules.column.status" = "状态";
 "app.dashboard.status.rules.column.threshold" = "阈值";

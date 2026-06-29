@@ -126,14 +126,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.overview.system_status.title", defaultValue: "System Status")
     }
 
-    static var overviewCPUStatusTitle: String {
-        localized("app.dashboard.overview.cpu_status.title", defaultValue: "CPU Status")
-    }
-
-    static var overviewMemoryStatusTitle: String {
-        localized("app.dashboard.overview.memory_status.title", defaultValue: "Memory Status")
-    }
-
     static var overviewDiskAvailableTitle: String {
         localized("app.dashboard.overview.disk_available.title", defaultValue: "Disk Available")
     }
@@ -750,10 +742,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.processes.running_apps", defaultValue: "Running Apps")
     }
 
-    static var processesDisplayedAppsTitle: String {
-        localized("app.dashboard.processes.displayed_apps", defaultValue: "Displayed Apps")
-    }
-
     static var processesForegroundAppsTitle: String {
         localized("app.dashboard.processes.foreground_apps", defaultValue: "Foreground Apps")
     }
@@ -823,10 +811,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.status.rules.column.threshold", defaultValue: "Threshold")
     }
 
-    static var statusRuleColumnCurrent: String {
-        localized("app.dashboard.status.rules.column.current", defaultValue: "Current")
-    }
-
     static var statusRuleColumnStatus: String {
         localized("app.dashboard.status.rules.column.status", defaultValue: "Status")
     }
@@ -835,7 +819,6 @@ enum PulseDockAppStrings {
         [
             statusRuleColumnRule,
             statusRuleColumnThreshold,
-            statusRuleColumnCurrent,
             statusRuleColumnStatus
         ]
     }

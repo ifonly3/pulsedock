@@ -93,10 +93,8 @@
 "app.dashboard.network.system_path.subtitle" = "System network path";
 "app.dashboard.network.total_throughput.title" = "Total Throughput";
 "app.dashboard.network.upload.title" = "Upload";
-"app.dashboard.overview.cpu_status.title" = "CPU Status";
 "app.dashboard.overview.cpu_usage.title" = "CPU Usage";
 "app.dashboard.overview.disk_available.title" = "Disk Available";
-"app.dashboard.overview.memory_status.title" = "Memory Status";
 "app.dashboard.overview.memory_usage.title" = "Memory Usage";
 "app.dashboard.overview.network_throughput.title" = "Network Throughput";
 "app.dashboard.overview.power_status.title" = "Power Status";
@@ -135,7 +133,6 @@
 "app.dashboard.processes.default_subtitle" = "Foreground first, sorted by name";
 "app.dashboard.processes.foreground_apps" = "Foreground Apps";
 "app.dashboard.processes.hidden_apps" = "Hidden Apps";
-"app.dashboard.processes.displayed_apps" = "Displayed Apps";
 "app.dashboard.processes.running_apps" = "Running Apps";
 "app.dashboard.sidebar.local_status" = "Local Status";
 "app.dashboard.source.threshold_format" = "Threshold %@";
@@ -143,7 +140,6 @@
 "app.dashboard.status.performance_limit.title" = "Performance Limit";
 "app.dashboard.status.realtime_signals.subtitle" = "Latest sample";
 "app.dashboard.status.realtime_signals.title" = "Live Signals";
-"app.dashboard.status.rules.column.current" = "Current";
 "app.dashboard.status.rules.column.rule" = "Rule";
 "app.dashboard.status.rules.column.status" = "Status";
 "app.dashboard.status.rules.column.threshold" = "Threshold";

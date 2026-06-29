@@ -1521,22 +1521,6 @@
         }
       }
     },
-    "app.dashboard.overview.cpu_status.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CPU Status"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CPU 状态"
-          }
-        }
-      }
-    },
     "app.dashboard.overview.cpu_usage.title": {
       "localizations": {
         "en": {
@@ -1565,22 +1549,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "磁盘可用"
-          }
-        }
-      }
-    },
-    "app.dashboard.overview.memory_status.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Memory Status"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "内存状态"
           }
         }
       }
@@ -2193,22 +2161,6 @@
         }
       }
     },
-    "app.dashboard.processes.displayed_apps": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Displayed Apps"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "显示 App"
-          }
-        }
-      }
-    },
     "app.dashboard.processes.running_apps": {
       "localizations": {
         "en": {
@@ -2317,22 +2269,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "实时信号"
-          }
-        }
-      }
-    },
-    "app.dashboard.status.rules.column.current": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Current"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "当前"
           }
         }
       }

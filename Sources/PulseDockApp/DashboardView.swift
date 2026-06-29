@@ -427,11 +427,8 @@ private struct OverviewPage: View {
                 StatusSummaryRow(title: PulseDockAppStrings.statusThermalTitle, value: snapshot.thermalText, status: thermalStatus(snapshot.thermalState))
                 StatusSummaryRow(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral)
                 StatusSummaryRow(title: PulseDockAppStrings.metricKernelVersion, value: snapshot.kernelText, status: snapshot.hasKernelReleaseReport ? .normal : .neutral)
-                StatusSummaryRow(title: PulseDockAppStrings.overviewCPUStatusTitle, value: "\(snapshot.cpuText) / \(MetricFormatting.percentage(store.cpuAlertThreshold))", status: usageStatusLevel(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold))
-                StatusSummaryRow(title: PulseDockAppStrings.overviewMemoryStatusTitle, value: "\(snapshot.memoryUsageText) / \(MetricFormatting.percentage(store.memoryAlertThreshold))", status: usageStatusLevel(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold))
                 StatusSummaryRow(title: "\(PulseDockAppStrings.metricLoad) 1/5/15", value: snapshot.loadDetailText, status: snapshot.hasLoadAverageReport ? .normal : .neutral)
                 StatusSummaryRow(title: PulseDockAppStrings.metricRunningApps, value: snapshot.runningAppSummaryText, status: snapshot.hasRunningAppReport ? .normal : .neutral)
-                StatusSummaryRow(title: PulseDockAppStrings.metricNetworkConnection, value: snapshot.networkPathText, status: networkStatusLevel(snapshot))
                 StatusSummaryRow(title: PulseDockAppStrings.metricGPUDisplays, value: snapshot.gpuDisplaySummaryText, status: snapshot.hasGPUDisplayReport ? .normal : .neutral)
                 StatusSummaryRow(title: PulseDockAppStrings.overviewDiskAvailableTitle, value: snapshot.diskText, status: usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold))
             }
@@ -838,7 +835,6 @@ private struct ProcessesPage: View {
         VStack(alignment: .leading, spacing: 16) {
             LazyVGrid(columns: summaryColumns, spacing: 12) {
                 SummaryCard(title: PulseDockAppStrings.processesRunningAppsTitle, value: snapshot.runningAppCountText, icon: "app.badge", tint: DashboardColor.blue)
-                SummaryCard(title: PulseDockAppStrings.processesDisplayedAppsTitle, value: snapshot.runningAppListCountText, icon: "list.bullet.rectangle", tint: DashboardColor.green)
                 SummaryCard(title: PulseDockAppStrings.processesForegroundAppsTitle, value: snapshot.activeApplicationCountText, icon: "cursorarrow.click", tint: DashboardColor.amber)
                 SummaryCard(title: PulseDockAppStrings.processesHiddenAppsTitle, value: snapshot.hiddenApplicationCountText, icon: "eye.slash", tint: DashboardColor.purple)
             }
@@ -887,10 +883,10 @@ private struct SensorsPage: View {
                 ResponsiveTable(
                     columns: PulseDockAppStrings.statusRuleTableColumns,
                     rows: [
-                        [PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
-                        [PulseDockAppStrings.metricMemory, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText, thresholdStatusText(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
-                        [PulseDockAppStrings.metricDisk, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText, thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
-                        [PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkPathText, snapshot.networkRuleStatusText]
+                        [PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
+                        [PulseDockAppStrings.metricMemory, MetricFormatting.percentage(store.memoryAlertThreshold), thresholdStatusText(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
+                        [PulseDockAppStrings.metricDisk, MetricFormatting.percentage(store.diskAlertThreshold), thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
+                        [PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkRuleStatusText]
                     ],
                     preferredColumnWidth: DashboardLayout.minimumTableColumnWidth
                 )
@@ -916,12 +912,6 @@ private struct SensorsPage: View {
                 SourceCapabilityCard(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, icon: "internaldrive", status: usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold), source: PulseDockAppStrings.sourceThreshold(MetricFormatting.percentage(store.diskAlertThreshold)))
                 SourceCapabilityCard(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, icon: "battery.75percent", status: powerStatusLevel(snapshot), source: snapshot.powerSourceText)
                 SourceCapabilityCard(title: PulseDockAppStrings.metricNetworkConnection, value: snapshot.networkPathText, icon: "network", status: networkStatusLevel(snapshot), source: snapshot.networkPathDetailText)
-                SourceCapabilityCard(title: PulseDockAppStrings.metricDisplays, value: snapshot.displaySummaryText, icon: "display", status: snapshot.hasDisplayReport ? .normal : .neutral, source: snapshot.sampleTimeText)
-                SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: "sparkles.rectangle.stack", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceGraphicsDevices)
-                SourceCapabilityCard(title: PulseDockAppStrings.metricStorageVolumes, value: snapshot.storageVolumeSummaryText, icon: "externaldrive", status: snapshot.hasStorageVolumeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceFileSystemCapacity)
-                SourceCapabilityCard(title: PulseDockAppStrings.metricLoad, value: snapshot.loadDetailText, icon: "speedometer", status: snapshot.hasLoadAverageReport ? .normal : .neutral, source: PulseDockAppStrings.sourceLoadAverages)
-                SourceCapabilityCard(title: PulseDockAppStrings.metricSystemVersion, value: snapshot.osVersionText, icon: "desktopcomputer", status: snapshot.hasOSVersionReport ? .normal : .neutral, source: PulseDockAppStrings.sourceOSVersion)
-                SourceCapabilityCard(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, icon: "timer", status: snapshot.hasUptimeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceSystemBootTime)
             }
         }
     }

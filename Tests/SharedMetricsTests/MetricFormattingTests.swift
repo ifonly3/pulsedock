@@ -1719,7 +1719,7 @@ import Testing
     #expect(offline.networkRuleStatusText == SharedMetricStrings.networkRuleAttention)
     #expect(requiresConnection.networkRuleStatusText == SharedMetricStrings.networkRuleAttention)
     #expect(metricSnapshot.contains("public var networkRuleStatusText: String"))
-    #expect(dashboardView.contains("[PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkPathText, snapshot.networkRuleStatusText]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkRuleStatusText]"))
     #expect(!dashboardView.contains("private func networkRuleStatusText"))
     #expect(!dashboardView.contains("networkRuleStatusText(snapshot)"))
     #expect(!dashboardView.contains("[\"网络连接\", \"在线\", snapshot.networkPathText, isNetworkSatisfied(snapshot) ? \"正常\" : \"注意\"]"))
@@ -1898,7 +1898,7 @@ import Testing
     #expect(dashboardView.contains("process.architectureText"))
     #expect(dashboardView.contains("process.launchText"))
     #expect(dashboardView.contains("SummaryCard(title: PulseDockAppStrings.processesRunningAppsTitle, value: snapshot.runningAppCountText, icon: \"app.badge\", tint: DashboardColor.blue)"))
-    #expect(dashboardView.contains("SummaryCard(title: PulseDockAppStrings.processesDisplayedAppsTitle, value: snapshot.runningAppListCountText, icon: \"list.bullet.rectangle\", tint: DashboardColor.green)"))
+    #expect(!dashboardView.contains("SummaryCard(title: PulseDockAppStrings.processesDisplayedAppsTitle"))
     #expect(dashboardView.contains("SummaryCard(title: PulseDockAppStrings.processesForegroundAppsTitle, value: snapshot.activeApplicationCountText, icon: \"cursorarrow.click\", tint: DashboardColor.amber)"))
     #expect(dashboardView.contains("SummaryCard(title: PulseDockAppStrings.processesHiddenAppsTitle, value: snapshot.hiddenApplicationCountText, icon: \"eye.slash\", tint: DashboardColor.purple)"))
     #expect(!dashboardView.contains("private func processCountText"))
@@ -2497,7 +2497,7 @@ import Testing
     #expect(sampler.contains("hasUptimeReport: true"))
     #expect(metricsStore.contains("hasUptimeReport: snapshot.hasUptimeReport"))
     #expect(dashboardView.contains("value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral"))
-    #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, icon: \"timer\", status: snapshot.hasUptimeReport ? .normal : .neutral"))
+    #expect(!dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, icon: \"timer\", status: snapshot.hasUptimeReport ? .normal : .neutral"))
     #expect(widget.contains("StatTile(title: PulseDockWidgetStrings.metricUptime, value: snapshot.uptimeText"))
     #expect(audit.contains("System uptime display text reports the system-not-reported state when no boot-time sample has been published"))
     #expect(audit.contains("Source-level tests prevent missing uptime from being formatted as 0m"))
@@ -2598,7 +2598,7 @@ import Testing
     #expect(metricSnapshot.contains("public var hasOSVersionReport: Bool"))
     #expect(sampler.contains("osVersion: ProcessInfo.processInfo.operatingSystemVersionString"))
     #expect(dashboardView.contains("DashboardPanel(title: PulseDockAppStrings.overviewSystemStatusTitle, subtitle: snapshot.osVersionText"))
-    #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricSystemVersion, value: snapshot.osVersionText, icon: \"desktopcomputer\", status: snapshot.hasOSVersionReport ? .normal : .neutral, source: PulseDockAppStrings.sourceOSVersion)"))
+    #expect(!dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricSystemVersion, value: snapshot.osVersionText, icon: \"desktopcomputer\", status: snapshot.hasOSVersionReport ? .normal : .neutral, source: PulseDockAppStrings.sourceOSVersion)"))
     #expect(!dashboardView.contains("SourceCapabilityCard(title: \"系统版本\", value: snapshot.osVersionText, icon: \"desktopcomputer\", status: reportedStatusLevel(valueText: snapshot.osVersionText), source: \"操作系统版本\")"))
     #expect(dashboardView.contains("[PulseDockAppStrings.metricSystemVersionUptimeKernel, snapshot.systemVersionSourceStatusText, PulseDockAppStrings.sourceSystemVersionBootTime]"))
     #expect(metricSnapshot.contains("hasAnyReport: hasOSVersionReport || hasUptimeReport || hasKernelReleaseReport"))
@@ -3032,7 +3032,7 @@ import Testing
     #expect(metricSnapshot.contains("gpuDevices.contains(where: \\.hasInventoryReport)"))
     #expect(metricSnapshot.contains("let reportedGPUCount = gpuDevices.filter(\\.hasInventoryReport).count"))
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: \"sparkles.rectangle.stack\", status: snapshot.hasGPUReport ? .normal : .neutral"))
-    #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: \"sparkles.rectangle.stack\", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceGraphicsDevices)"))
+    #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: \"sparkles.rectangle.stack\", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceDeviceCapabilities)"))
     #expect(audit.contains("Legacy GPU inventory records with no reported device fields remain not-reported instead of being counted as live GPU devices."))
     #expect(audit.contains("Source-level tests prevent legacy GPU inventory records with only an index from inventing GPU device counts."))
 }
@@ -7566,8 +7566,8 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.overviewCPUStatusTitle"))
-    #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.overviewMemoryStatusTitle"))
+    #expect(!dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.overviewCPUStatusTitle"))
+    #expect(!dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.overviewMemoryStatusTitle"))
     #expect(dashboardView.contains("usageStatusLevel(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold)"))
     #expect(dashboardView.contains("usageStatusLevel(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold)"))
     #expect(dashboardView.contains("MetricFormatting.percentage(store.cpuAlertThreshold)"))
@@ -7650,11 +7650,11 @@ import Testing
     let nextStart = try #require(dashboardView.range(of: "private struct HistoryAlertsPage")?.lowerBound)
     let statusPage = String(dashboardView[statusStart..<nextStart])
 
-    #expect(statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricLoad, value: snapshot.loadDetailText, icon: \"speedometer\", status: snapshot.hasLoadAverageReport ? .normal : .neutral, source: PulseDockAppStrings.sourceLoadAverages)"))
+    #expect(!statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricLoad, value: snapshot.loadDetailText, icon: \"speedometer\", status: snapshot.hasLoadAverageReport ? .normal : .neutral, source: PulseDockAppStrings.sourceLoadAverages)"))
     #expect(!statusPage.contains("PulseDockAppStrings.statusSystemSignalsTitle"))
     #expect(!statusPage.contains("[\"\\(PulseDockAppStrings.metricLoad) 1/5/15\", snapshot.loadDetailText, PulseDockAppStrings.sourceLoadAverages]"))
-    #expect(audit.contains("The Status page surfaces load-average detail as a current system signal instead of limiting it to the CPU and History pages."))
-    #expect(audit.contains("Source-level tests require the Status page to surface load-average detail with reported-state handling."))
+    #expect(audit.contains("The Status page limits realtime signals to CPU, memory, disk, power, and network; load-average detail remains on the CPU and History pages."))
+    #expect(audit.contains("Source-level tests prevent the Status page from duplicating load-average detail owned by CPU and History."))
 }
 
 @Test func statusPageSurfacesGPUInventorySignal() throws {
@@ -7672,10 +7672,10 @@ import Testing
     let nextStart = try #require(dashboardView.range(of: "private struct HistoryAlertsPage")?.lowerBound)
     let statusPage = String(dashboardView[statusStart..<nextStart])
 
-    #expect(statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: \"sparkles.rectangle.stack\", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceGraphicsDevices)"))
+    #expect(!statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: \"sparkles.rectangle.stack\", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceGraphicsDevices)"))
     #expect(!statusPage.contains("[PulseDockAppStrings.metricGPU, snapshot.gpuSummaryText, PulseDockAppStrings.sourceGraphicsDevices]"))
-    #expect(audit.contains("The Status page surfaces GPU inventory summary as a current system signal, using the same public Metal device inventory as the GPU/Display page."))
-    #expect(audit.contains("Source-level tests require the Status page to surface GPU inventory with reported-state handling."))
+    #expect(audit.contains("The GPU/Display page owns GPU inventory summary from the public Metal device inventory."))
+    #expect(audit.contains("Source-level tests prevent the Status page from duplicating GPU inventory owned by GPU/Display."))
 }
 
 @Test func statusPageSurfacesStorageVolumeSignal() throws {
@@ -7693,10 +7693,10 @@ import Testing
     let nextStart = try #require(dashboardView.range(of: "private struct HistoryAlertsPage")?.lowerBound)
     let statusPage = String(dashboardView[statusStart..<nextStart])
 
-    #expect(statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricStorageVolumes, value: snapshot.storageVolumeSummaryText, icon: \"externaldrive\", status: snapshot.hasStorageVolumeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceFileSystemCapacity)"))
+    #expect(!statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricStorageVolumes, value: snapshot.storageVolumeSummaryText, icon: \"externaldrive\", status: snapshot.hasStorageVolumeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceFileSystemCapacity)"))
     #expect(!statusPage.contains("[PulseDockAppStrings.metricStorageVolumes, snapshot.storageVolumeSummaryText, PulseDockAppStrings.sourceFileSystemCapacity]"))
-    #expect(audit.contains("The Status page surfaces mounted storage volume summary as a current system signal, using the same sanitized volume inventory as the Storage page."))
-    #expect(audit.contains("Source-level tests require the Status page to surface storage volume inventory with reported-state handling."))
+    #expect(audit.contains("The Storage page owns mounted storage volume summary from sanitized volume inventory."))
+    #expect(audit.contains("Source-level tests prevent the Status page from duplicating storage volume inventory owned by Storage."))
 }
 
 @Test func menuBarCPUDisplayCanBeToggledAndPersisted() throws {

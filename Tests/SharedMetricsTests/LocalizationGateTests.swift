@@ -255,7 +255,6 @@ import Testing
 
     let processEntries = [
         (symbol: "processesRunningAppsTitle", key: "app.dashboard.processes.running_apps", english: "Running Apps", chinese: "运行中 App"),
-        (symbol: "processesDisplayedAppsTitle", key: "app.dashboard.processes.displayed_apps", english: "Displayed Apps", chinese: "显示 App"),
         (symbol: "processesForegroundAppsTitle", key: "app.dashboard.processes.foreground_apps", english: "Foreground Apps", chinese: "前台 App"),
         (symbol: "processesHiddenAppsTitle", key: "app.dashboard.processes.hidden_apps", english: "Hidden Apps", chinese: "隐藏 App"),
         (symbol: "processesDefaultSubtitle", key: "app.dashboard.processes.default_subtitle", english: "Foreground first, sorted by name", chinese: "前台优先 · 按名称排序"),
@@ -348,8 +347,6 @@ import Testing
         (symbol: "overviewNetworkThroughputTitle", key: "app.dashboard.overview.network_throughput.title", english: "Network Throughput", chinese: "网络吞吐"),
         (symbol: "overviewPowerStatusTitle", key: "app.dashboard.overview.power_status.title", english: "Power Status", chinese: "电源状态"),
         (symbol: "overviewSystemStatusTitle", key: "app.dashboard.overview.system_status.title", english: "System Status", chinese: "系统状态"),
-        (symbol: "overviewCPUStatusTitle", key: "app.dashboard.overview.cpu_status.title", english: "CPU Status", chinese: "CPU 状态"),
-        (symbol: "overviewMemoryStatusTitle", key: "app.dashboard.overview.memory_status.title", english: "Memory Status", chinese: "内存状态"),
         (symbol: "overviewDiskAvailableTitle", key: "app.dashboard.overview.disk_available.title", english: "Disk Available", chinese: "磁盘可用")
     ]
 
@@ -486,7 +483,6 @@ import Testing
         (symbol: "localRuleTableSubtitle", key: "app.dashboard.local_rules.subtitle", english: "Current sample evaluated against local thresholds", chinese: "当前采样按本地阈值判断"),
         (symbol: "statusRuleColumnRule", key: "app.dashboard.status.rules.column.rule", english: "Rule", chinese: "规则"),
         (symbol: "statusRuleColumnThreshold", key: "app.dashboard.status.rules.column.threshold", english: "Threshold", chinese: "阈值"),
-        (symbol: "statusRuleColumnCurrent", key: "app.dashboard.status.rules.column.current", english: "Current", chinese: "当前"),
         (symbol: "statusRuleColumnStatus", key: "app.dashboard.status.rules.column.status", english: "Status", chinese: "状态"),
         (symbol: "statusSystemSignalsTitle", key: "app.dashboard.status.system_signals.title", english: "System Signals", chinese: "系统信号"),
         (symbol: "statusSystemSignalsSubtitle", key: "app.dashboard.status.system_signals.subtitle", english: "Reported data in this view", chinese: "当前显示的数据项"),

@@ -118,9 +118,9 @@ This file is an internal product and App Store readiness audit. It should not be
 - The CPU sampler returns no per-core usage list while it is only priming Mach CPU tick baselines, instead of reporting synthetic zero-valued per-core samples.
 - Load average display text reports the system-not-reported state when getloadavg does not return a sample, instead of formatting missing load as zero.
 - Current load-average progress requires both reported load averages and a sampled active processor count, so widgets and CPU page bars do not invent a one-core denominator.
-- The Status page surfaces load-average detail as a current system signal instead of limiting it to the CPU and History pages.
+- The Status page limits realtime signals to CPU, memory, disk, power, and network; load-average detail remains on the CPU and History pages.
 - Large widgets surface load average with reported-state progress, normalized by active processor count.
-- The Status page surfaces GPU inventory summary as a current system signal, using the same public Metal device inventory as the GPU/Display page.
+- The GPU/Display page owns GPU inventory summary from the public Metal device inventory.
 - GPU/display combined summary text is centralized on the shared snapshot model.
 - Widget UI avoids short-window network throughput because WidgetKit timelines are not continuous monitors.
 - Widgets disable system content margins and own their family-specific padding, avoiding double-inset crowding while keeping the first-version composition.
@@ -162,7 +162,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Battery charging state is only displayed when the public power-source description reports `kIOPSIsChargingKey`; AC power alone is not treated as charging.
 - Storage sampling uses public mounted-volume capacity values, including important usage available capacity when macOS reports it.
 - Primary disk sampling uses the same sanitized important-available capacity fallback as per-volume display, so impossible important-available values do not suppress otherwise valid disk usage.
-- The Status page surfaces mounted storage volume summary as a current system signal, using the same sanitized volume inventory as the Storage page.
+- The Storage page owns mounted storage volume summary from sanitized volume inventory.
 - Primary disk display text reports the system-not-reported state when total capacity is unavailable, instead of formatting missing capacity as zero bytes.
 - Primary disk display text treats impossible free-greater-than-total capacity samples as not-reported instead of formatting them as 0% usage.
 - Disk trend charts use the shared primary-disk reported-state flag, so impossible capacity samples do not appear as 0% dips.
@@ -339,10 +339,10 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests prevent CPU baseline priming from reporting synthetic zero-valued per-core samples.
 - Source-level tests prevent missing load averages from being formatted as 0.0.
 - Source-level tests require load-average progress in the CPU page and large widget to use shared optional progress instead of `max(activeProcessorCount, 1)`.
-- Source-level tests require the Status page to surface load-average detail with reported-state handling.
+- Source-level tests prevent the Status page from duplicating load-average detail owned by CPU and History.
 - Source-level tests require Settings data-source rows to surface load-average reported state.
 - Source-level tests require large widgets to surface load average with reported-state progress.
-- Source-level tests require the Status page to surface GPU inventory with reported-state handling.
+- Source-level tests prevent the Status page from duplicating GPU inventory owned by GPU/Display.
 - Source-level tests prevent GPU unified-memory summary counts from treating missing unified-memory flags as unsupported GPUs.
 - Source-level tests require Overview GPU/display summary labels to come from the shared snapshot model.
 - Source-level tests require swap used/total/available to come from `vm.swapusage` sysctl and appear on the Memory page.
@@ -462,7 +462,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require Storage page volume kind and access labels to come from the shared model.
 - Source-level tests require storage sampling and UI to use public important usage available capacity with regular available capacity as fallback.
 - Source-level tests require primary disk sampling to use the shared sanitized storage-volume available-capacity value.
-- Source-level tests require the Status page to surface storage volume inventory with reported-state handling.
+- Source-level tests prevent the Status page from duplicating storage volume inventory owned by Storage.
 - Source-level tests prevent missing primary disk capacity from being formatted as 0 B.
 - Source-level tests prevent impossible primary disk capacity samples from being displayed as 0% usage.
 - Source-level tests require disk trend charts to use the shared primary-disk reported-state flag.
