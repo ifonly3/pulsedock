@@ -1475,7 +1475,7 @@ import Testing
     #expect(dashboardView.contains("if let progress {"))
     #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage)"))
     #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage)"))
-    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage)"))
+    #expect(dashboardView.contains("usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold)"))
     #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkBytesPerSecond))"))
     #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkInBytesPerSecond))"))
     #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkOutBytesPerSecond))"))
@@ -2437,7 +2437,7 @@ import Testing
     #expect(metricSnapshot.contains("public var uptimeSeconds: TimeInterval"))
     #expect(metricSnapshot.contains("public var uptimeText: String"))
     #expect(sampler.contains("ProcessInfo.processInfo.systemUptime"))
-    #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricUptime"))
+    #expect(!dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricUptime"))
     #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral)"))
     #expect(widget.contains("StatTile(title: PulseDockWidgetStrings.metricUptime, value: snapshot.uptimeText"))
 
@@ -6253,7 +6253,7 @@ import Testing
     #expect(!dashboardView.contains("localizedThermal(snapshot.thermalState)"))
     #expect(dashboardView.contains("statusLevel(for: ThermalState(raw: state).metricStatusTone)"))
     #expect(dashboardView.contains("snapshot.thermalLimitText"))
-    #expect(dashboardView.contains("private var thermalColor: Color {\n        thermalStatus(snapshot.thermalState).color"))
+    #expect(dashboardView.contains("tint: thermalStatus(snapshot.thermalState).color"))
     #expect(!dashboardView.contains("default: DashboardColor.green"))
     #expect(widgetPanel.contains("value: snapshot.thermalText"))
     #expect(widgetPanel.contains("tint(for: ThermalState(raw: state).metricStatusTone)"))
@@ -7630,9 +7630,9 @@ import Testing
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricCPU"))
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricMemory"))
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricDisk"))
-    #expect(dashboardView.contains("[PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText"))
-    #expect(dashboardView.contains("[PulseDockAppStrings.metricMemory, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText"))
-    #expect(dashboardView.contains("[PulseDockAppStrings.metricDisk, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), thresholdStatusText"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricMemory, MetricFormatting.percentage(store.memoryAlertThreshold), thresholdStatusText"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricDisk, MetricFormatting.percentage(store.diskAlertThreshold), thresholdStatusText"))
 }
 
 @Test func statusPageSurfacesLoadAverageSignal() throws {

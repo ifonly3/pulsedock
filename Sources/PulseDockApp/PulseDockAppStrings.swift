@@ -174,10 +174,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.cpu.active_cores.label", defaultValue: "Active Cores")
     }
 
-    static var cpuRecentSampleLabel: String {
-        localized("app.dashboard.cpu.recent_sample.label", defaultValue: "Recent Sample")
-    }
-
     static var cpuPerCoreUsageTitle: String {
         localized("app.dashboard.cpu.per_core_usage.title", defaultValue: "Per-Core Usage")
     }
@@ -1063,20 +1059,12 @@ enum PulseDockAppStrings {
         localized("app.metric.displays", defaultValue: "Displays")
     }
 
-    static var metricStorageVolumes: String {
-        localized("app.metric.storage_volumes", defaultValue: "Storage Volumes")
-    }
-
     static var metricVolumes: String {
         localized("app.metric.volumes", defaultValue: "Volumes")
     }
 
     static var metricUptime: String {
         localized("app.metric.uptime", defaultValue: "Uptime")
-    }
-
-    static var metricSystemVersion: String {
-        localized("app.metric.system_version", defaultValue: "System Version")
     }
 
     static var metricKernel: String {
@@ -1111,24 +1099,12 @@ enum PulseDockAppStrings {
         localized("app.metric.system_version_uptime_kernel", defaultValue: "System Version / Uptime / Kernel Version")
     }
 
-    static var sourceGraphicsDevices: String {
-        localized("app.source.graphics_devices", defaultValue: "Graphics devices")
-    }
-
     static var sourceFileSystemCapacity: String {
         localized("app.source.file_system_capacity", defaultValue: "File system capacity")
     }
 
     static var sourceLoadAverages: String {
         localized("app.source.load_averages", defaultValue: "1 / 5 / 15 minutes")
-    }
-
-    static var sourceOSVersion: String {
-        localized("app.source.os_version", defaultValue: "Operating system version")
-    }
-
-    static var sourceSystemBootTime: String {
-        localized("app.source.system_boot_time", defaultValue: "System boot time")
     }
 
     static var sourceThermalState: String {

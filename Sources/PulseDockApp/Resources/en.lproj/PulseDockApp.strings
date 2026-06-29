@@ -24,7 +24,6 @@
 "app.dashboard.cpu.processor.label" = "Processor";
 "app.dashboard.cpu.processor.subtitle" = "Processor core statistics";
 "app.dashboard.cpu.processor.title" = "CPU Processor";
-"app.dashboard.cpu.recent_sample.label" = "Recent Sample";
 "app.dashboard.display.column.color" = "Color";
 "app.dashboard.display.column.mode" = "Mode";
 "app.dashboard.display.column.pixels" = "Pixels";
@@ -220,9 +219,7 @@
 "app.metric.network_connection" = "Network Connection";
 "app.metric.power_thermal_state" = "Power / Thermal State";
 "app.metric.running_apps" = "Running Apps";
-"app.metric.storage_volumes" = "Storage Volumes";
 "app.metric.system_thermal_state" = "System Thermal State";
-"app.metric.system_version" = "System Version";
 "app.metric.system_version_uptime_kernel" = "System Version / Uptime / Kernel Version";
 "app.metric.thermal_state" = "Thermal";
 "app.metric.uptime" = "Uptime";
@@ -273,13 +270,10 @@
 "app.source.display_configuration" = "Display configuration";
 "app.source.file_system_capacity" = "File system capacity";
 "app.source.gpu_capabilities" = "GPU capabilities";
-"app.source.graphics_devices" = "Graphics devices";
 "app.source.graphics_display_configuration" = "Graphics devices and display configuration";
 "app.source.load_averages" = "1 / 5 / 15 minutes";
-"app.source.os_version" = "Operating system version";
 "app.source.power_status" = "Power status";
 "app.source.power_thermal_state" = "Power and thermal control state";
-"app.source.system_boot_time" = "System boot time";
 "app.source.system_estimate" = "System estimate";
 "app.source.system_processor_memory_stats" = "System processor and memory statistics";
 "app.source.system_version" = "System version";

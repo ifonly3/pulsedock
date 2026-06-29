@@ -417,22 +417,6 @@
         }
       }
     },
-    "app.dashboard.cpu.recent_sample.label": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recent Sample"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "最近采样"
-          }
-        }
-      }
-    },
     "app.dashboard.display.column.color": {
       "localizations": {
         "en": {
@@ -3553,22 +3537,6 @@
         }
       }
     },
-    "app.metric.storage_volumes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Storage Volumes"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "存储卷"
-          }
-        }
-      }
-    },
     "app.metric.system_thermal_state": {
       "localizations": {
         "en": {
@@ -3581,22 +3549,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "系统热状态"
-          }
-        }
-      }
-    },
-    "app.metric.system_version": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "System Version"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "系统版本"
           }
         }
       }
@@ -4401,22 +4353,6 @@
         }
       }
     },
-    "app.source.graphics_devices": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Graphics devices"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "图形设备"
-          }
-        }
-      }
-    },
     "app.source.graphics_display_configuration": {
       "localizations": {
         "en": {
@@ -4449,22 +4385,6 @@
         }
       }
     },
-    "app.source.os_version": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Operating system version"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "操作系统版本"
-          }
-        }
-      }
-    },
     "app.source.power_status": {
       "localizations": {
         "en": {
@@ -4493,22 +4413,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "电源与温控状态"
-          }
-        }
-      }
-    },
-    "app.source.system_boot_time": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "System boot time"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "系统启动时间"
           }
         }
       }

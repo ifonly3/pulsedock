@@ -24,7 +24,6 @@
 "app.dashboard.cpu.processor.label" = "处理器";
 "app.dashboard.cpu.processor.subtitle" = "处理器核心统计";
 "app.dashboard.cpu.processor.title" = "CPU 处理器";
-"app.dashboard.cpu.recent_sample.label" = "最近采样";
 "app.dashboard.display.column.color" = "色彩";
 "app.dashboard.display.column.mode" = "模式";
 "app.dashboard.display.column.pixels" = "像素";
@@ -220,9 +219,7 @@
 "app.metric.network_connection" = "网络连接";
 "app.metric.power_thermal_state" = "电源 / 热状态";
 "app.metric.running_apps" = "运行中 App";
-"app.metric.storage_volumes" = "存储卷";
 "app.metric.system_thermal_state" = "系统热状态";
-"app.metric.system_version" = "系统版本";
 "app.metric.system_version_uptime_kernel" = "系统版本 / 运行时间 / 内核版本";
 "app.metric.thermal_state" = "热状态";
 "app.metric.uptime" = "运行";
@@ -273,13 +270,10 @@
 "app.source.display_configuration" = "显示配置";
 "app.source.file_system_capacity" = "文件系统容量";
 "app.source.gpu_capabilities" = "GPU 能力";
-"app.source.graphics_devices" = "图形设备";
 "app.source.graphics_display_configuration" = "图形设备与显示配置";
 "app.source.load_averages" = "1 / 5 / 15 分钟";
-"app.source.os_version" = "操作系统版本";
 "app.source.power_status" = "电源状态";
 "app.source.power_thermal_state" = "电源与温控状态";
-"app.source.system_boot_time" = "系统启动时间";
 "app.source.system_estimate" = "系统估算";
 "app.source.system_processor_memory_stats" = "系统处理器与内存统计";
 "app.source.system_version" = "系统版本";
