@@ -87,7 +87,7 @@ struct VisualFrontendGateTests {
         let topBar = componentBody(named: "DashboardTopBar", in: dashboard)
 
         #expect(sidebar.contains("ScrollView"))
-        #expect(sidebar.contains("SidebarHealthCard"))
+        #expect(!sidebar.contains("SidebarHealthCard"))
         #expect(sidebar.contains("DashboardLayout.sidebarWidth"))
         #expect(topBar.contains("ViewThatFits(in: .horizontal)"))
         #expect(topBar.contains(".frame(minHeight: 82)"))

@@ -265,7 +265,7 @@ import Testing
     #expect(!dashboardView.contains("snapshot.timestamp.formatted(.dateTime.hour().minute()))"))
     #expect(dashboardView.contains("PulseDockAppStrings.dashboardSampleChip(snapshot.sampleTimeText)"))
     #expect(dashboardView.contains("Text(snapshot.sampleClockText)"))
-    #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.cpuRecentSampleLabel, value: snapshot.sampleTimeText, status: snapshot.hasSampleTimeReport ? .normal : .neutral)"))
+    #expect(!dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.cpuRecentSampleLabel, value: snapshot.sampleTimeText"))
     #expect(widgetPanel.contains("Text(snapshot.sampleTimeText)"))
     #expect(!widgetPanel.contains("snapshot.timestamp.formatted(.dateTime.hour().minute().second())"))
     #expect(widget.contains("WidgetHeader(title: PulseDockWidgetStrings.widgetDisplayName, timeText: snapshot.sampleClockText, hasTimeReport: snapshot.hasSampleTimeReport, freshnessTone: freshnessTone, entryKind: entryKind)"))

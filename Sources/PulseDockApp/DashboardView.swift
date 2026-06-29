@@ -262,10 +262,6 @@ private struct DashboardSidebar: View {
                     .padding(.horizontal, 10)
 
                     Spacer(minLength: 16)
-
-                    SidebarHealthCard(snapshot: snapshot)
-                        .padding(.horizontal, 12)
-                        .padding(.bottom, 16)
                 }
                 .frame(minHeight: proxy.size.height, alignment: .top)
             }
@@ -319,31 +315,6 @@ private struct SidebarRow: View {
         }
         .buttonStyle(.plain)
         .animation(DashboardMotion.selection(reduceMotion: reduceMotion), value: isSelected)
-    }
-}
-
-private struct SidebarHealthCard: View {
-    let snapshot: MetricSnapshot
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                StatusDot(color: thermalColor)
-                Text(PulseDockAppStrings.dashboardSidebarLiveSampling)
-                    .font(.system(size: 13, weight: .semibold))
-                Spacer()
-            }
-
-            CompactMetricLine(title: PulseDockAppStrings.metricCPU, value: snapshot.cpuText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: DashboardColor.green)
-            CompactMetricLine(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: DashboardColor.blue)
-            CompactMetricLine(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: DashboardColor.amber)
-        }
-        .padding(13)
-        .panel(cornerRadius: 8)
-    }
-
-    private var thermalColor: Color {
-        thermalStatus(snapshot.thermalState).color
     }
 }
 
@@ -555,8 +526,7 @@ private struct CPUPage: View {
                     (PulseDockAppStrings.cpuPhysicalCoresLabel, snapshot.physicalCoreCountText),
                     (PulseDockAppStrings.cpuLogicalCoresLabel, snapshot.logicalCoreCountText),
                     (PulseDockAppStrings.cpuActiveCoresLabel, snapshot.activeProcessorCountText),
-                    (PulseDockAppStrings.metricRunningApps, snapshot.runningAppCountText),
-                    (PulseDockAppStrings.cpuRecentSampleLabel, snapshot.sampleTimeText)
+                    (PulseDockAppStrings.metricRunningApps, snapshot.runningAppCountText)
                 ])
             }
         }
@@ -835,8 +805,6 @@ private struct PowerPage: View {
             VStack(spacing: 12) {
                 StatusSummaryRow(title: PulseDockAppStrings.statusCurrentStateTitle, value: snapshot.thermalText, status: thermalStatus(snapshot.thermalState))
                 StatusSummaryRow(title: PulseDockAppStrings.statusPerformanceLimitTitle, value: snapshot.thermalLimitText, status: thermalStatus(snapshot.thermalState))
-                StatusSummaryRow(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral)
-                StatusSummaryRow(title: PulseDockAppStrings.cpuRecentSampleLabel, value: snapshot.sampleTimeText, status: snapshot.hasSampleTimeReport ? .normal : .neutral)
             }
         }
     }

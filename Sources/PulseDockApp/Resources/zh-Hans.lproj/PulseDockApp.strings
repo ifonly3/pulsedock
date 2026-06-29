@@ -144,7 +144,6 @@
 "app.dashboard.processes.hidden_apps" = "隐藏 App";
 "app.dashboard.processes.displayed_apps" = "显示 App";
 "app.dashboard.processes.running_apps" = "运行中 App";
-"app.dashboard.sidebar.live_sampling" = "实时采样";
 "app.dashboard.sidebar.local_status" = "本机状态";
 "app.dashboard.source.threshold_format" = "阈值 %@";
 "app.dashboard.status.current_state.title" = "当前状态";

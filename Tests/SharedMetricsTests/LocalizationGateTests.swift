@@ -318,7 +318,6 @@ import Testing
         (symbol: "dashboardPageHistorySubtitle", key: "app.dashboard.page.history.subtitle", english: "Local sample history and thresholds", chinese: "本地采样历史与阈值判断"),
         (symbol: "dashboardPageSettingsSubtitle", key: "app.dashboard.page.settings.subtitle", english: "Display, refresh, and widgets", chinese: "显示、刷新与小组件"),
         (symbol: "dashboardSidebarLocalStatus", key: "app.dashboard.sidebar.local_status", english: "Local Status", chinese: "本机状态"),
-        (symbol: "dashboardSidebarLiveSampling", key: "app.dashboard.sidebar.live_sampling", english: "Live Sampling", chinese: "实时采样"),
         (symbol: "dashboardTopBarTagline", key: "app.dashboard.top_bar.tagline", english: "Live local system sampling with a clear, readable overview", chinese: "实时采样本机状态，专注清晰可读的系统概览"),
         (symbol: "dashboardTopBarLocalMachine", key: "app.dashboard.top_bar.local_machine", english: "This Mac", chinese: "本机")
     ]

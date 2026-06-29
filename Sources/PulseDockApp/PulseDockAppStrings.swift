@@ -94,10 +94,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.sidebar.local_status", defaultValue: "Local Status")
     }
 
-    static var dashboardSidebarLiveSampling: String {
-        localized("app.dashboard.sidebar.live_sampling", defaultValue: "Live Sampling")
-    }
-
     static var dashboardTopBarTagline: String {
         localized("app.dashboard.top_bar.tagline", defaultValue: "Live local system sampling with a clear, readable overview")
     }

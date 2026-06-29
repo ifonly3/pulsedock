@@ -2337,22 +2337,6 @@
         }
       }
     },
-    "app.dashboard.sidebar.live_sampling": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Live Sampling"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "实时采样"
-          }
-        }
-      }
-    },
     "app.dashboard.sidebar.local_status": {
       "localizations": {
         "en": {

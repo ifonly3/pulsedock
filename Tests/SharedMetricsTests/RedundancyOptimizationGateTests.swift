@@ -161,12 +161,11 @@ struct RedundancyOptimizationGateTests {
 
     @Test func duplicateUiPanelsAreRemovedFromDashboardSource() throws {
         let dashboard = try redundancyFixture("Sources/PulseDockApp/DashboardView.swift")
-        let sidebar = componentBody(named: "SidebarHealthCard", in: dashboard)
         let sensors = componentBody(named: "SensorsPage", in: dashboard)
         let history = componentBody(named: "HistoryAlertsPage", in: dashboard)
         let settings = componentBody(named: "SettingsPage", in: dashboard)
 
-        #expect(!sidebar.contains("snapshot.sampleTimeText"))
+        #expect(!dashboard.contains("private struct SidebarHealthCard"))
         #expect(sensors.contains("statusRealtimeSignalsTitle"))
         #expect(!sensors.contains("statusSystemSignalsTitle"))
         #expect(!history.contains("localRuleTableTitle"))

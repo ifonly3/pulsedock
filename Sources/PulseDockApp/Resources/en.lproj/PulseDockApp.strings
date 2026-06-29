@@ -144,7 +144,6 @@
 "app.dashboard.processes.hidden_apps" = "Hidden Apps";
 "app.dashboard.processes.displayed_apps" = "Displayed Apps";
 "app.dashboard.processes.running_apps" = "Running Apps";
-"app.dashboard.sidebar.live_sampling" = "Live Sampling";
 "app.dashboard.sidebar.local_status" = "Local Status";
 "app.dashboard.source.threshold_format" = "Threshold %@";
 "app.dashboard.status.current_state.title" = "Current State";
