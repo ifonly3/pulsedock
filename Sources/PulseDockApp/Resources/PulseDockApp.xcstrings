@@ -2145,22 +2145,6 @@
         }
       }
     },
-    "app.dashboard.processes.current_session_subtitle": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Applications in the current session"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "当前会话中的应用列表"
-          }
-        }
-      }
-    },
     "app.dashboard.processes.default_subtitle": {
       "localizations": {
         "en": {

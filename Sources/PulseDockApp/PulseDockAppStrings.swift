@@ -258,10 +258,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.memory.cached_files.label", defaultValue: "Cached Files")
     }
 
-    static var processesCurrentSessionSubtitle: String {
-        localized("app.dashboard.processes.current_session_subtitle", defaultValue: "Applications in the current session")
-    }
-
     static var storageSpaceTitle: String {
         localized("app.dashboard.storage.space.title", defaultValue: "Storage Space")
     }

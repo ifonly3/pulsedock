@@ -7133,7 +7133,7 @@ import Testing
     #expect(sampler.contains("xsw_usage"))
     #expect(metricsStore.contains("memorySwapUsedBytes: snapshot.memorySwapUsedBytes"))
     #expect(metricsStore.contains("memorySwapAvailableBytes: snapshot.memorySwapAvailableBytes"))
-    #expect(dashboardView.contains("(PulseDockAppStrings.memorySwapLabel, snapshot.memorySwapText)"))
+    #expect(!dashboardView.contains("(PulseDockAppStrings.memorySwapLabel, snapshot.memorySwapText)"))
     #expect(dashboardView.contains("(PulseDockAppStrings.memorySwapAvailableLabel, snapshot.memorySwapAvailableText)"))
     #expect(dashboardView.contains("(PulseDockAppStrings.memorySwapTotalLabel, snapshot.memorySwapTotalText)"))
     #expect(dashboardView.contains("StatLine(label: PulseDockAppStrings.memorySwapLabel, value: snapshot.memorySwapText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemorySwapReport, progress: snapshot.memorySwapUsage), tint: DashboardColor.red)"))

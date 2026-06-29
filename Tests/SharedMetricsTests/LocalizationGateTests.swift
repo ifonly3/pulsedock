@@ -419,7 +419,6 @@ import Testing
         (symbol: "memoryAppActiveLabel", key: "app.dashboard.memory.app_active.label", english: "App / Active", chinese: "App / 活跃"),
         (symbol: "memoryWiredLabel", key: "app.dashboard.memory.wired.label", english: "Wired", chinese: "有线"),
         (symbol: "memoryCachedFilesLabel", key: "app.dashboard.memory.cached_files.label", english: "Cached Files", chinese: "缓存文件"),
-        (symbol: "processesCurrentSessionSubtitle", key: "app.dashboard.processes.current_session_subtitle", english: "Applications in the current session", chinese: "当前会话中的应用列表"),
         (symbol: "storageSpaceTitle", key: "app.dashboard.storage.space.title", english: "Storage Space", chinese: "存储空间"),
         (symbol: "storageLocalVolumeCapacitySubtitle", key: "app.dashboard.storage.local_volume_capacity.subtitle", english: "Local volume capacity", chinese: "本机卷容量"),
         (symbol: "storagePrimaryVolumeLabel", key: "app.dashboard.storage.primary_volume.label", english: "Primary Volume", chinese: "主卷"),

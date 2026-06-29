@@ -465,8 +465,6 @@ private struct CPUPage: View {
                     }
                 }
             }
-
-            ProcessListPanel(processes: snapshot.runningApps, title: PulseDockAppStrings.processesRunningAppsTitle, subtitle: PulseDockAppStrings.processesDefaultSubtitle)
         }
     }
 
@@ -524,8 +522,6 @@ private struct MemoryPage: View {
             } secondary: {
                 compositionPanel
             }
-
-            ProcessListPanel(processes: snapshot.runningApps, title: PulseDockAppStrings.processesRunningAppsTitle, subtitle: PulseDockAppStrings.processesCurrentSessionSubtitle)
         }
     }
 
@@ -558,9 +554,6 @@ private struct MemoryPage: View {
             KeyValueGrid(items: [
                 (PulseDockAppStrings.memoryTotalLabel, snapshot.memoryDetailText),
                 (PulseDockAppStrings.memoryFreeLabel, snapshot.memoryFreeText),
-                (PulseDockAppStrings.memoryCachedLabel, snapshot.memoryCachedText),
-                (PulseDockAppStrings.memoryCompressedLabel, snapshot.memoryCompressedText),
-                (PulseDockAppStrings.memorySwapLabel, snapshot.memorySwapText),
                 (PulseDockAppStrings.memorySwapAvailableLabel, snapshot.memorySwapAvailableText),
                 (PulseDockAppStrings.memorySwapTotalLabel, snapshot.memorySwapTotalText)
             ])

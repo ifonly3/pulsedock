@@ -132,7 +132,6 @@
 "app.dashboard.processes.column.launch" = "启动";
 "app.dashboard.processes.column.name" = "名称";
 "app.dashboard.processes.column.state" = "状态";
-"app.dashboard.processes.current_session_subtitle" = "当前会话中的应用列表";
 "app.dashboard.processes.default_subtitle" = "前台优先 · 按名称排序";
 "app.dashboard.processes.foreground_apps" = "前台 App";
 "app.dashboard.processes.hidden_apps" = "隐藏 App";

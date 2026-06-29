@@ -132,7 +132,6 @@
 "app.dashboard.processes.column.launch" = "Launch";
 "app.dashboard.processes.column.name" = "Name";
 "app.dashboard.processes.column.state" = "State";
-"app.dashboard.processes.current_session_subtitle" = "Applications in the current session";
 "app.dashboard.processes.default_subtitle" = "Foreground first, sorted by name";
 "app.dashboard.processes.foreground_apps" = "Foreground Apps";
 "app.dashboard.processes.hidden_apps" = "Hidden Apps";
