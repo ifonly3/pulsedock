@@ -156,7 +156,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Compact power surfaces show the current providing power source when no battery percentage exists, while battery-specific rows still say that no battery is present.
 - Overview and Status power surfaces use the same current power status fallback instead of treating missing battery percentage as zero battery.
 - The Power page foregrounds the current power status when no battery percentage exists, while detailed battery rows remain explicit about missing battery values.
-- The Power page summary surfaces public voltage and amperage readings when macOS reports them, not only in the detailed battery table.
+- The Power page Battery Information table surfaces public voltage and amperage readings when macOS reports them.
 - Battery detail display text is centralized on the shared snapshot model.
 - Battery sampling uses the public system time remaining estimate only as a discharge-time fallback when the selected power source description does not report time to empty.
 - Battery charging state is only displayed when the public power-source description reports `kIOPSIsChargingKey`; AC power alone is not treated as charging.
@@ -368,7 +368,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require Overview and Status page power rows to use the current power status when battery percentage is unavailable.
 - Source-level tests require the Power page to foreground the current power status instead of always foregrounding battery percentage text.
 - Source-level tests require thermal limit labels to come from the shared snapshot model.
-- Source-level tests require the Power page summary to surface sampled voltage and amperage readings.
+- Source-level tests require the Power page Battery Information table to surface sampled voltage and amperage readings.
 - Source-level tests require Power page battery detail labels to come from the shared snapshot model.
 - Source-level tests require battery sampling to use `IOPSGetTimeRemainingEstimate()` as a discharge-time fallback while filtering unknown and unlimited sentinel values.
 - Source-level tests prevent missing battery charging flags from being inferred from AC power.

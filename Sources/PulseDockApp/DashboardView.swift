@@ -754,15 +754,7 @@ private struct PowerPage: View {
         VStack(spacing: 14) {
             TrendRow(title: powerTrendTitle(snapshot), value: snapshot.powerStatusText, tint: powerTint(snapshot), values: powerTrend)
             KeyValueGrid(items: [
-                (PulseDockAppStrings.powerSourceLabel, snapshot.powerSourceText),
-                (PulseDockAppStrings.batteryRemainingTimeLabel, snapshot.batteryTimeRemainingText),
-                (PulseDockAppStrings.batteryCurrentCapacityLabel, snapshot.batteryCurrentCapacityText),
-                (PulseDockAppStrings.batteryMaxCapacityLabel, snapshot.batteryMaxCapacityText),
-                (PulseDockAppStrings.batteryCycleCountLabel, snapshot.batteryCycleText),
-                (PulseDockAppStrings.batteryHealthLabel, snapshot.batteryHealthText),
-                (PulseDockAppStrings.batteryDesignCapacityLabel, snapshot.batteryDesignCapacityText),
-                (PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText),
-                (PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText)
+                (PulseDockAppStrings.powerSourceLabel, snapshot.powerSourceText)
             ])
         }
     }
