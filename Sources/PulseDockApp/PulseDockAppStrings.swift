@@ -1,4 +1,5 @@
 import Foundation
+import SharedMetrics
 
 enum PulseDockAppStrings {
     static var dashboardPageOverviewTitle: String {
@@ -1068,7 +1069,7 @@ enum PulseDockAppStrings {
     }
 
     static var notReported: String {
-        localized("app.not_reported", defaultValue: "Not reported")
+        SharedMetricStrings.notReported
     }
 
     static var metricMemory: String {

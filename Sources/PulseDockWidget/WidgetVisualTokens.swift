@@ -38,23 +38,29 @@ enum WidgetFreshnessTone {
 
 enum WidgetColor {
     static func blue(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.36, green: 0.62, blue: 1.00) : Color(red: 0.14, green: 0.43, blue: 0.95)
+        color(.blue, for: colorScheme)
     }
 
     static func green(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.24, green: 0.82, blue: 0.62) : Color(red: 0.04, green: 0.62, blue: 0.39)
+        color(.green, for: colorScheme)
     }
 
     static func amber(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 1.00, green: 0.68, blue: 0.28) : Color(red: 0.93, green: 0.54, blue: 0.10)
+        color(.amber, for: colorScheme)
     }
 
     static func cyan(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.29, green: 0.78, blue: 0.88) : Color(red: 0.04, green: 0.56, blue: 0.70)
+        color(.cyan, for: colorScheme)
     }
 
     static func red(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 1.00, green: 0.42, blue: 0.42) : Color(red: 0.84, green: 0.16, blue: 0.16)
+        color(.red, for: colorScheme)
+    }
+
+    private static func color(_ accent: MetricAccent, for colorScheme: ColorScheme) -> Color {
+        let appearance: MetricAccentAppearance = colorScheme == .dark ? .dark : .light
+        let components = MetricAccentComponents.components(for: accent, appearance: appearance)
+        return Color(red: components.red, green: components.green, blue: components.blue)
     }
 }
 

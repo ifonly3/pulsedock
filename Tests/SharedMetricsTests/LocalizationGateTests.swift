@@ -280,7 +280,7 @@ import Testing
     }
 
     #expect(appStrings.contains("static var processesTableColumns: [String]"))
-    #expect(processesPage.contains("TableHeader(columns: PulseDockAppStrings.processesTableColumns)"))
+    #expect(processesPage.contains("columns: PulseDockAppStrings.processesTableColumns"))
     #expect(processesPage.contains("ProcessMetric.listSubtitle(for: snapshot.runningApps, defaultSubtitle: PulseDockAppStrings.processesDefaultSubtitle)"))
 }
 
@@ -522,7 +522,20 @@ import Testing
         (symbol: "sourceDisplayConfiguration", key: "app.source.display_configuration", english: "Display configuration", chinese: "显示配置")
     ]
 
-    let statusSymbolsUsedOutsideSensorsPage = Set(["statusNormal", "statusCritical"])
+    let statusSymbolsUsedOutsideSensorsPage = Set([
+        "statusNormal",
+        "statusCritical",
+        "statusSystemSignalsTitle",
+        "statusSystemSignalsSubtitle",
+        "statusSignalColumnName",
+        "statusSignalColumnCurrentValue",
+        "statusSignalColumnSource",
+        "metricSystemThermalState",
+        "metricKernelVersion",
+        "sourceThermalState",
+        "sourceSystemVersion",
+        "sourceDisplayConfiguration"
+    ])
     for entry in statusEntries {
         expectAppStringEntry(entry, appStrings: appStrings, catalog: catalog, english: english, chinese: chinese)
         #expect(sensorsPage.contains("PulseDockAppStrings.\(entry.symbol)") || entry.key.contains(".column.") || statusSymbolsUsedOutsideSensorsPage.contains(entry.symbol))
@@ -532,7 +545,7 @@ import Testing
     #expect(appStrings.contains("static var statusRuleTableColumns: [String]"))
     #expect(appStrings.contains("static var statusSignalTableColumns: [String]"))
     #expect(sensorsPage.contains("PulseDockAppStrings.statusRuleTableColumns"))
-    #expect(sensorsPage.contains("PulseDockAppStrings.statusSignalTableColumns"))
+    #expect(!sensorsPage.contains("PulseDockAppStrings.statusSignalTableColumns"))
     #expect(sensorsPage.range(of: #"\p{Script=Han}"#, options: .regularExpression) == nil)
     #expect(dashboard.contains("case .normal: PulseDockAppStrings.statusNormal"))
     #expect(dashboard.contains("guard hasReport else { return PulseDockAppStrings.notReported }"))
@@ -595,9 +608,13 @@ import Testing
         (symbol: "sourceSystemVersionBootTime", key: "app.source.system_version_boot_time", english: "System version and boot time", chinese: "系统版本与启动时间")
     ]
 
+    let settingsSymbolsRetainedOutsideSettingsPage = Set([
+        "settingsWidgetRefreshLabel",
+        "settingsWidgetMainWindowLabel"
+    ])
     for entry in settingsEntries {
         expectAppStringEntry(entry, appStrings: appStrings, catalog: catalog, english: english, chinese: chinese)
-        #expect(settingsPage.contains("PulseDockAppStrings.\(entry.symbol)") || entry.key.contains(".column."))
+        #expect(settingsPage.contains("PulseDockAppStrings.\(entry.symbol)") || entry.key.contains(".column.") || settingsSymbolsRetainedOutsideSettingsPage.contains(entry.symbol))
     }
 
     expectAppStringFunction(symbol: "settingsLocalHistoryDetail", key: "app.settings.local_history.detail_format", english: "Keep the most recent %d samples", chinese: "保留最近 %d 次采样", appStrings: appStrings, catalog: catalog, englishResource: english, chineseResource: chinese)

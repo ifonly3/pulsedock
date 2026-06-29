@@ -2,6 +2,8 @@
 
 Generated with the built-in image generation flow as a first visual direction for a macOS system monitor app and WidgetKit widgets.
 
+This directory is the canonical tracked design reference for Pulse Dock. Earlier overlapping concept assets from `designs/macos-monitor-ui/` were removed after the redundancy review to avoid maintaining two visual source directories for the same product.
+
 ## Screens
 
 1. `01-overview.png` - Main runtime overview dashboard

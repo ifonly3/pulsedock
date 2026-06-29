@@ -188,8 +188,8 @@ private struct SmallWidget: View {
             Spacer(minLength: 4)
 
             HStack(spacing: 12) {
-                RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
-                RingMetric(title: PulseDockWidgetStrings.metricMemoryCompact, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
+                RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
+                RingMetric(title: PulseDockWidgetStrings.metricMemoryCompact, value: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
             }
 
             HStack(spacing: 8) {
@@ -230,9 +230,9 @@ private struct MediumWidget: View {
             .frame(width: 166, alignment: .leading)
 
             VStack(spacing: 18) {
-                WidgetRow(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
-                WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
-                WidgetRow(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
+                WidgetRow(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
+                WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress), tint: networkTint(snapshot, for: colorScheme))
+                WidgetRow(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
             }
             .frame(maxWidth: .infinity)
         }
@@ -266,9 +266,9 @@ private struct LargeWidget: View {
             HStack(alignment: .top, spacing: 18) {
                 VStack(alignment: .leading, spacing: 14) {
                     LazyVGrid(columns: largeRingColumns, spacing: 12) {
-                        RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
-                        RingMetric(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
-                        RingMetric(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
+                        RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))
+                        RingMetric(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))
+                        RingMetric(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))
                         RingMetric(title: PulseDockWidgetStrings.metricLoad, value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: WidgetColor.green(for: colorScheme))
                     }
 
@@ -281,9 +281,9 @@ private struct LargeWidget: View {
 
                 VStack(alignment: .leading, spacing: 12) {
                     LargeWidgetSection {
-                        WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))
-                        WidgetRow(title: PulseDockWidgetStrings.metricPath, value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
-                        WidgetRow(title: PulseDockWidgetStrings.metricInterface, value: snapshot.networkPathDetailText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))
+                        WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress), tint: networkTint(snapshot, for: colorScheme))
+                        WidgetRow(title: PulseDockWidgetStrings.metricPath, value: snapshot.networkPathCapabilityText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress), tint: WidgetColor.cyan(for: colorScheme))
+                        WidgetRow(title: PulseDockWidgetStrings.metricInterface, value: snapshot.networkPathDetailText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress), tint: WidgetColor.cyan(for: colorScheme))
                     }
 
                     LargeInfoGrid(snapshot: snapshot)
@@ -408,9 +408,7 @@ private struct EmptyDataWidget: View {
             Text(PulseDockWidgetStrings.widgetDisplayName)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
-            Circle()
-                .fill(WidgetColor.amber(for: colorScheme))
-                .frame(width: 6, height: 6)
+            WidgetStatusDot(color: WidgetColor.amber(for: colorScheme))
             Spacer()
         }
     }
@@ -546,10 +544,7 @@ private struct CompactWidgetHeader: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
-            Circle()
-                .fill(freshnessTone.color(for: colorScheme))
-                .frame(width: 6, height: 6)
-                .accessibilityHidden(true)
+            WidgetStatusDot(color: freshnessTone.color(for: colorScheme))
             Spacer(minLength: 4)
             if hasTimeReport {
                 Text(timeText)
@@ -584,6 +579,17 @@ private struct CompactWidgetHeader: View {
         }
         parts.append(freshnessTone.accessibilityText)
         return parts.joined(separator: ", ")
+    }
+}
+
+private struct WidgetStatusDot: View {
+    let color: Color
+
+    var body: some View {
+        Circle()
+            .fill(color)
+            .frame(width: 6, height: 6)
+            .accessibilityHidden(true)
     }
 }
 
@@ -650,7 +656,7 @@ private struct WidgetRow: View {
                     if let progress {
                         Capsule()
                             .fill(tint.gradient)
-                            .frame(width: progressFillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 6))
+                            .frame(width: MetricScales.fillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 6))
                     }
                 }
             }
@@ -670,8 +676,7 @@ private struct MiniStatus: View {
 
     var body: some View {
         HStack(spacing: 5) {
-            Circle().fill(tint).frame(width: 6, height: 6)
-                .accessibilityHidden(true)
+            WidgetStatusDot(color: tint)
             Text(title)
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(widgetSecondaryText(for: colorScheme))
@@ -694,8 +699,7 @@ private struct StatTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Circle().fill(tint).frame(width: 6, height: 6)
-                .accessibilityHidden(true)
+            WidgetStatusDot(color: tint)
             Text(title)
                 .font(.system(size: 9, weight: .medium))
                 .foregroundStyle(widgetSecondaryText(for: colorScheme))
@@ -734,50 +738,11 @@ private struct WidgetBackground: View {
 }
 
 private func thermalTint(_ state: String, for colorScheme: ColorScheme) -> Color {
-    switch ThermalState(raw: state) {
-    case .critical, .hot: WidgetColor.red(for: colorScheme)
-    case .warm: WidgetColor.amber(for: colorScheme)
-    case .nominal: WidgetColor.green(for: colorScheme)
-    case .unknown: WidgetColor.cyan(for: colorScheme)
-    }
+    widgetToneColor(ThermalState(raw: state).metricStatusTone, for: colorScheme)
 }
 
 private func networkTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color {
-    switch snapshot.canonicalNetworkPathState {
-    case .satisfied:
-        WidgetColor.green(for: colorScheme)
-    case .requiresConnection:
-        WidgetColor.amber(for: colorScheme)
-    case .unsatisfied:
-        WidgetColor.red(for: colorScheme)
-    case .unknown:
-        WidgetColor.cyan(for: colorScheme)
-    }
-}
-
-private func networkPathProgress(_ snapshot: MetricSnapshot) -> Double {
-    switch snapshot.canonicalNetworkPathState {
-    case .satisfied:
-        1
-    case .requiresConnection:
-        0.45
-    case .unsatisfied:
-        0
-    case .unknown:
-        0
-    }
-}
-
-private func reportedProgress(hasReport: Bool, progress: Double) -> Double? {
-    guard hasReport else { return nil }
-    return progress
-}
-
-private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat {
-    guard let normalizedProgress = MetricScales.clampedProgress(progress), normalizedProgress > 0 else {
-        return 0
-    }
-    return max(minimumVisibleWidth, totalWidth * normalizedProgress)
+    widgetToneColor(snapshot.canonicalNetworkPathState.metricStatusTone, for: colorScheme)
 }
 
 private func reportedTint(hasReport: Bool, fallback: Color, for colorScheme: ColorScheme) -> Color {
@@ -786,7 +751,11 @@ private func reportedTint(hasReport: Bool, fallback: Color, for colorScheme: Col
 }
 
 private func powerTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color {
-    switch snapshot.powerStatusTone {
+    widgetToneColor(snapshot.powerStatusTone, for: colorScheme)
+}
+
+private func widgetToneColor(_ tone: MetricStatusTone, for colorScheme: ColorScheme) -> Color {
+    switch tone {
     case .normal:
         return WidgetColor.green(for: colorScheme)
     case .warning:

@@ -1,4 +1,6 @@
+import AppKit
 import SwiftUI
+import SharedMetrics
 
 enum DashboardSpacing {
     static let xxs: CGFloat = 3
@@ -35,6 +37,21 @@ enum DashboardMotion {
     }
 }
 
+enum DashboardLayout {
+    static let minimumContentSize = CGSize(width: 960, height: 640)
+    static let idealContentSize = CGSize(width: 1320, height: 860)
+    static let sidebarWidth: CGFloat = 224
+    static let compactBreakpoint: CGFloat = 1080
+    static let narrowContentBreakpoint: CGFloat = 760
+    static let contentHorizontalPadding: CGFloat = 24
+    static let contentTopPadding: CGFloat = 18
+    static let contentBottomPadding: CGFloat = 28
+    static let regularAsideWidth: CGFloat = 360
+    static let compactPanelSpacing: CGFloat = 12
+    static let minimumTableColumnWidth: CGFloat = 96
+    static let wideTableColumnWidth: CGFloat = 112
+}
+
 enum DashboardColor {
     static let canvas = Color(nsColor: .windowBackgroundColor)
     static let sidebar = Color(nsColor: .controlBackgroundColor).opacity(0.74)
@@ -42,10 +59,23 @@ enum DashboardColor {
     static let panelAlt = Color(nsColor: .controlBackgroundColor).opacity(0.86)
     static let border = Color(nsColor: .separatorColor).opacity(0.52)
     static let muted = Color.secondary.opacity(0.74)
-    static let blue = Color(red: 0.14, green: 0.43, blue: 0.95)
-    static let green = Color(red: 0.04, green: 0.62, blue: 0.39)
-    static let amber = Color(red: 0.93, green: 0.54, blue: 0.10)
-    static let red = Color(red: 0.84, green: 0.16, blue: 0.16)
+    static let blue = adaptiveAccent(.blue)
+    static let green = adaptiveAccent(.green)
+    static let amber = adaptiveAccent(.amber)
+    static let red = adaptiveAccent(.red)
     static let purple = Color(red: 0.48, green: 0.34, blue: 0.88)
-    static let cyan = Color(red: 0.04, green: 0.56, blue: 0.70)
+    static let cyan = adaptiveAccent(.cyan)
+
+    private static func adaptiveAccent(_ accent: MetricAccent) -> Color {
+        Color(nsColor: NSColor(name: nil) { appearance in
+            let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            let components = MetricAccentComponents.components(for: accent, appearance: isDark ? .dark : .light)
+            return NSColor(
+                calibratedRed: CGFloat(components.red),
+                green: CGFloat(components.green),
+                blue: CGFloat(components.blue),
+                alpha: 1
+            )
+        })
+    }
 }

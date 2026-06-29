@@ -25,6 +25,34 @@ public enum ThermalState: Equatable, Sendable {
     public var isReported: Bool {
         self != .unknown
     }
+
+    public var metricStatusTone: MetricStatusTone {
+        switch self {
+        case .critical, .hot:
+            return .critical
+        case .warm:
+            return .warning
+        case .nominal:
+            return .normal
+        case .unknown:
+            return .neutral
+        }
+    }
+
+    public var progress: Double? {
+        switch self {
+        case .critical:
+            return 1
+        case .hot:
+            return 0.78
+        case .warm:
+            return 0.52
+        case .nominal:
+            return 0.24
+        case .unknown:
+            return nil
+        }
+    }
 }
 
 public enum NetworkPathState: Equatable, Sendable {
@@ -48,5 +76,29 @@ public enum NetworkPathState: Equatable, Sendable {
 
     public var isReported: Bool {
         self != .unknown
+    }
+
+    public var metricStatusTone: MetricStatusTone {
+        switch self {
+        case .satisfied:
+            return .normal
+        case .requiresConnection:
+            return .warning
+        case .unsatisfied:
+            return .critical
+        case .unknown:
+            return .neutral
+        }
+    }
+
+    public var progress: Double {
+        switch self {
+        case .satisfied:
+            return 1
+        case .requiresConnection:
+            return 0.45
+        case .unsatisfied, .unknown:
+            return 0
+        }
     }
 }

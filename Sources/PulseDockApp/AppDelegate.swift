@@ -232,19 +232,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         )
         window.title = "Pulse Dock"
         window.setFrameAutosaveName("PulseDockMainWindow")
-        window.minSize = NSSize(width: 960, height: 640)
+        window.titlebarAppearsTransparent = false
+        window.styleMask.remove(.fullSizeContentView)
+        let minimumContentRect = NSRect(origin: .zero, size: DashboardLayout.minimumContentSize)
+        window.minSize = window.frameRect(forContentRect: minimumContentRect).size
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: DashboardView(store: store, router: router))
         dashboardWindow = window
     }
 
     private func initialDashboardWindowFrame() -> NSRect {
-        let fallbackFrame = NSRect(x: 0, y: 0, width: 1320, height: 860)
+        let fallbackFrame = NSRect(origin: .zero, size: DashboardLayout.idealContentSize)
         let visibleFrame = NSScreen.main?.visibleFrame ?? fallbackFrame
-        let width = min(1320, visibleFrame.width - 48)
-        let height = min(860, visibleFrame.height - 48)
-        let clampedWidth = max(960, width)
-        let clampedHeight = max(640, height)
+        let width = min(DashboardLayout.idealContentSize.width, visibleFrame.width - 48)
+        let height = min(DashboardLayout.idealContentSize.height, visibleFrame.height - 48)
+        let clampedWidth = max(DashboardLayout.minimumContentSize.width, width)
+        let clampedHeight = max(DashboardLayout.minimumContentSize.height, height)
 
         return NSRect(
             x: visibleFrame.midX - clampedWidth / 2,

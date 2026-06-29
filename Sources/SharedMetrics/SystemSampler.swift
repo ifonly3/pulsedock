@@ -362,58 +362,35 @@ public final class SystemSampler: @unchecked Sendable {
     }
 
     public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot {
+        sampleWidgetSnapshot(now: now).widgetCompactSnapshot()
+    }
+
+    private func sampleWidgetSnapshot(now: Date) -> MetricSnapshot {
         sampleLock.lock()
         defer { sampleLock.unlock() }
 
         let memory = sampleMemory()
-        let networkInterfaces = sampleNetworkInterfaces(now: now)
-        let hasNetworkByteCounters = networkInterfaces.contains { $0.hasByteCounters }
-        let networkTotal = networkTotals(from: networkInterfaces)
-        let networkRate = sampleNetworkRate(totalBytes: networkTotal, hasByteCounters: hasNetworkByteCounters, now: now)
-        let networkPath = networkPathObserver.current
         let battery = cachedBattery(now: now)
         let cpu = sampleCPUUsage()
         let loads = sampleLoadAverages()
+        let networkPath = networkPathObserver.current
         let disk = sampleDiskSpace()
         let uptimeSeconds = ProcessInfo.processInfo.systemUptime
 
         return MetricSnapshot(
             cpuUsage: cpu.total,
-            cpuCoreUsages: cpu.cores,
+            cpuCoreUsages: [],
             hasCPUUsageReport: cpu.isReported,
-            physicalCoreCount: systemInfo.physicalCoreCount,
             logicalCoreCount: systemInfo.logicalCoreCount,
             activeProcessorCount: ProcessInfo.processInfo.activeProcessorCount,
-            cpuBrandName: nil,
             memoryUsedBytes: memory.used,
             memoryTotalBytes: memory.total,
-            memoryFreeBytes: memory.free,
-            memoryWiredBytes: memory.wired,
-            memoryCompressedBytes: memory.compressed,
-            memoryCachedBytes: memory.cached,
-            memorySwapUsedBytes: memory.swapUsed,
-            memorySwapTotalBytes: memory.swapTotal,
-            memorySwapAvailableBytes: memory.swapAvailable,
-            hasMemoryCompositionReport: memory.hasCompositionReport,
             loadAverage: loads.one,
-            loadAverage5: loads.five,
-            loadAverage15: loads.fifteen,
             hasLoadAverageReport: loads.isReported,
             thermalState: sampleThermalState(),
             batteryPercent: battery.percent,
             batteryIsCharging: battery.isCharging,
             batteryPowerSource: battery.powerSource,
-            batteryTimeRemainingMinutes: battery.timeRemainingMinutes,
-            batteryCycleCount: battery.cycleCount,
-            batteryHealth: battery.health,
-            batteryCurrentCapacity: battery.currentCapacity,
-            batteryMaxCapacity: battery.maxCapacity,
-            batteryDesignCapacity: battery.designCapacity,
-            batteryVoltageMillivolts: battery.voltageMillivolts,
-            batteryAmperageMilliamps: battery.amperageMilliamps,
-            networkBytesPerSecond: networkRate.total,
-            hasNetworkByteCounters: hasNetworkByteCounters,
-            hasNetworkDirectionByteCounters: hasNetworkByteCounters,
             networkPathStatus: networkPath.status,
             networkPathIsExpensive: networkPath.isExpensive,
             networkPathIsConstrained: networkPath.isConstrained,
@@ -423,21 +400,10 @@ public final class SystemSampler: @unchecked Sendable {
             networkPathSupportsIPv6: networkPath.supportsIPv6,
             hasNetworkPathSupportReport: networkPath.hasSupportReport,
             networkPathInterfaceKinds: networkPath.interfaceKinds,
-            networkInBytesPerSecond: networkRate.input,
-            networkOutBytesPerSecond: networkRate.output,
-            networkInterfaces: [],
             diskFreeBytes: disk.free,
             diskTotalBytes: disk.total,
-            storageVolumes: [],
-            processCount: 0,
-            activeApplicationCount: 0,
-            hiddenApplicationCount: 0,
-            hasRunningAppCountReport: false,
-            runningApps: [],
-            gpuDevices: [],
-            displays: [],
             uptimeSeconds: uptimeSeconds,
-            hasUptimeReport: uptimeSeconds > 0,
+            hasUptimeReport: true,
             osVersion: systemInfo.osVersion,
             kernelRelease: systemInfo.kernelRelease,
             timestamp: now

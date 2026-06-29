@@ -175,7 +175,8 @@ import Testing
     #expect(!dashboardView.contains("activeNetworkInterfaceCount(snapshot) > 0 ? 0.65 : 0.2"))
     #expect(!dashboardView.contains("activeNetworkInterfaceCount(snapshot) > 0 ? .neutral : .warning"))
     #expect(dashboardView.contains("private func networkStatusLevel(_ snapshot: MetricSnapshot) -> StatusLevel"))
-    #expect(dashboardView.contains("case .unknown:\n        .neutral"))
+    #expect(dashboardView.contains("statusLevel(for: snapshot.canonicalNetworkPathState.metricStatusTone)"))
+    #expect(widget.contains("MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress)"))
     #expect(!widget.contains("default:\n        0.35"))
     #expect(audit.contains("Unknown network path state keeps detail and progress in a not-reported state"))
     #expect(audit.contains("Unknown network path state keeps dashboard status neutral instead of warning, so missing path data is not treated as a network issue."))
@@ -262,7 +263,7 @@ import Testing
     #expect(metricSnapshot.contains("timestamp = try values.decodeIfPresent(Date.self, forKey: .timestamp) ?? Date(timeIntervalSince1970: 0)"))
     #expect(!dashboardView.contains("snapshot.timestamp.formatted(.dateTime.hour().minute().second())"))
     #expect(!dashboardView.contains("snapshot.timestamp.formatted(.dateTime.hour().minute()))"))
-    #expect(dashboardView.contains("Text(snapshot.sampleTimeText)"))
+    #expect(dashboardView.contains("PulseDockAppStrings.dashboardSampleChip(snapshot.sampleTimeText)"))
     #expect(dashboardView.contains("Text(snapshot.sampleClockText)"))
     #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.cpuRecentSampleLabel, value: snapshot.sampleTimeText, status: snapshot.hasSampleTimeReport ? .normal : .neutral)"))
     #expect(widgetPanel.contains("Text(snapshot.sampleTimeText)"))
@@ -372,9 +373,9 @@ import Testing
     #expect(metricSnapshot.contains("public var networkDNSCapabilityText: String"))
     #expect(metricSnapshot.contains("public var networkIPv4CapabilityText: String"))
     #expect(metricSnapshot.contains("public var networkIPv6CapabilityText: String"))
-    #expect(dashboardView.contains("TableRow(values: [\"DNS\", snapshot.networkDNSCapabilityText, PulseDockAppStrings.networkNameResolutionSource])"))
-    #expect(dashboardView.contains("TableRow(values: [\"IPv4\", snapshot.networkIPv4CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle])"))
-    #expect(dashboardView.contains("TableRow(values: [\"IPv6\", snapshot.networkIPv6CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle])"))
+    #expect(dashboardView.contains("[\"DNS\", snapshot.networkDNSCapabilityText, PulseDockAppStrings.networkNameResolutionSource]"))
+    #expect(dashboardView.contains("[\"IPv4\", snapshot.networkIPv4CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle]"))
+    #expect(dashboardView.contains("[\"IPv6\", snapshot.networkIPv6CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle]"))
     #expect(!dashboardView.contains("private func networkPathSupportText"))
     #expect(!dashboardView.contains("networkPathSupportText("))
     #expect(!dashboardView.contains("snapshot.networkPathSupportsDNS ? \"支持\" : \"未报告\""))
@@ -553,8 +554,8 @@ import Testing
     #expect(MetricSnapshot.placeholder.networkLowDataModeText == SharedMetricStrings.notReported)
     #expect(offlinePath.networkLowDataModeText == SharedMetricStrings.networkPathUnavailable)
     #expect(offlinePath.networkMeteredText == SharedMetricStrings.networkPathUnavailable)
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.networkLowDataModeLabel, snapshot.networkLowDataModeText, PulseDockAppStrings.networkSystemPathSubtitle])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.networkMeteredLabel, snapshot.networkMeteredText, PulseDockAppStrings.networkSystemPathSubtitle])"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.networkLowDataModeLabel, snapshot.networkLowDataModeText, PulseDockAppStrings.networkSystemPathSubtitle]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.networkMeteredLabel, snapshot.networkMeteredText, PulseDockAppStrings.networkSystemPathSubtitle]"))
     #expect(!dashboardView.contains("private func networkPathFlagText"))
     #expect(!dashboardView.contains("networkPathFlagText("))
     #expect(audit.contains("The Network page surfaces low-data-mode and metered-network path flags as explicit rows, not only inside the path detail string."))
@@ -649,8 +650,9 @@ import Testing
     #expect(networkPage.contains("let networkPathTrend = networkPathTrendValues(from: history)"))
     #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkConnectionLabel, value: snapshot.networkPathText, tint: networkStatusColor(snapshot), values: networkPathTrend)"))
     #expect(dashboardView.contains("private func networkPathTrendValues(from history: [MetricSnapshot]) -> [Double]"))
-    #expect(dashboardView.contains("history.filter(\\.hasNetworkPathReport).map(networkPathProgress)"))
+    #expect(dashboardView.contains("history.filter(\\.hasNetworkPathReport).map { $0.canonicalNetworkPathState.progress }"))
     #expect(!dashboardView.contains("history.filter { $0.networkPathText != \"未报告\" }.map(networkPathProgress)"))
+    #expect(!dashboardView.contains("history.filter(\\.hasNetworkPathReport).map(networkPathProgress)"))
     #expect(audit.contains("The Network page trend panel surfaces connection status history from the public network path monitor."))
     #expect(audit.contains("Source-level tests require the Network page trend panel to surface network path status history."))
 }
@@ -1146,7 +1148,7 @@ import Testing
     #expect(metricSnapshot.contains("private func reportedMemoryCompositionText(_ bytes: UInt64) -> String"))
     #expect(metricSnapshot.contains("guard hasMemoryCompositionReport else { return SharedMetricStrings.notReported }"))
     #expect(sampler.contains("hasMemoryCompositionReport: memory.hasCompositionReport"))
-    #expect(dashboardView.contains("reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryActiveBytes, total: snapshot.memoryTotalBytes))"))
+    #expect(dashboardView.contains("MetricScales.reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryActiveBytes, total: snapshot.memoryTotalBytes))"))
     #expect(audit.contains("Legacy memory snapshots missing composition fields keep free, wired, compressed, cached, and active memory as not-reported instead of zero bytes."))
     #expect(audit.contains("Source-level tests prevent legacy memory composition snapshots from inventing zero-byte detail rows."))
 }
@@ -1409,7 +1411,7 @@ import Testing
     #expect(dashboardView.contains("private func cpuTrendValues(from history: [MetricSnapshot]) -> [Double]"))
     #expect(dashboardView.contains("history.filter(\\.hasCPUUsageReport).map(\\.cpuUsage)"))
     #expect(dashboardView.contains("let cpuTrend = cpuTrendValues(from: history)"))
-    #expect(dashboardView.contains("MetricCard(title: PulseDockAppStrings.overviewCPUUsageTitle, value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, icon: \"cpu\", tint: DashboardColor.green, badgeText: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), values: cpuTrend)"))
+    #expect(dashboardView.contains("MetricCard(title: PulseDockAppStrings.overviewCPUUsageTitle, value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, icon: \"cpu\", tint: DashboardColor.green, badgeText: snapshot.cpuText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), values: cpuTrend)"))
     #expect(dashboardView.contains("TrendRow(title: \"CPU\", value: snapshot.cpuText, tint: DashboardColor.green, values: cpuTrend)"))
     #expect(dashboardView.contains("Sparkline(values: cpuTrend, tint: DashboardColor.green, fill: true)"))
     #expect(!dashboardView.contains("history.map(\\.cpuUsage)"))
@@ -1432,7 +1434,7 @@ import Testing
     #expect(dashboardView.contains("private func diskTrendValues(from history: [MetricSnapshot]) -> [Double]"))
     #expect(dashboardView.contains("history.filter(\\.hasDiskUsageReport).map(\\.diskUsage)"))
     #expect(dashboardView.contains("private func networkTrendValues(from history: [MetricSnapshot], keyPath: KeyPath<MetricSnapshot, UInt64>) -> [Double]"))
-    #expect(dashboardView.contains("history.filter(\\.hasNetworkByteCounters).map { normalizedRate($0[keyPath: keyPath]) }"))
+    #expect(dashboardView.contains("history.filter(\\.hasNetworkByteCounters).map { MetricScales.networkRateProgress(bytesPerSecond: $0[keyPath: keyPath]) }"))
     #expect(dashboardView.contains("let memoryTrend = memoryTrendValues(from: history)"))
     #expect(dashboardView.contains("values: memoryTrend"))
     #expect(dashboardView.contains("values: diskTrendValues(from: history)"))
@@ -1442,7 +1444,7 @@ import Testing
     #expect(dashboardView.contains("values: networkDownloadTrend"))
     #expect(dashboardView.contains("let networkUploadTrend = networkTrendValues(from: history, keyPath: \\.networkOutBytesPerSecond)"))
     #expect(dashboardView.contains("values: networkUploadTrend"))
-    #expect(dashboardView.contains("MetricScales.networkRateProgress(bytesPerSecond: bytesPerSecond)"))
+    #expect(dashboardView.contains("MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkBytesPerSecond)"))
     #expect(!dashboardView.contains("history.map(\\.memoryUsage)"))
     #expect(!dashboardView.contains("history.map(\\.diskUsage)"))
     #expect(!dashboardView.contains("history.map { normalizedRate($0.network"))
@@ -1466,33 +1468,33 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(dashboardView.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
+    #expect(!dashboardView.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
     #expect(!dashboardView.contains("private func reportedProgress(valueText: String, progress: Double) -> Double?"))
     #expect(!dashboardView.contains("guard valueText != \"未报告\" else { return nil }"))
     #expect(dashboardView.contains("let progress: Double?"))
     #expect(dashboardView.contains("if let progress {"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage)"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage)"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage)"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond))"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkInBytesPerSecond))"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkOutBytesPerSecond))"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot))"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage)"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage)"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage)"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkBytesPerSecond))"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkInBytesPerSecond))"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkOutBytesPerSecond))"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress)"))
     #expect(dashboardView.contains("progress: snapshot.loadAverageProgress"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot))"))
-    #expect(dashboardView.contains("progress: reportedProgress(hasReport: snapshot.hasMemorySwapReport, progress: snapshot.memorySwapUsage)"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot))"))
+    #expect(dashboardView.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemorySwapReport, progress: snapshot.memorySwapUsage)"))
     #expect(!dashboardView.contains("reportedProgress(valueText:"))
     #expect(dashboardView.contains("CapacityBar(segments: diskCapacitySegments(snapshot))"))
     #expect(dashboardView.contains("private func diskCapacitySegments(_ snapshot: MetricSnapshot) -> [CapacitySegment]"))
     #expect(dashboardView.contains("guard snapshot.hasDiskUsageReport else { return [] }"))
     #expect(dashboardView.contains("if snapshot.hasMemoryUsageReport && snapshot.hasMemoryCompositionReport {"))
-    #expect(widget.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
+    #expect(!widget.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
     #expect(!widget.contains("private func reportedProgress(valueText: String, progress: Double) -> Double?"))
-    #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))"))
-    #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))"))
-    #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))"))
-    #expect(widget.contains("WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: networkTint(snapshot, for: colorScheme))"))
-    #expect(widget.contains("WidgetRow(title: PulseDockWidgetStrings.metricPath, value: snapshot.networkPathCapabilityText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))"))
+    #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricCPU, value: snapshot.cpuText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: WidgetColor.green(for: colorScheme))"))
+    #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: WidgetColor.blue(for: colorScheme))"))
+    #expect(widget.contains("RingMetric(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: WidgetColor.amber(for: colorScheme))"))
+    #expect(widget.contains("WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress), tint: networkTint(snapshot, for: colorScheme))"))
+    #expect(widget.contains("WidgetRow(title: PulseDockWidgetStrings.metricPath, value: snapshot.networkPathCapabilityText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress), tint: WidgetColor.cyan(for: colorScheme))"))
     #expect(!widget.contains("reportedProgress(valueText: snapshot.cpuText"))
     #expect(!widget.contains("reportedProgress(valueText: snapshot.memoryUsageText"))
     #expect(!widget.contains("reportedProgress(valueText: snapshot.diskUsageText"))
@@ -1515,13 +1517,13 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(widgetPanel.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
+    #expect(!widgetPanel.contains("private func reportedProgress(hasReport: Bool, progress: Double) -> Double?"))
     #expect(!widgetPanel.contains("private func reportedProgress(valueText: String, progress: Double) -> Double?"))
     #expect(!widgetPanel.contains("guard valueText != \"未报告\" else { return nil }"))
-    #expect(widgetPanel.contains("PopoverMetricRow(title: \"CPU\", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green(for: colorScheme))"))
-    #expect(widgetPanel.contains("PopoverMetricRow(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue(for: colorScheme))"))
-    #expect(widgetPanel.contains("PopoverMetricRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, detail: \"\\(snapshot.networkPathText) · ↓ \\(snapshot.networkInText)  ↑ \\(snapshot.networkOutText)\", progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), tint: Palette.cyan(for: colorScheme))"))
-    #expect(widgetPanel.contains("PopoverMetricRow(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, detail: snapshot.diskText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber(for: colorScheme))"))
+    #expect(widgetPanel.contains("PopoverMetricRow(title: \"CPU\", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green(for: colorScheme))"))
+    #expect(widgetPanel.contains("PopoverMetricRow(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue(for: colorScheme))"))
+    #expect(widgetPanel.contains("PopoverMetricRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, detail: \"\\(snapshot.networkPathText) · ↓ \\(snapshot.networkInText)  ↑ \\(snapshot.networkOutText)\", progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkBytesPerSecond)), tint: Palette.cyan(for: colorScheme))"))
+    #expect(widgetPanel.contains("PopoverMetricRow(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, detail: snapshot.diskText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber(for: colorScheme))"))
     #expect(widgetPanel.contains("let progress: Double?"))
     #expect(widgetPanel.contains("if let progress {"))
     #expect(audit.contains("Menu bar popover progress bars suppress filled progress when the paired live value is not reported, so missing samples do not render as 0% readings."))
@@ -1578,7 +1580,7 @@ import Testing
     #expect(reportedLoopbackOnly.hasNetworkInterfaceReport == true)
     #expect(metricSnapshot.contains("public var hasNetworkInterfaceReport: Bool"))
     #expect(metricSnapshot.contains("guard hasNetworkInterfaceReport else { return SharedMetricStrings.notReported }"))
-    #expect(widget.contains("WidgetRow(title: PulseDockWidgetStrings.metricInterface, value: snapshot.networkPathDetailText, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), tint: WidgetColor.cyan(for: colorScheme))"))
+    #expect(widget.contains("WidgetRow(title: PulseDockWidgetStrings.metricInterface, value: snapshot.networkPathDetailText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress), tint: WidgetColor.cyan(for: colorScheme))"))
     #expect(!widget.contains("private func activeInterfaceProgress(_ snapshot: MetricSnapshot) -> Double"))
     #expect(!widget.contains("Double(snapshot.networkInterfaces.count)"))
     #expect(!widget.contains("Double(activeCount) / 4"))
@@ -1637,9 +1639,9 @@ import Testing
     #expect(reportedCounterInterface.hasInventoryReport)
     #expect(metricSnapshot.contains("public var hasInventoryReport: Bool"))
     #expect(dashboardView.contains("let reportedInterfaces = snapshot.networkInterfaces.filter(\\.hasInventoryReport)"))
-    #expect(dashboardView.contains("if reportedInterfaces.isEmpty"))
-    #expect(dashboardView.contains("TableEmptyRow(text: PulseDockAppStrings.systemDidNotReport)"))
-    #expect(dashboardView.contains("ForEach(reportedInterfaces.prefix(10)) { interface in"))
+    #expect(dashboardView.contains("emptyText: reportedInterfaces.isEmpty ? PulseDockAppStrings.systemDidNotReport : nil"))
+    #expect(dashboardView.contains("TableEmptyRow(text: emptyText)"))
+    #expect(dashboardView.contains("rows: reportedInterfaces.prefix(10).map { interface in"))
     #expect(!dashboardView.contains("ForEach(snapshot.networkInterfaces.prefix(10))"))
     #expect(dashboardView.contains("private struct TableEmptyRow"))
     #expect(audit.contains("Network interface detail table filters legacy rows without reported fields and shows an explicit not-reported row instead of an empty table."))
@@ -1662,7 +1664,7 @@ import Testing
     let networkPage = String(dashboardView[networkStart..<nextStart])
 
     #expect(networkPage.contains("MetricCard(title: PulseDockAppStrings.networkInterfaceTitle, value: snapshot.networkInterfaceSummary"))
-    #expect(networkPage.contains("progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot))"))
+    #expect(networkPage.contains("progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot))"))
     #expect(dashboardView.contains("private func activeInterfaceProgress(_ snapshot: MetricSnapshot) -> Double"))
     #expect(audit.contains("The Network page summary surfaces sampled active interface count alongside throughput and path state."))
     #expect(audit.contains("Source-level tests require the Network page summary to surface sampled network interface count."))
@@ -1680,11 +1682,12 @@ import Testing
     )
 
     #expect(dashboardView.contains("private func networkPathTrendValues(from history: [MetricSnapshot]) -> [Double]"))
-    #expect(dashboardView.contains("history.filter(\\.hasNetworkPathReport).map(networkPathProgress)"))
+    #expect(dashboardView.contains("history.filter(\\.hasNetworkPathReport).map { $0.canonicalNetworkPathState.progress }"))
     #expect(dashboardView.contains("let networkPathTrend = networkPathTrendValues(from: history)"))
     #expect(dashboardView.contains("values: networkPathTrend"))
     #expect(!dashboardView.contains("history.filter { $0.networkPathText != \"未报告\" }.map(networkPathProgress)"))
     #expect(!dashboardView.contains("values: history.map(networkPathProgress)"))
+    #expect(!dashboardView.contains("history.filter(\\.hasNetworkPathReport).map(networkPathProgress)"))
     #expect(audit.contains("Network path trend charts filter out unknown path samples while preserving reported offline states as zero-value status samples"))
     #expect(audit.contains("Network path reported state is centralized on the shared snapshot model instead of being inferred from user-facing text."))
     #expect(audit.contains("Source-level tests require network path reported-state checks to use an explicit snapshot flag instead of user-facing text comparisons."))
@@ -1716,10 +1719,10 @@ import Testing
     #expect(offline.networkRuleStatusText == SharedMetricStrings.networkRuleAttention)
     #expect(requiresConnection.networkRuleStatusText == SharedMetricStrings.networkRuleAttention)
     #expect(metricSnapshot.contains("public var networkRuleStatusText: String"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkPathText, snapshot.networkRuleStatusText])"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkPathText, snapshot.networkRuleStatusText]"))
     #expect(!dashboardView.contains("private func networkRuleStatusText"))
     #expect(!dashboardView.contains("networkRuleStatusText(snapshot)"))
-    #expect(!dashboardView.contains("TableRow(values: [\"网络连接\", \"在线\", snapshot.networkPathText, isNetworkSatisfied(snapshot) ? \"正常\" : \"注意\"])"))
+    #expect(!dashboardView.contains("[\"网络连接\", \"在线\", snapshot.networkPathText, isNetworkSatisfied(snapshot) ? \"正常\" : \"注意\"]"))
     #expect(audit.contains("Network local-rule rows report missing path state as not-reported instead of warning, while reported offline or requires-connection states remain warning results"))
     #expect(audit.contains("Network local-rule display text is centralized on the shared snapshot model."))
     #expect(audit.contains("Source-level tests require network local-rule labels to come from the shared snapshot model."))
@@ -1886,8 +1889,8 @@ import Testing
     #expect(!metricsStore.contains("return trimmed.isEmpty ? \"未报告\" : trimmed"))
     #expect(metricsStore.contains("snapshot.activeApplicationCount = applications.filter(\\.isActive).count"))
     #expect(metricsStore.contains("snapshot.hiddenApplicationCount = applications.filter(\\.isHidden).count"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.processesTableColumns)"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.processesTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.processesTableColumns"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.processesTableColumns"))
     #expect(dashboardView.contains("DashboardPanel(title: PulseDockAppStrings.processesRunningAppsTitle, subtitle: ProcessMetric.listSubtitle(for: snapshot.runningApps, defaultSubtitle: PulseDockAppStrings.processesDefaultSubtitle), icon: \"list.bullet.rectangle\")"))
     #expect(dashboardView.contains("defaultSubtitle: PulseDockAppStrings.processesDefaultSubtitle"))
     #expect(!dashboardView.contains("按应用名称排序"))
@@ -2435,7 +2438,7 @@ import Testing
     #expect(metricSnapshot.contains("public var uptimeText: String"))
     #expect(sampler.contains("ProcessInfo.processInfo.systemUptime"))
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricUptime"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricUptime, snapshot.uptimeText, PulseDockAppStrings.sourceSystemBootTime]"))
+    #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral)"))
     #expect(widget.contains("StatTile(title: PulseDockWidgetStrings.metricUptime, value: snapshot.uptimeText"))
 
     for manifest in [appPrivacyInfo, widgetPrivacyInfo] {
@@ -2544,7 +2547,7 @@ import Testing
     #expect(dashboardView.contains("StatusSummaryRow(title: PulseDockAppStrings.metricKernelVersion, value: snapshot.kernelText, status: snapshot.hasKernelReleaseReport ? .normal : .neutral)"))
     #expect(!dashboardView.contains("StatusSummaryRow(title: \"内核版本\", value: snapshot.kernelText, status: reportedStatusLevel(valueText: snapshot.kernelText))"))
     #expect(!dashboardView.contains("StatusSummaryRow(title: \"内核版本\", value: snapshot.kernelText, status: .normal)"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricKernelVersion, snapshot.kernelText, PulseDockAppStrings.sourceSystemVersion]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricSystemVersionUptimeKernel, snapshot.systemVersionSourceStatusText, PulseDockAppStrings.sourceSystemVersionBootTime]"))
     #expect(widget.contains("StatTile(title: PulseDockWidgetStrings.metricKernel, value: snapshot.kernelText"))
     #expect(audit.contains("Darwin kernel release"))
     #expect(audit.contains("Kernel version status rows report missing kernel release as not-reported instead of normal."))
@@ -2597,13 +2600,12 @@ import Testing
     #expect(dashboardView.contains("DashboardPanel(title: PulseDockAppStrings.overviewSystemStatusTitle, subtitle: snapshot.osVersionText"))
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricSystemVersion, value: snapshot.osVersionText, icon: \"desktopcomputer\", status: snapshot.hasOSVersionReport ? .normal : .neutral, source: PulseDockAppStrings.sourceOSVersion)"))
     #expect(!dashboardView.contains("SourceCapabilityCard(title: \"系统版本\", value: snapshot.osVersionText, icon: \"desktopcomputer\", status: reportedStatusLevel(valueText: snapshot.osVersionText), source: \"操作系统版本\")"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricSystemVersion, snapshot.osVersionText, PulseDockAppStrings.sourceOSVersion]"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricSystemVersionUptimeKernel, snapshot.systemVersionSourceStatusText, PulseDockAppStrings.sourceSystemVersionBootTime]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricSystemVersionUptimeKernel, snapshot.systemVersionSourceStatusText, PulseDockAppStrings.sourceSystemVersionBootTime]"))
     #expect(metricSnapshot.contains("hasAnyReport: hasOSVersionReport || hasUptimeReport || hasKernelReleaseReport"))
     #expect(!metricSnapshot.contains("let hasOSVersionReport = osVersionText != \"未报告\""))
     #expect(!metricSnapshot.contains("let hasKernelReport = !kernelRelease.isEmpty"))
     #expect(!dashboardView.contains("subtitle: snapshot.osVersion, icon: \"checkmark.seal\""))
-    #expect(!dashboardView.contains("TableRow(values: [\"系统版本\", snapshot.osVersion, \"操作系统版本\"]"))
+    #expect(!dashboardView.contains("[\"系统版本\", snapshot.osVersion, \"操作系统版本\"]"))
     #expect(audit.contains("Operating system version display text reports the system-not-reported state when only a generic placeholder is available."))
     #expect(audit.contains("The Status page and Settings data-source row surface OS version alongside uptime and Darwin kernel release."))
     #expect(audit.contains("Source-level tests require OS version surfaces to use reported-state text instead of the generic macOS fallback."))
@@ -2803,7 +2805,7 @@ import Testing
     #expect(metricSnapshot.contains("public var stateText: String"))
     #expect(sampler.contains("isLowPower: device.isLowPower"))
     #expect(sampler.contains("isRemovable: device.isRemovable"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.gpuDeviceTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.gpuDeviceTableColumns"))
     #expect(dashboardView.contains("device.kindText"))
     #expect(dashboardView.contains("device.unifiedMemoryText"))
     #expect(dashboardView.contains("device.recommendedWorkingSetText"))
@@ -3063,8 +3065,8 @@ import Testing
     #expect(!legacyDisplay.hasInventoryReport)
     #expect(!snapshot.hasGPUReport)
     #expect(!snapshot.hasDisplayReport)
-    #expect(dashboardView.contains("ForEach(snapshot.gpuDevices.filter(\\.hasInventoryReport)) { device in"))
-    #expect(dashboardView.contains("ForEach(snapshot.displays.filter(\\.hasInventoryReport)) { display in"))
+    #expect(dashboardView.contains("rows: snapshot.gpuDevices.filter(\\.hasInventoryReport).map { device in"))
+    #expect(dashboardView.contains("rows: snapshot.displays.filter(\\.hasInventoryReport).map { display in"))
     #expect(!dashboardView.contains("ForEach(snapshot.gpuDevices) { device in"))
     #expect(!dashboardView.contains("ForEach(snapshot.displays) { display in"))
     #expect(audit.contains("GPU/Display detail tables filter legacy inventory rows without reported fields instead of rendering empty not-reported rows."))
@@ -3163,18 +3165,18 @@ import Testing
     #expect(metricSnapshot.contains("public var hasOSVersionReport: Bool"))
     #expect(metricSnapshot.contains("public var hasKernelReleaseReport: Bool"))
     #expect(metricSnapshot.contains("hasAnyReport: hasOSVersionReport || hasUptimeReport || hasKernelReleaseReport"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricCPUMemory, snapshot.cpuMemorySourceStatusText, PulseDockAppStrings.sourceSystemProcessorMemoryStats])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricNetworkConnection, snapshot.networkSourceStatusText, PulseDockAppStrings.sourceConnectionInterfaceTraffic])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricRunningApps, snapshot.runningAppsSourceStatusText, PulseDockAppStrings.sourceApplicationSessionList])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricGPUDisplays, snapshot.gpuDisplaySourceStatusText, PulseDockAppStrings.sourceGraphicsDisplayConfiguration])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricVolumeCapacity, snapshot.storageSourceStatusText, PulseDockAppStrings.sourceFileSystemCapacity])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricPowerThermalState, snapshot.powerThermalSourceStatusText, PulseDockAppStrings.sourcePowerThermalState])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricSystemVersionUptimeKernel, snapshot.systemVersionSourceStatusText, PulseDockAppStrings.sourceSystemVersionBootTime])"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricCPUMemory, snapshot.cpuMemorySourceStatusText, PulseDockAppStrings.sourceSystemProcessorMemoryStats]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricNetworkConnection, snapshot.networkSourceStatusText, PulseDockAppStrings.sourceConnectionInterfaceTraffic]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricRunningApps, snapshot.runningAppsSourceStatusText, PulseDockAppStrings.sourceApplicationSessionList]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricGPUDisplays, snapshot.gpuDisplaySourceStatusText, PulseDockAppStrings.sourceGraphicsDisplayConfiguration]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricVolumeCapacity, snapshot.storageSourceStatusText, PulseDockAppStrings.sourceFileSystemCapacity]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricPowerThermalState, snapshot.powerThermalSourceStatusText, PulseDockAppStrings.sourcePowerThermalState]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricSystemVersionUptimeKernel, snapshot.systemVersionSourceStatusText, PulseDockAppStrings.sourceSystemVersionBootTime]"))
     #expect(!dashboardView.contains("private func sourceStatusText"))
     #expect(!dashboardView.contains("SourceStatus(snapshot)"))
-    #expect(!dashboardView.contains("TableRow(values: [\"GPU / 显示器\", \"可用\""))
-    #expect(!dashboardView.contains("TableRow(values: [\"卷容量\", \"可用\""))
-    #expect(!dashboardView.contains("TableRow(values: [\"运行时间 / 内核版本\", \"可用\""))
+    #expect(!dashboardView.contains("[\"GPU / 显示器\", \"可用\""))
+    #expect(!dashboardView.contains("[\"卷容量\", \"可用\""))
+    #expect(!dashboardView.contains("[\"运行时间 / 内核版本\", \"可用\""))
     #expect(audit.contains("Settings data-source rows use sampled reported-state text instead of hard-coded availability labels"))
     #expect(audit.contains("CPU and memory data-source status uses the shared memory reported-state flag instead of raw capacity checks."))
     #expect(audit.contains("Settings data-source display text is centralized on the shared snapshot model."))
@@ -3202,7 +3204,7 @@ import Testing
     let settingsPage = String(dashboardView[settingsStart..<nextStart])
 
     #expect(MetricSnapshot.placeholder.loadAverageSourceStatusText == SharedMetricStrings.notReported)
-    #expect(settingsPage.contains("TableRow(values: [PulseDockAppStrings.metricLoad, snapshot.loadAverageSourceStatusText, PulseDockAppStrings.sourceLoadAverages])"))
+    #expect(settingsPage.contains("[PulseDockAppStrings.metricLoad, snapshot.loadAverageSourceStatusText, PulseDockAppStrings.sourceLoadAverages]"))
     #expect(!dashboardView.contains("private func loadAverageSourceStatus"))
     #expect(!dashboardView.contains("loadAverageSourceStatus(snapshot)"))
     #expect(audit.contains("Settings data-source rows include load-average reported state, matching the implemented Load surfaces."))
@@ -3282,7 +3284,7 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.displayTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.displayTableColumns"))
     #expect(dashboardView.contains("display.modeSizeText"))
     #expect(dashboardView.contains("display.rotationText"))
     #expect(audit.contains("display mode size and rotation state"))
@@ -3690,7 +3692,7 @@ import Testing
     #expect(metricSnapshot.contains("public var physicalHeightMillimeters: Int"))
     #expect(sampler.contains("CGDisplayScreenSize(displayID)"))
     #expect(sampler.contains("physicalWidthMillimeters: Int(screenSize.width.rounded())"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.displayTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.displayTableColumns"))
     #expect(metricSnapshot.contains("public var physicalSizeText: String"))
     #expect(dashboardView.contains("display.physicalSizeText"))
     #expect(audit.contains("physical screen size"))
@@ -3721,7 +3723,7 @@ import Testing
     #expect(sampler.contains("backingScaleFactor: scale"))
     #expect(sampler.contains("scales[displayID] = Double(scale)"))
     #expect(sampler.contains("screen.backingScaleFactor"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.displayTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.displayTableColumns"))
     #expect(metricSnapshot.contains("public var backingScaleText: String"))
     #expect(dashboardView.contains("display.backingScaleText"))
     #expect(audit.contains("backing scale factor"))
@@ -3755,7 +3757,7 @@ import Testing
     #expect(sampler.contains("colorSpaceModel: colorSpaceModel(screen.colorSpace?.colorSpaceModel)"))
     #expect(sampler.contains("colorComponentCount: screen.colorSpace?.numberOfColorComponents ?? 0"))
     #expect(!sampler.contains("screen.colorSpace?.localizedName"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.displayTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.displayTableColumns"))
     #expect(metricSnapshot.contains("public var colorText: String"))
     #expect(dashboardView.contains("display.colorText"))
     #expect(audit.contains("color space model and component count"))
@@ -3833,12 +3835,12 @@ import Testing
     #expect(dashboardView.contains("(PulseDockAppStrings.batteryHealthLabel, snapshot.batteryHealthText)"))
     #expect(dashboardView.contains("(PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText)"))
     #expect(dashboardView.contains("(PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText)"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.batteryCurrentCapacityLabel, snapshot.batteryCurrentCapacityText, PulseDockAppStrings.sourcePowerStatus])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.batteryMaxCapacityLabel, snapshot.batteryMaxCapacityText, PulseDockAppStrings.sourcePowerStatus])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.batteryDesignCapacityLabel, snapshot.batteryDesignCapacityText, PulseDockAppStrings.sourceBatterySpecifications])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.batteryHealthLabel, snapshot.batteryHealthText, PulseDockAppStrings.sourceBatteryHealth])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText, PulseDockAppStrings.sourcePowerStatus])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText, PulseDockAppStrings.sourcePowerStatus])"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.batteryCurrentCapacityLabel, snapshot.batteryCurrentCapacityText, PulseDockAppStrings.sourcePowerStatus]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.batteryMaxCapacityLabel, snapshot.batteryMaxCapacityText, PulseDockAppStrings.sourcePowerStatus]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.batteryDesignCapacityLabel, snapshot.batteryDesignCapacityText, PulseDockAppStrings.sourceBatterySpecifications]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.batteryHealthLabel, snapshot.batteryHealthText, PulseDockAppStrings.sourceBatteryHealth]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText, PulseDockAppStrings.sourcePowerStatus]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText, PulseDockAppStrings.sourcePowerStatus]"))
     #expect(!dashboardView.contains("optionalIntText(snapshot.batteryCurrentCapacity)"))
     #expect(!dashboardView.contains("optionalIntText(snapshot.batteryMaxCapacity)"))
     #expect(!dashboardView.contains("optionalIntText(snapshot.batteryDesignCapacity)"))
@@ -3868,8 +3870,8 @@ import Testing
 
     #expect(powerSummary.contains("(PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText)"))
     #expect(powerSummary.contains("(PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText)"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText, PulseDockAppStrings.sourcePowerStatus])"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText, PulseDockAppStrings.sourcePowerStatus])"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText, PulseDockAppStrings.sourcePowerStatus]"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText, PulseDockAppStrings.sourcePowerStatus]"))
     #expect(audit.contains("The Power page summary surfaces public voltage and amperage readings when macOS reports them, not only in the detailed battery table."))
     #expect(audit.contains("Source-level tests require the Power page summary to surface sampled voltage and amperage readings."))
 }
@@ -4011,9 +4013,8 @@ import Testing
     #expect(widget.contains("func sampleCompact() -> MetricSnapshot"))
     #expect(widget.contains("return systemSampler.sampleWidgetCompact()"))
     #expect(sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot"))
-    #expect(sampler.contains("gpuDevices: []"))
-    #expect(sampler.contains("displays: []"))
-    #expect(sampler.contains("storageVolumes: []"))
+    #expect(sampler.contains("sampleWidgetSnapshot(now: now).widgetCompactSnapshot()"))
+    #expect(sampler.contains("private func sampleWidgetSnapshot(now: Date) -> MetricSnapshot"))
     #expect(!widget.contains("private var isPrimed"))
     #expect(!widget.contains("private var primedSnapshot"))
     #expect(!widget.contains("let sampler = SystemSampler()"))
@@ -4597,8 +4598,8 @@ import Testing
     #expect(metricSnapshot.contains("public enum MetricStatusTone"))
     #expect(metricSnapshot.contains("public var powerStatusTone: MetricStatusTone"))
     #expect(dashboardView.contains("switch snapshot.powerStatusTone"))
-    #expect(widgetView.contains("switch snapshot.powerStatusTone"))
-    #expect(menuBarPopover.contains("switch snapshot.powerStatusTone"))
+    #expect(widgetView.contains("widgetToneColor(snapshot.powerStatusTone, for: colorScheme)"))
+    #expect(menuBarPopover.contains("tint(for: snapshot.powerStatusTone)"))
     #expect(!dashboardView.contains("return snapshot.batteryPercent == nil ? DashboardColor.green : DashboardColor.amber"))
     #expect(!widgetView.contains("return snapshot.batteryPercent == nil ? WidgetColor.green : WidgetColor.amber"))
     #expect(!menuBarPopover.contains("return snapshot.batteryPercent == nil ? Palette.green : Palette.amber"))
@@ -4719,10 +4720,7 @@ import Testing
         encoding: .utf8
     )
 
-    let powerStatusRows = dashboardView.components(
-        separatedBy: "[snapshot.powerStatusTitle, snapshot.powerStatusText, snapshot.powerSourceText]"
-    ).count - 1
-    #expect(powerStatusRows == 1)
+    #expect(dashboardView.contains("SourceCapabilityCard(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, icon: \"battery.75percent\", status: powerStatusLevel(snapshot), source: snapshot.powerSourceText)"))
     #expect(!dashboardView.contains("[\"电池电量\", snapshot.batteryText, \"电源状态\"]"))
 }
 
@@ -4743,14 +4741,14 @@ import Testing
     #expect(widgetView.contains("StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))"))
     #expect(widgetView.contains("private func compactPowerStatusText(_ snapshot: MetricSnapshot) -> String"))
     #expect(widgetView.contains("private func powerTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color"))
-    #expect(widgetView.contains("switch snapshot.powerStatusTone"))
+    #expect(widgetView.contains("widgetToneColor(snapshot.powerStatusTone, for: colorScheme)"))
     #expect(!widgetView.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText, tint: WidgetColor.amber)"))
     #expect(!widgetView.contains("StatTile(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: WidgetColor.green)"))
     #expect(!widgetView.contains("snapshot.batteryPowerSource == nil ? 0 : 1"))
     #expect(menuBarPopover.contains("PopoverSmallStat(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText"))
     #expect(menuBarPopover.contains("PopoverSmallStat(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot))"))
     #expect(menuBarPopover.contains("private func powerTint(_ snapshot: MetricSnapshot) -> Color"))
-    #expect(menuBarPopover.contains("switch snapshot.powerStatusTone"))
+    #expect(menuBarPopover.contains("tint(for: snapshot.powerStatusTone)"))
     #expect(!menuBarPopover.contains("PopoverSmallStat(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: Palette.green)"))
 }
 
@@ -5893,7 +5891,7 @@ import Testing
     #expect(metricSnapshot.contains("public var usedBytes: UInt64"))
     #expect(metricSnapshot.contains("public var usage: Double"))
     #expect(metricSnapshot.contains("public var totalBytes: UInt64"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.storageVolumeTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.storageVolumeTableColumns"))
     #expect(dashboardView.contains("volume.totalText"))
     #expect(dashboardView.contains("volume.usedText"))
     #expect(dashboardView.contains("volume.availableText"))
@@ -6009,7 +6007,7 @@ import Testing
     #expect(metricSnapshot.contains("public var accessText: String"))
     #expect(sampler.contains(".volumeIsReadOnlyKey"))
     #expect(sampler.contains("isReadOnly: values.volumeIsReadOnly ?? false"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.storageVolumeTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.storageVolumeTableColumns"))
     #expect(dashboardView.contains("volume.kindText"))
     #expect(dashboardView.contains("volume.accessText"))
     #expect(!dashboardView.contains("volumeKindText(volume)"))
@@ -6251,17 +6249,17 @@ import Testing
     #expect(metricSnapshot.contains("case .unknown: return SharedMetricStrings.notReported"))
     #expect(dashboardView.contains("snapshot.thermalText"))
     #expect(!dashboardView.contains("localizedThermal(snapshot.thermalState)"))
-    #expect(dashboardView.contains("case .unknown: .neutral"))
+    #expect(dashboardView.contains("statusLevel(for: ThermalState(raw: state).metricStatusTone)"))
     #expect(dashboardView.contains("snapshot.thermalLimitText"))
     #expect(dashboardView.contains("private var thermalColor: Color {\n        thermalStatus(snapshot.thermalState).color"))
     #expect(!dashboardView.contains("default: DashboardColor.green"))
     #expect(widgetPanel.contains("value: snapshot.thermalText"))
-    #expect(widgetPanel.contains("case .unknown: Palette.cyan"))
+    #expect(widgetPanel.contains("tint(for: ThermalState(raw: state).metricStatusTone)"))
     #expect(!widgetPanel.contains("default: Palette.cyan"))
     #expect(!widgetPanel.contains("default: Palette.green"))
     #expect(!widgetPanel.contains("thermalText(snapshot.thermalState)"))
     #expect(widget.contains("value: snapshot.thermalText"))
-    #expect(widget.contains("case .unknown: WidgetColor.cyan(for: colorScheme)"))
+    #expect(widget.contains("widgetToneColor(ThermalState(raw: state).metricStatusTone, for: colorScheme)"))
     #expect(!widget.contains("default: WidgetColor.cyan(for: colorScheme)"))
     #expect(!widget.contains("default: WidgetColor.green"))
     #expect(!widget.contains("thermalText(snapshot.thermalState)"))
@@ -6325,15 +6323,19 @@ import Testing
         contentsOf: root.appendingPathComponent("Sources/PulseDockApp/DashboardView.swift"),
         encoding: .utf8
     )
+    let metricStateContracts = try String(
+        contentsOf: root.appendingPathComponent("Sources/SharedMetrics/MetricStateContracts.swift"),
+        encoding: .utf8
+    )
     let audit = try String(
         contentsOf: root.appendingPathComponent("docs/data-capability-audit.md"),
         encoding: .utf8
     )
 
-    #expect(dashboardView.contains("private func thermalProgress(_ state: String) -> Double?"))
-    #expect(dashboardView.contains("case .unknown: nil"))
+    #expect(!dashboardView.contains("private func thermalProgress(_ state: String) -> Double?"))
+    #expect(metricStateContracts.contains("case .unknown:\n            return nil"))
     #expect(!dashboardView.contains("default: nil"))
-    #expect(dashboardView.contains("RingGauge(title: PulseDockAppStrings.statusThermalTitle, value: snapshot.thermalText, progress: thermalProgress(snapshot.thermalState), tint: thermalStatus(snapshot.thermalState).color)"))
+    #expect(dashboardView.contains("RingGauge(title: PulseDockAppStrings.statusThermalTitle, value: snapshot.thermalText, progress: ThermalState(raw: snapshot.thermalState).progress, tint: thermalStatus(snapshot.thermalState).color)"))
     #expect(!dashboardView.contains("private func thermalProgress(_ state: String) -> Double {"))
     #expect(!dashboardView.contains("default: 0.24"))
     #expect(audit.contains("Thermal gauge progress suppresses filled arcs when thermal state is not reported, instead of drawing missing thermal data as a nominal low-pressure value."))
@@ -6553,7 +6555,7 @@ import Testing
     #expect(sampler.contains("record.mtu = stats.mtu"))
     #expect(sampler.contains("record.mtu = interfaceData.ifi_mtu > 0 ? Int(interfaceData.ifi_mtu) : nil"))
     #expect(sampler.contains("mtu: data.ifi_mtu > 0 ? Int(data.ifi_mtu) : nil"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.networkInterfaceTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.networkInterfaceTableColumns"))
     #expect(dashboardView.contains("interface.mtuText"))
     #expect(!dashboardView.contains("mtuText(interface.mtu)"))
     #expect(!dashboardView.contains("interface.name"))
@@ -6875,7 +6877,7 @@ import Testing
     #expect(sampler.contains("packetsReceived: data.ifi_ipackets"))
     #expect(sampler.contains("receiveErrors: data.ifi_ierrors"))
     #expect(sampler.contains("record.packetsReceived = UInt64(interfaceData.ifi_ipackets)"))
-    #expect(dashboardView.contains("TableHeader(columns: PulseDockAppStrings.networkInterfaceTableColumns)"))
+    #expect(dashboardView.contains("columns: PulseDockAppStrings.networkInterfaceTableColumns"))
     #expect(dashboardView.contains("interface.packetCountText"))
     #expect(dashboardView.contains("interface.packetErrorText"))
     #expect(!dashboardView.contains("interface.name"))
@@ -7132,7 +7134,7 @@ import Testing
     #expect(dashboardView.contains("(PulseDockAppStrings.memorySwapLabel, snapshot.memorySwapText)"))
     #expect(dashboardView.contains("(PulseDockAppStrings.memorySwapAvailableLabel, snapshot.memorySwapAvailableText)"))
     #expect(dashboardView.contains("(PulseDockAppStrings.memorySwapTotalLabel, snapshot.memorySwapTotalText)"))
-    #expect(dashboardView.contains("StatLine(label: PulseDockAppStrings.memorySwapLabel, value: snapshot.memorySwapText, progress: reportedProgress(hasReport: snapshot.hasMemorySwapReport, progress: snapshot.memorySwapUsage), tint: DashboardColor.red)"))
+    #expect(dashboardView.contains("StatLine(label: PulseDockAppStrings.memorySwapLabel, value: snapshot.memorySwapText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemorySwapReport, progress: snapshot.memorySwapUsage), tint: DashboardColor.red)"))
     #expect(audit.contains("swap used/total/available"))
 }
 
@@ -7262,7 +7264,6 @@ import Testing
     let appEnglishStrings = try fixture("Sources/PulseDockApp/Resources/en.lproj/PulseDockApp.strings")
     let appChineseStrings = try fixture("Sources/PulseDockApp/Resources/zh-Hans.lproj/PulseDockApp.strings")
     let expectedEntries = [
-        (symbol: "notReported", key: "app.not_reported", english: "Not reported", chinese: "未报告"),
         (symbol: "metricMemory", key: "app.metric.memory", english: "Memory", chinese: "内存"),
         (symbol: "metricNetwork", key: "app.metric.network", english: "Network", chinese: "网络"),
         (symbol: "metricDisk", key: "app.metric.disk", english: "Disk", chinese: "磁盘"),
@@ -7290,6 +7291,13 @@ import Testing
         #expect(appChineseStrings.contains("\"\(entry.key)\" = \"\(entry.chinese)\";"))
         #expect(widgetPanel.contains("PulseDockAppStrings.\(entry.symbol)"))
     }
+
+    #expect(appStrings.contains("static var notReported: String"))
+    #expect(appStrings.contains("SharedMetricStrings.notReported"))
+    #expect(appStringCatalog.contains("\"app.not_reported\""))
+    #expect(appEnglishStrings.contains("\"app.not_reported\" = \"Not reported\";"))
+    #expect(appChineseStrings.contains("\"app.not_reported\" = \"未报告\";"))
+    #expect(widgetPanel.contains("PulseDockAppStrings.notReported"))
 
     #expect(!widgetPanel.contains("title: \"内存\""))
     #expect(!widgetPanel.contains("title: \"网络\""))
@@ -7329,7 +7337,6 @@ import Testing
         (symbol: "headerSystemStatus", key: "widget.header.system_status", english: "System Status", chinese: "系统状态"),
         (symbol: "waitingSystemData", key: "widget.placeholder.accessibility.waiting_system_data", english: "Waiting for system monitor data", chinese: "等待系统监控数据"),
         (symbol: "waitingData", key: "widget.placeholder.waiting_data", english: "Waiting for data", chinese: "等待数据"),
-        (symbol: "notReported", key: "widget.not_reported", english: "Not reported", chinese: "未报告"),
         (symbol: "compactPowerCharging", key: "widget.power.compact.charging", english: "Charging", chinese: "充电"),
         (symbol: "compactPowerAdapter", key: "widget.power.compact.adapter", english: "Power", chinese: "电源"),
         (symbol: "compactPowerBattery", key: "widget.power.compact.battery", english: "Battery", chinese: "电池"),
@@ -7347,6 +7354,13 @@ import Testing
         #expect(widgetStringCatalog.contains("\"value\" : \"\(entry.chinese)\""))
         #expect(widget.contains("PulseDockWidgetStrings.\(entry.symbol)"))
     }
+
+    #expect(widgetStrings.contains("static var notReported: String"))
+    #expect(widgetStrings.contains("SharedMetricStrings.notReported"))
+    #expect(widgetStringCatalog.contains("\"widget.not_reported\""))
+    #expect(widgetStringCatalog.contains("\"value\" : \"Not reported\""))
+    #expect(widgetStringCatalog.contains("\"value\" : \"未报告\""))
+    #expect(widget.contains("PulseDockWidgetStrings.notReported"))
 
     #expect(!widget.contains(".description(\"在桌面显示"))
     #expect(!widget.contains("title: \"热\""))
@@ -7525,8 +7539,8 @@ import Testing
     #expect(dashboardView.contains("Slider(value: Binding("))
     #expect(dashboardView.contains("store.cpuAlertThreshold"))
     #expect(dashboardView.contains("MetricFormatting.percentage(store.cpuAlertThreshold)"))
-    #expect(!dashboardView.contains("TableRow(values: [\"CPU 超过\", \"90%\""))
-    #expect(!dashboardView.contains("TableRow(values: [\"内存压力高\", \"85%\""))
+    #expect(!dashboardView.contains("[\"CPU 超过\", \"90%\""))
+    #expect(!dashboardView.contains("[\"内存压力高\", \"85%\""))
 }
 
 @Test func diskThresholdAppliesAcrossOverviewAndStoragePages() throws {
@@ -7537,7 +7551,7 @@ import Testing
     )
 
     #expect(dashboardView.contains("OverviewPage(store: store, history: history, metricColumns: metricColumns, isCompact: isCompact)"))
-    #expect(dashboardView.contains("StoragePage(store: store, history: history)"))
+    #expect(dashboardView.contains("StoragePage(store: store, history: history, capabilityColumns: capabilityColumns)"))
     #expect(dashboardView.contains("usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold)"))
     #expect(dashboardView.contains("thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold"))
     #expect(!dashboardView.contains("snapshot.diskUsage > 0.9"))
@@ -7608,15 +7622,15 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(dashboardView.contains("SensorsPage(store: store)"))
+    #expect(dashboardView.contains("SensorsPage(store: store, isCompact: isCompact, capabilityColumns: capabilityColumns)"))
     #expect(dashboardView.contains("@ObservedObject var store: MetricsStore"))
     #expect(dashboardView.contains("private var snapshot: MetricSnapshot { store.snapshot }"))
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricCPU"))
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricMemory"))
     #expect(dashboardView.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricDisk"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricMemory, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText"))
-    #expect(dashboardView.contains("TableRow(values: [PulseDockAppStrings.metricDisk, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricMemory, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText"))
+    #expect(dashboardView.contains("[PulseDockAppStrings.metricDisk, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText"))
 }
 
 @Test func statusPageSurfacesLoadAverageSignal() throws {
@@ -7635,7 +7649,8 @@ import Testing
     let statusPage = String(dashboardView[statusStart..<nextStart])
 
     #expect(statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricLoad, value: snapshot.loadDetailText, icon: \"speedometer\", status: snapshot.hasLoadAverageReport ? .normal : .neutral, source: PulseDockAppStrings.sourceLoadAverages)"))
-    #expect(statusPage.contains("TableRow(values: [\"\\(PulseDockAppStrings.metricLoad) 1/5/15\", snapshot.loadDetailText, PulseDockAppStrings.sourceLoadAverages])"))
+    #expect(!statusPage.contains("PulseDockAppStrings.statusSystemSignalsTitle"))
+    #expect(!statusPage.contains("[\"\\(PulseDockAppStrings.metricLoad) 1/5/15\", snapshot.loadDetailText, PulseDockAppStrings.sourceLoadAverages]"))
     #expect(audit.contains("The Status page surfaces load-average detail as a current system signal instead of limiting it to the CPU and History pages."))
     #expect(audit.contains("Source-level tests require the Status page to surface load-average detail with reported-state handling."))
 }
@@ -7656,7 +7671,7 @@ import Testing
     let statusPage = String(dashboardView[statusStart..<nextStart])
 
     #expect(statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: \"sparkles.rectangle.stack\", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceGraphicsDevices)"))
-    #expect(statusPage.contains("TableRow(values: [PulseDockAppStrings.metricGPU, snapshot.gpuSummaryText, PulseDockAppStrings.sourceGraphicsDevices])"))
+    #expect(!statusPage.contains("[PulseDockAppStrings.metricGPU, snapshot.gpuSummaryText, PulseDockAppStrings.sourceGraphicsDevices]"))
     #expect(audit.contains("The Status page surfaces GPU inventory summary as a current system signal, using the same public Metal device inventory as the GPU/Display page."))
     #expect(audit.contains("Source-level tests require the Status page to surface GPU inventory with reported-state handling."))
 }
@@ -7677,7 +7692,7 @@ import Testing
     let statusPage = String(dashboardView[statusStart..<nextStart])
 
     #expect(statusPage.contains("SourceCapabilityCard(title: PulseDockAppStrings.metricStorageVolumes, value: snapshot.storageVolumeSummaryText, icon: \"externaldrive\", status: snapshot.hasStorageVolumeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceFileSystemCapacity)"))
-    #expect(statusPage.contains("TableRow(values: [PulseDockAppStrings.metricStorageVolumes, snapshot.storageVolumeSummaryText, PulseDockAppStrings.sourceFileSystemCapacity])"))
+    #expect(!statusPage.contains("[PulseDockAppStrings.metricStorageVolumes, snapshot.storageVolumeSummaryText, PulseDockAppStrings.sourceFileSystemCapacity]"))
     #expect(audit.contains("The Status page surfaces mounted storage volume summary as a current system signal, using the same sanitized volume inventory as the Storage page."))
     #expect(audit.contains("Source-level tests require the Status page to surface storage volume inventory with reported-state handling."))
 }
@@ -7909,8 +7924,8 @@ import Testing
     let historyPage = String(dashboardView[historyStart..<nextStart])
 
     #expect(dashboardView.contains("private func thermalTrendValues(from history: [MetricSnapshot]) -> [Double]"))
-    #expect(dashboardView.contains("history.filter(\\.hasThermalStateReport).compactMap { thermalProgress($0.thermalState) }"))
-    #expect(!dashboardView.contains("history.compactMap { thermalProgress($0.thermalState) }"))
+    #expect(dashboardView.contains("history.filter(\\.hasThermalStateReport).compactMap { ThermalState(raw: $0.thermalState).progress }"))
+    #expect(!dashboardView.contains("history.compactMap { ThermalState(raw: $0.thermalState).progress }"))
     #expect(historyPage.contains("TrendRow(title: PulseDockAppStrings.statusThermalTitle, value: snapshot.thermalText, tint: thermalStatus(snapshot.thermalState).color, values: thermalTrendValues(from: history))"))
     #expect(audit.contains("The History page surfaces persisted thermal-state trend while filtering samples whose thermal state was not reported."))
     #expect(audit.contains("Source-level tests require the History page to surface persisted thermal-state trend."))
@@ -8361,7 +8376,7 @@ import Testing
     #expect(audit.contains("Widget timeline entries store compact snapshots that preserve visible network path signals while stripping short-window throughput and detailed process, network interface, storage, GPU, and display inventory lists."))
 }
 
-@Test func widgetProviderDoesNotSynchronouslyRunFullSystemSamplerForSnapshotOrTimeline() throws {
+@Test func widgetProviderUsesCompactSamplerForSnapshotAndTimeline() throws {
     let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
     let sampler = try fixture("Sources/SharedMetrics/SystemSampler.swift")
 
@@ -8371,15 +8386,12 @@ import Testing
     #expect(widget.contains("sampledSnapshotForTimeline(now: now)"))
     #expect(widget.contains("return systemSampler.sampleWidgetCompact()"))
     #expect(sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot"))
-    #expect(sampler.contains("let cpu = sampleCPUUsage()"))
-    #expect(sampler.contains("let battery = cachedBattery(now: now)"))
-    #expect(sampler.contains("let disk = sampleDiskSpace()"))
-    #expect(sampler.contains("gpuDevices: []"))
-    #expect(sampler.contains("displays: []"))
-    #expect(sampler.contains("storageVolumes: []"))
+    #expect(sampler.contains("sampleWidgetSnapshot(now: now).widgetCompactSnapshot()"))
     #expect(!widget.contains("return systemSampler.sample()"))
     #expect(!widget.contains("completion(SystemEntry(date: Date(), snapshot: sampledSnapshot()))"))
-    #expect(!sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot {\n        sample()"))
+    #expect(sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot {\n        sampleWidgetSnapshot(now: now).widgetCompactSnapshot()\n    }"))
+    #expect(sampler.contains("private func sampleWidgetSnapshot(now: Date) -> MetricSnapshot"))
+    #expect(!sampler.contains("public func sampleWidgetCompact(now: Date = Date()) -> MetricSnapshot {\n        sample(now: now).widgetCompactSnapshot()\n    }"))
 }
 
 @Test func widgetCompactSnapshotPreservesSummarySignalsAndDropsPrivateLists() {
@@ -8670,7 +8682,8 @@ import Testing
 @Test func mainWindowSupportsThirteenInchFriendlyMinimumSize() throws {
     let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
 
-    #expect(appDelegate.contains("window.minSize = NSSize(width: 960, height: 640)"))
+    #expect(appDelegate.contains("DashboardLayout.minimumContentSize"))
+    #expect(appDelegate.contains("window.minSize = window.frameRect(forContentRect: minimumContentRect).size"))
     #expect(!appDelegate.contains("window.minSize = NSSize(width: 1180, height: 760)"))
 }
 
@@ -8679,8 +8692,8 @@ import Testing
 
     #expect(appDelegate.contains("private func initialDashboardWindowFrame() -> NSRect"))
     #expect(appDelegate.contains("let visibleFrame = NSScreen.main?.visibleFrame"))
-    #expect(appDelegate.contains("let width = min(1320, visibleFrame.width - 48)"))
-    #expect(appDelegate.contains("let height = min(860, visibleFrame.height - 48)"))
+    #expect(appDelegate.contains("let width = min(DashboardLayout.idealContentSize.width, visibleFrame.width - 48)"))
+    #expect(appDelegate.contains("let height = min(DashboardLayout.idealContentSize.height, visibleFrame.height - 48)"))
     #expect(appDelegate.contains("contentRect: initialDashboardWindowFrame()"))
     #expect(!appDelegate.contains("contentRect: NSRect(x: 0, y: 0, width: 1320, height: 860)"))
     #expect(!appDelegate.contains("window.center()"))
@@ -8700,7 +8713,7 @@ import Testing
     #expect(dashboard.contains("private func adaptiveMetricColumns(for width: CGFloat) -> [GridItem]"))
     #expect(dashboard.contains("GeometryReader { proxy in"))
     #expect(dashboard.contains("adaptiveMetricColumns(for: proxy.size.width)"))
-    #expect(dashboard.contains("let isCompact = proxy.size.width < 1080"))
+    #expect(dashboard.contains("let isCompact = proxy.size.width < DashboardLayout.compactBreakpoint"))
 }
 
 @Test func dashboardUsesStableTableColumnIDsAndNoDeadSettingRow() throws {
@@ -8714,7 +8727,7 @@ import Testing
 @Test func dashboardAvoidsDuplicatedCompactRegularPageBranch() throws {
     let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
 
-    #expect(dashboard.contains("let isCompact = proxy.size.width < 1080"))
+    #expect(dashboard.contains("let isCompact = proxy.size.width < DashboardLayout.compactBreakpoint"))
     #expect(dashboard.contains("metricColumns: adaptiveMetricColumns(for: proxy.size.width)"))
     #expect(dashboard.contains("summaryColumns: adaptiveSummaryColumns(for: proxy.size.width)"))
     #expect(!dashboard.contains("if proxy.size.width < 1080 {\n                            pageContent("))
@@ -8723,7 +8736,7 @@ import Testing
 @Test func dashboardPanelModifierDoesNotApplyRepeatedHeavyShadows() throws {
     let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
     let panelStart = try #require(dashboard.range(of: "func panel(cornerRadius: CGFloat) -> some View")?.lowerBound)
-    let panelEnd = dashboard.range(of: "private func normalizedRate", range: panelStart..<dashboard.endIndex)?.lowerBound ?? dashboard.endIndex
+    let panelEnd = dashboard.range(of: "private func minimumTableWidth", range: panelStart..<dashboard.endIndex)?.lowerBound ?? dashboard.endIndex
     let panelBody = String(dashboard[panelStart..<panelEnd])
 
     #expect(!panelBody.contains(".shadow(color: .black.opacity(0.035), radius: 16, x: 0, y: 8)"))
@@ -8745,9 +8758,12 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(dashboardView.contains("private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat"))
-    #expect(widgetPanel.contains("private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat"))
-    #expect(widget.contains("private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat"))
+    #expect(!dashboardView.contains("private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat"))
+    #expect(!widgetPanel.contains("private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat"))
+    #expect(!widget.contains("private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat"))
+    #expect(dashboardView.contains("MetricScales.fillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 6)"))
+    #expect(widgetPanel.contains("MetricScales.fillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 7)"))
+    #expect(widget.contains("MetricScales.fillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 6)"))
     #expect(!dashboardView.contains(".frame(width: max(6, proxy.size.width * min(max(progress, 0), 1)))"))
     #expect(!widgetPanel.contains(".frame(width: max(7, proxy.size.width * min(max(progress, 0), 1)))"))
     #expect(!widget.contains(".frame(width: max(6, proxy.size.width * min(max(progress, 0), 1)))"))
@@ -9394,13 +9410,17 @@ import Testing
 }
 
 @Test func appAndWidgetProgressRenderingUsesFiniteClampHelper() throws {
+    let scales = try fixture("Sources/SharedMetrics/MetricScales.swift")
     let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
     let popover = try fixture("Sources/PulseDockApp/WidgetPanelView.swift")
     let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
 
-    #expect(dashboard.contains("MetricScales.clampedProgress(progress)"))
-    #expect(popover.contains("MetricScales.clampedProgress(progress)"))
+    #expect(scales.contains("guard let normalizedProgress = clampedProgress(progress), normalizedProgress > 0 else"))
+    #expect(dashboard.contains("progress.flatMap(MetricScales.clampedProgress)"))
+    #expect(dashboard.contains("MetricScales.fillWidth(progress, in: proxy.size.width"))
+    #expect(popover.contains("MetricScales.fillWidth(progress, in: proxy.size.width"))
     #expect(widget.contains("MetricScales.clampedProgress(progress)"))
+    #expect(widget.contains("MetricScales.fillWidth(progress, in: proxy.size.width"))
     #expect(!dashboard.contains("min(max(progress, 0), 1)"))
     #expect(!popover.contains("min(max(progress, 0), 1)"))
     #expect(!widget.contains("min(max(progress, 0), 1)"))

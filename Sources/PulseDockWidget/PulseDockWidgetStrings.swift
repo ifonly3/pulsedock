@@ -1,4 +1,5 @@
 import Foundation
+import SharedMetrics
 
 enum PulseDockWidgetStrings {
     static var widgetDisplayName: String {
@@ -86,7 +87,7 @@ enum PulseDockWidgetStrings {
     }
 
     static var notReported: String {
-        localized("widget.not_reported", defaultValue: "Not reported")
+        SharedMetricStrings.notReported
     }
 
     static var compactPowerCharging: String {

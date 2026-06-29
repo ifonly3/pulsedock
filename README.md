@@ -4,6 +4,8 @@ Pulse Dock is a native macOS system monitor with a desktop WidgetKit extension. 
 
 The app is designed for a quiet macOS utility workflow: a dashboard window for deeper inspection, a menu bar popover for quick checks, and system widgets for glanceable desktop status.
 
+Design reference assets live in `design/gptimage2-system-monitor/`.
+
 ## Status
 
 - Native macOS app target: `PulseDock`

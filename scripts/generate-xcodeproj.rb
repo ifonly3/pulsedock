@@ -71,16 +71,24 @@ marketing_version = ENV.fetch("MARKETING_VERSION", "1.0.0")
 current_project_version = ENV.fetch("CURRENT_PROJECT_VERSION", "1")
 development_team = ENV.fetch("DEVELOPMENT_TEAM", "")
 
+shared_target = project.new_target(:static_library, "SharedMetrics", :osx, deployment_target)
 app_target = project.new_target(:application, "PulseDock", :osx, deployment_target)
 widget_target = project.new_target(:app_extension, "PulseDockWidgetExtension", :osx, deployment_target)
 app_target.product_reference.path = "Pulse Dock.app"
 widget_target.product_reference.path = "PulseDockWidgetExtension.appex"
 
-(shared_files + app_files).each { |file| app_target.add_file_references([file]) }
-(shared_files + widget_files).each { |file| widget_target.add_file_references([file]) }
+shared_files.each { |file| shared_target.add_file_references([file]) }
+app_files.each { |file| app_target.add_file_references([file]) }
+widget_files.each { |file| widget_target.add_file_references([file]) }
 app_target.add_resources(shared_resource_files + app_resource_files + [app_privacy_manifest, app_icon])
 widget_target.add_resources(shared_resource_files + widget_resource_files + [widget_privacy_manifest])
 
+shared_target.add_system_framework("AppKit")
+shared_target.add_system_framework("CoreGraphics")
+shared_target.add_system_framework("IOKit")
+shared_target.add_system_framework("Metal")
+shared_target.add_system_framework("Network")
+shared_target.add_system_framework("SystemConfiguration")
 app_target.add_system_framework("SwiftUI")
 app_target.add_system_framework("AppKit")
 app_target.add_system_framework("WidgetKit")
@@ -96,12 +104,16 @@ widget_target.add_system_framework("IOKit")
 widget_target.add_system_framework("Metal")
 widget_target.add_system_framework("Network")
 widget_target.add_system_framework("SystemConfiguration")
+app_target.frameworks_build_phase.add_file_reference(shared_target.product_reference)
+widget_target.frameworks_build_phase.add_file_reference(shared_target.product_reference)
 
 copy_phase = app_target.new_copy_files_build_phase("Embed App Extensions")
 copy_phase.symbol_dst_subfolder_spec = :plug_ins
 copy_phase.add_file_reference(widget_target.product_reference, true)
 
+app_target.add_dependency(shared_target)
 app_target.add_dependency(widget_target)
+widget_target.add_dependency(shared_target)
 
 project.targets.each do |target|
   target.build_configurations.each do |config|
@@ -114,6 +126,8 @@ project.targets.each do |target|
     settings["SWIFT_VERSION"] = "6.0"
     settings["ENABLE_HARDENED_RUNTIME"] = "YES"
     settings["GENERATE_INFOPLIST_FILE"] = "NO"
+    next if target == shared_target
+
     settings["INFOPLIST_FILE"] = target == app_target ? "Resources/AppInfo.plist" : "Resources/WidgetInfo.plist"
     settings["CODE_SIGN_ENTITLEMENTS"] = target == app_target ? "Resources/PulseDock.entitlements" : "Resources/PulseDockWidgetExtension.entitlements"
     settings["PRODUCT_BUNDLE_IDENTIFIER"] = target == app_target ? app_bundle_identifier : widget_bundle_identifier

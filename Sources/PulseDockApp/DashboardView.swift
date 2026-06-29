@@ -29,29 +29,35 @@ struct DashboardView: View {
 
                 GeometryReader { proxy in
                     ScrollView {
-                        let isCompact = proxy.size.width < 1080
+                        let isCompact = proxy.size.width < DashboardLayout.compactBreakpoint
                         pageContent(
                             metricColumns: adaptiveMetricColumns(for: proxy.size.width),
                             summaryColumns: adaptiveSummaryColumns(for: proxy.size.width),
+                            capabilityColumns: adaptiveCapabilityColumns(for: proxy.size.width),
                             isCompact: isCompact
                         )
                         .id(router.selectedPage)
                         .transition(reduceMotion ? .identity : .opacity.combined(with: .move(edge: .trailing)))
                         .animation(DashboardMotion.page(reduceMotion: reduceMotion), value: router.selectedPage)
-                        .padding(.horizontal, 24)
-                        .padding(.top, 18)
-                        .padding(.bottom, 28)
+                        .padding(.horizontal, DashboardLayout.contentHorizontalPadding)
+                        .padding(.top, DashboardLayout.contentTopPadding)
+                        .padding(.bottom, DashboardLayout.contentBottomPadding)
                     }
                     .background(DashboardColor.canvas)
                 }
             }
         }
-        .frame(minWidth: 960, idealWidth: 1320, minHeight: 640, idealHeight: 860)
+        .frame(
+            minWidth: DashboardLayout.minimumContentSize.width,
+            idealWidth: DashboardLayout.idealContentSize.width,
+            minHeight: DashboardLayout.minimumContentSize.height,
+            idealHeight: DashboardLayout.idealContentSize.height
+        )
         .background(WindowBackdrop())
     }
 
     @ViewBuilder
-    private func pageContent(metricColumns: [GridItem], summaryColumns: [GridItem], isCompact: Bool) -> some View {
+    private func pageContent(metricColumns: [GridItem], summaryColumns: [GridItem], capabilityColumns: [GridItem], isCompact: Bool) -> some View {
         let snapshot = store.snapshot
         let history = store.recentSnapshots
 
@@ -59,21 +65,21 @@ struct DashboardView: View {
         case .overview:
             OverviewPage(store: store, history: history, metricColumns: metricColumns, isCompact: isCompact)
         case .cpu:
-            CPUPage(snapshot: snapshot, history: history)
+            CPUPage(snapshot: snapshot, history: history, isCompact: isCompact)
         case .gpu:
-            GPUDisplayPage(snapshot: snapshot)
+            GPUDisplayPage(snapshot: snapshot, capabilityColumns: capabilityColumns)
         case .memory:
-            MemoryPage(snapshot: snapshot, history: history)
+            MemoryPage(snapshot: snapshot, history: history, isCompact: isCompact)
         case .storage:
-            StoragePage(store: store, history: history)
+            StoragePage(store: store, history: history, capabilityColumns: capabilityColumns)
         case .network:
             NetworkPage(snapshot: snapshot, history: history, metricColumns: metricColumns)
         case .power:
-            PowerPage(snapshot: snapshot, history: history)
+            PowerPage(snapshot: snapshot, history: history, isCompact: isCompact)
         case .processes:
             ProcessesPage(snapshot: snapshot, summaryColumns: summaryColumns)
         case .sensors:
-            SensorsPage(store: store)
+            SensorsPage(store: store, isCompact: isCompact, capabilityColumns: capabilityColumns)
         case .history:
             HistoryAlertsPage(store: store, history: history)
         case .settings:
@@ -178,13 +184,45 @@ private func windowBackdropColors(for colorScheme: ColorScheme) -> [Color] {
 }
 
 private func adaptiveMetricColumns(for width: CGFloat) -> [GridItem] {
-    let count = width < 1080 ? 2 : 4
+    let count = width < DashboardLayout.compactBreakpoint ? 2 : 4
     return Array(repeating: GridItem(.flexible(), spacing: 12), count: count)
 }
 
 private func adaptiveSummaryColumns(for width: CGFloat) -> [GridItem] {
-    let count = width < 1080 ? 2 : 4
+    let count = width < DashboardLayout.compactBreakpoint ? 2 : 4
     return Array(repeating: GridItem(.flexible(), spacing: 12), count: count)
+}
+
+private func adaptiveCapabilityColumns(for width: CGFloat) -> [GridItem] {
+    let minimum = width < DashboardLayout.compactBreakpoint ? CGFloat(170) : CGFloat(190)
+    return [GridItem(.adaptive(minimum: minimum), spacing: 12)]
+}
+
+private func adaptiveCoreColumns() -> [GridItem] {
+    [GridItem(.adaptive(minimum: 118), spacing: 10)]
+}
+
+private let sparklineVisibleSampleLimit = 80
+
+@ViewBuilder
+private func ResponsivePanelPair<Primary: View, Secondary: View>(
+    isCompact: Bool,
+    secondaryWidth: CGFloat = DashboardLayout.regularAsideWidth,
+    @ViewBuilder primary: () -> Primary,
+    @ViewBuilder secondary: () -> Secondary
+) -> some View {
+    if isCompact {
+        VStack(alignment: .leading, spacing: DashboardLayout.compactPanelSpacing) {
+            primary()
+            secondary()
+        }
+    } else {
+        HStack(alignment: .top, spacing: DashboardLayout.compactPanelSpacing) {
+            primary()
+            secondary()
+                .frame(width: secondaryWidth)
+        }
+    }
 }
 
 private struct DashboardSidebar: View {
@@ -192,40 +230,47 @@ private struct DashboardSidebar: View {
     let snapshot: MetricSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: DashboardSpacing.sm) {
-                HStack(spacing: DashboardSpacing.sm) {
-                    Image(systemName: "waveform.path.ecg.rectangle")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(DashboardColor.green)
-                    Text("Pulse Dock")
-                        .font(DashboardTypography.appTitle)
-                }
+        GeometryReader { proxy in
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: DashboardSpacing.sm) {
+                        HStack(spacing: DashboardSpacing.sm) {
+                            Image(systemName: "waveform.path.ecg.rectangle")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundStyle(DashboardColor.green)
+                            Text("Pulse Dock")
+                                .font(DashboardTypography.appTitle)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
+                        }
 
-                Text(PulseDockAppStrings.dashboardSidebarLocalStatus)
-                    .font(DashboardTypography.caption)
-                    .foregroundStyle(DashboardColor.muted)
-                    .lineLimit(1)
-            }
-            .padding(.horizontal, 18)
-            .padding(.top, 22)
-
-            VStack(spacing: DashboardSpacing.xs) {
-                ForEach(DashboardPage.allCases) { page in
-                    SidebarRow(page: page, isSelected: page == selection) {
-                        selection = page
+                        Text(PulseDockAppStrings.dashboardSidebarLocalStatus)
+                            .font(DashboardTypography.caption)
+                            .foregroundStyle(DashboardColor.muted)
+                            .lineLimit(1)
                     }
+                    .padding(.horizontal, 18)
+                    .padding(.top, 22)
+
+                    VStack(spacing: DashboardSpacing.xs) {
+                        ForEach(DashboardPage.allCases) { page in
+                            SidebarRow(page: page, isSelected: page == selection) {
+                                selection = page
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 10)
+
+                    Spacer(minLength: 16)
+
+                    SidebarHealthCard(snapshot: snapshot)
+                        .padding(.horizontal, 12)
+                        .padding(.bottom, 16)
                 }
+                .frame(minHeight: proxy.size.height, alignment: .top)
             }
-            .padding(.horizontal, 10)
-
-            Spacer(minLength: 16)
-
-            SidebarHealthCard(snapshot: snapshot)
-                .padding(.horizontal, 12)
-                .padding(.bottom, 16)
         }
-        .frame(width: 224)
+        .frame(width: DashboardLayout.sidebarWidth)
         .background {
             ZStack {
                 VisualEffectView(material: .sidebar)
@@ -287,14 +332,11 @@ private struct SidebarHealthCard: View {
                 Text(PulseDockAppStrings.dashboardSidebarLiveSampling)
                     .font(.system(size: 13, weight: .semibold))
                 Spacer()
-                Text(snapshot.sampleTimeText)
-                    .font(.system(size: 11, weight: .medium).monospacedDigit())
-                    .foregroundStyle(DashboardColor.muted)
             }
 
-            CompactMetricLine(title: PulseDockAppStrings.metricCPU, value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: DashboardColor.green)
-            CompactMetricLine(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: DashboardColor.blue)
-            CompactMetricLine(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: DashboardColor.amber)
+            CompactMetricLine(title: PulseDockAppStrings.metricCPU, value: snapshot.cpuText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: DashboardColor.green)
+            CompactMetricLine(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: DashboardColor.blue)
+            CompactMetricLine(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: DashboardColor.amber)
         }
         .padding(13)
         .panel(cornerRadius: 8)
@@ -311,25 +353,13 @@ private struct DashboardTopBar: View {
     let refreshInterval: RefreshIntervalOption
 
     var body: some View {
-        HStack(spacing: 18) {
-            VStack(alignment: .leading, spacing: DashboardSpacing.xs) {
-                Text(page.subtitle)
-                    .font(DashboardTypography.pageTitle)
-                Text(PulseDockAppStrings.dashboardTopBarTagline)
-                    .font(DashboardTypography.body)
-                    .foregroundStyle(DashboardColor.muted)
-            }
-
-            Spacer()
-
-            HStack(spacing: 8) {
-                DataChip(icon: "desktopcomputer", text: PulseDockAppStrings.dashboardTopBarLocalMachine)
-                DataChip(icon: "clock", text: PulseDockAppStrings.dashboardSampleChip(snapshot.sampleTimeText))
-                DataChip(icon: "arrow.clockwise", text: refreshInterval.label)
-            }
+        ViewThatFits(in: .horizontal) {
+            regularContent
+            compactContent
         }
-        .padding(.horizontal, 24)
-        .frame(height: 82)
+        .padding(.horizontal, DashboardLayout.contentHorizontalPadding)
+        .padding(.vertical, 12)
+        .frame(minHeight: 82)
         .background {
             ZStack {
                 VisualEffectView(material: .headerView)
@@ -338,6 +368,45 @@ private struct DashboardTopBar: View {
         }
         .overlay(alignment: .bottom) {
             Divider().overlay(DashboardColor.border)
+        }
+    }
+
+    private var regularContent: some View {
+        HStack(spacing: 18) {
+            titleBlock
+
+            Spacer()
+
+            chips
+        }
+    }
+
+    private var compactContent: some View {
+        VStack(alignment: .leading, spacing: DashboardSpacing.sm) {
+            titleBlock
+            chips
+        }
+    }
+
+    private var titleBlock: some View {
+        VStack(alignment: .leading, spacing: DashboardSpacing.xs) {
+            Text(page.subtitle)
+                .font(DashboardTypography.pageTitle)
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
+            Text(PulseDockAppStrings.dashboardTopBarTagline)
+                .font(DashboardTypography.body)
+                .foregroundStyle(DashboardColor.muted)
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
+        }
+    }
+
+    private var chips: some View {
+        HStack(spacing: 8) {
+            DataChip(icon: "desktopcomputer", text: PulseDockAppStrings.dashboardTopBarLocalMachine)
+            DataChip(icon: "clock", text: PulseDockAppStrings.dashboardSampleChip(snapshot.sampleTimeText))
+            DataChip(icon: "arrow.clockwise", text: refreshInterval.label)
         }
     }
 }
@@ -358,9 +427,9 @@ private struct OverviewPage: View {
 
         VStack(alignment: .leading, spacing: 16) {
             LazyVGrid(columns: metricColumns, spacing: 12) {
-                MetricCard(title: PulseDockAppStrings.overviewCPUUsageTitle, value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, icon: "cpu", tint: DashboardColor.green, badgeText: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), values: cpuTrend)
-                MetricCard(title: PulseDockAppStrings.overviewMemoryUsageTitle, value: snapshot.memoryUsageText, detail: snapshot.memoryText, icon: "memorychip", tint: DashboardColor.blue, badgeText: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), values: memoryTrend)
-                MetricCard(title: PulseDockAppStrings.overviewNetworkThroughputTitle, value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", icon: "arrow.up.arrow.down", tint: DashboardColor.cyan, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), values: networkTrend)
+                MetricCard(title: PulseDockAppStrings.overviewCPUUsageTitle, value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, icon: "cpu", tint: DashboardColor.green, badgeText: snapshot.cpuText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), values: cpuTrend)
+                MetricCard(title: PulseDockAppStrings.overviewMemoryUsageTitle, value: snapshot.memoryUsageText, detail: snapshot.memoryText, icon: "memorychip", tint: DashboardColor.blue, badgeText: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), values: memoryTrend)
+                MetricCard(title: PulseDockAppStrings.overviewNetworkThroughputTitle, value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", icon: "arrow.up.arrow.down", tint: DashboardColor.cyan, badgeText: nil, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkBytesPerSecond)), values: networkTrend)
                 MetricCard(title: PulseDockAppStrings.overviewPowerStatusTitle, value: snapshot.powerStatusText, detail: snapshot.powerSourceText, icon: "battery.75percent", tint: powerTint(snapshot), badgeText: snapshot.batteryPercent.map { MetricFormatting.percentage($0) }, progress: powerGaugeProgress(snapshot), values: powerTrend)
             }
 
@@ -425,53 +494,23 @@ private struct OverviewPage: View {
 private struct CPUPage: View {
     let snapshot: MetricSnapshot
     let history: [MetricSnapshot]
+    let isCompact: Bool
 
     var body: some View {
         let cpuTrend = cpuTrendValues(from: history)
 
         VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                DashboardPanel(title: PulseDockAppStrings.cpuProcessorTitle, subtitle: PulseDockAppStrings.cpuProcessorSubtitle, icon: "cpu") {
-                    VStack(spacing: 18) {
-                        HStack(alignment: .firstTextBaseline) {
-                            Text(snapshot.cpuText)
-                                .font(.system(size: 54, weight: .semibold, design: .default).monospacedDigit())
-                            Text(PulseDockAppStrings.cpuCurrentTotalUsageTitle)
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(DashboardColor.muted)
-                            Spacer()
-                            DataChip(icon: "waveform.path.ecg", text: reportedHistorySampleChipText(from: history))
-                        }
-
-                        Sparkline(values: cpuTrend, tint: DashboardColor.green, fill: true)
-                            .frame(height: 170)
-                    }
-                }
-
-                DashboardPanel(title: PulseDockAppStrings.metricLoad, subtitle: PulseDockAppStrings.cpuLoadTrendSubtitle, icon: "speedometer") {
-                    VStack(spacing: 12) {
-                        StatLine(label: PulseDockAppStrings.cpuOneMinuteLabel, value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: DashboardColor.green)
-                        StatLine(label: PulseDockAppStrings.cpuFiveMinuteLabel, value: snapshot.loadAverage5Text, progress: snapshot.loadAverage5Progress, tint: DashboardColor.blue)
-                        StatLine(label: PulseDockAppStrings.cpuFifteenMinuteLabel, value: snapshot.loadAverage15Text, progress: snapshot.loadAverage15Progress, tint: DashboardColor.amber)
-                        Divider()
-                        KeyValueGrid(items: [
-                            (PulseDockAppStrings.cpuProcessorLabel, snapshot.cpuBrandText),
-                            (PulseDockAppStrings.cpuPhysicalCoresLabel, snapshot.physicalCoreCountText),
-                            (PulseDockAppStrings.cpuLogicalCoresLabel, snapshot.logicalCoreCountText),
-                            (PulseDockAppStrings.cpuActiveCoresLabel, snapshot.activeProcessorCountText),
-                            (PulseDockAppStrings.metricRunningApps, snapshot.runningAppCountText),
-                            (PulseDockAppStrings.cpuRecentSampleLabel, snapshot.sampleTimeText)
-                        ])
-                    }
-                }
-                .frame(width: 320)
+            ResponsivePanelPair(isCompact: isCompact, secondaryWidth: 320) {
+                processorPanel(cpuTrend: cpuTrend)
+            } secondary: {
+                loadPanel
             }
 
             DashboardPanel(title: PulseDockAppStrings.cpuPerCoreUsageTitle, subtitle: PulseDockAppStrings.cpuPerCoreUsageSubtitle, icon: "square.grid.3x3") {
                 if snapshot.cpuCoreUsages.isEmpty {
                     StatusSummaryRow(title: PulseDockAppStrings.cpuPerCoreSampleTitle, value: PulseDockAppStrings.systemDidNotReport, status: .neutral)
                 } else {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 5), spacing: 10) {
+                    LazyVGrid(columns: adaptiveCoreColumns(), spacing: 10) {
                         ForEach(Array(snapshot.cpuCoreUsages.enumerated()), id: \.offset) { index, value in
                             CoreUsageTile(index: index + 1, value: value, tint: DashboardColor.green)
                         }
@@ -482,59 +521,122 @@ private struct CPUPage: View {
             ProcessListPanel(processes: snapshot.runningApps, title: PulseDockAppStrings.processesRunningAppsTitle, subtitle: PulseDockAppStrings.processesDefaultSubtitle)
         }
     }
+
+    private func processorPanel(cpuTrend: [Double]) -> some View {
+        DashboardPanel(title: PulseDockAppStrings.cpuProcessorTitle, subtitle: PulseDockAppStrings.cpuProcessorSubtitle, icon: "cpu") {
+            VStack(spacing: 18) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(snapshot.cpuText)
+                        .font(.system(size: 54, weight: .semibold, design: .default).monospacedDigit())
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.62)
+                    Text(PulseDockAppStrings.cpuCurrentTotalUsageTitle)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(DashboardColor.muted)
+                    Spacer()
+                    DataChip(icon: "waveform.path.ecg", text: reportedHistorySampleChipText(from: history))
+                }
+
+                Sparkline(values: cpuTrend, tint: DashboardColor.green, fill: true)
+                    .frame(height: isCompact ? 132 : 170)
+            }
+        }
+    }
+
+    private var loadPanel: some View {
+        DashboardPanel(title: PulseDockAppStrings.metricLoad, subtitle: PulseDockAppStrings.cpuLoadTrendSubtitle, icon: "speedometer") {
+            VStack(spacing: 12) {
+                StatLine(label: PulseDockAppStrings.cpuOneMinuteLabel, value: snapshot.loadText, progress: snapshot.loadAverageProgress, tint: DashboardColor.green)
+                StatLine(label: PulseDockAppStrings.cpuFiveMinuteLabel, value: snapshot.loadAverage5Text, progress: snapshot.loadAverage5Progress, tint: DashboardColor.blue)
+                StatLine(label: PulseDockAppStrings.cpuFifteenMinuteLabel, value: snapshot.loadAverage15Text, progress: snapshot.loadAverage15Progress, tint: DashboardColor.amber)
+                Divider()
+                KeyValueGrid(items: [
+                    (PulseDockAppStrings.cpuProcessorLabel, snapshot.cpuBrandText),
+                    (PulseDockAppStrings.cpuPhysicalCoresLabel, snapshot.physicalCoreCountText),
+                    (PulseDockAppStrings.cpuLogicalCoresLabel, snapshot.logicalCoreCountText),
+                    (PulseDockAppStrings.cpuActiveCoresLabel, snapshot.activeProcessorCountText),
+                    (PulseDockAppStrings.metricRunningApps, snapshot.runningAppCountText),
+                    (PulseDockAppStrings.cpuRecentSampleLabel, snapshot.sampleTimeText)
+                ])
+            }
+        }
+    }
 }
 
 private struct MemoryPage: View {
     let snapshot: MetricSnapshot
     let history: [MetricSnapshot]
+    let isCompact: Bool
 
     var body: some View {
         let memoryTrend = memoryTrendValues(from: history)
 
         VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                DashboardPanel(title: PulseDockAppStrings.overviewMemoryUsageTitle, subtitle: PulseDockAppStrings.memoryRealtimeStatsSubtitle, icon: "memorychip") {
-                    HStack(spacing: 24) {
-                        RingGauge(title: PulseDockAppStrings.memoryUsedTitle, value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: DashboardColor.blue)
-                            .frame(width: 148, height: 148)
-
-                        VStack(spacing: 14) {
-                            MemorySegmentBar(snapshot: snapshot)
-                            TrendRow(title: PulseDockAppStrings.memoryUsageTrendTitle, value: snapshot.memoryText, tint: DashboardColor.blue, values: memoryTrend)
-                            KeyValueGrid(items: [
-                                (PulseDockAppStrings.memoryTotalLabel, snapshot.memoryDetailText),
-                                (PulseDockAppStrings.memoryFreeLabel, snapshot.memoryFreeText),
-                                (PulseDockAppStrings.memoryCachedLabel, snapshot.memoryCachedText),
-                                (PulseDockAppStrings.memoryCompressedLabel, snapshot.memoryCompressedText),
-                                (PulseDockAppStrings.memorySwapLabel, snapshot.memorySwapText),
-                                (PulseDockAppStrings.memorySwapAvailableLabel, snapshot.memorySwapAvailableText),
-                                (PulseDockAppStrings.memorySwapTotalLabel, snapshot.memorySwapTotalText)
-                            ])
-                        }
-                    }
-                }
-
-                DashboardPanel(title: PulseDockAppStrings.memoryCompositionTitle, subtitle: PulseDockAppStrings.memoryCompositionSubtitle, icon: "rectangle.3.group") {
-                    VStack(spacing: 12) {
-                        StatLine(label: PulseDockAppStrings.memoryAppActiveLabel, value: snapshot.memoryActiveText, progress: reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryActiveBytes, total: snapshot.memoryTotalBytes)), tint: DashboardColor.green)
-                        StatLine(label: PulseDockAppStrings.memoryWiredLabel, value: snapshot.memoryWiredText, progress: reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryWiredBytes, total: snapshot.memoryTotalBytes)), tint: DashboardColor.amber)
-                        StatLine(label: PulseDockAppStrings.memoryCompressedLabel, value: snapshot.memoryCompressedText, progress: reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryCompressedBytes, total: snapshot.memoryTotalBytes)), tint: DashboardColor.purple)
-                        StatLine(label: PulseDockAppStrings.memoryCachedFilesLabel, value: snapshot.memoryCachedText, progress: reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryCachedBytes, total: snapshot.memoryTotalBytes)), tint: DashboardColor.cyan)
-                        StatLine(label: PulseDockAppStrings.memorySwapLabel, value: snapshot.memorySwapText, progress: reportedProgress(hasReport: snapshot.hasMemorySwapReport, progress: snapshot.memorySwapUsage), tint: DashboardColor.red)
-                    }
-                }
-                .frame(width: 360)
+            ResponsivePanelPair(isCompact: isCompact) {
+                memoryUsagePanel(memoryTrend: memoryTrend)
+            } secondary: {
+                compositionPanel
             }
 
             ProcessListPanel(processes: snapshot.runningApps, title: PulseDockAppStrings.processesRunningAppsTitle, subtitle: PulseDockAppStrings.processesCurrentSessionSubtitle)
         }
     }
 
+    private func memoryUsagePanel(memoryTrend: [Double]) -> some View {
+        DashboardPanel(title: PulseDockAppStrings.overviewMemoryUsageTitle, subtitle: PulseDockAppStrings.memoryRealtimeStatsSubtitle, icon: "memorychip") {
+            if isCompact {
+                VStack(spacing: 14) {
+                    memoryGauge
+                        .frame(width: 132, height: 132)
+                    memoryDetails(memoryTrend: memoryTrend)
+                }
+            } else {
+                HStack(spacing: 24) {
+                    memoryGauge
+                        .frame(width: 148, height: 148)
+                    memoryDetails(memoryTrend: memoryTrend)
+                }
+            }
+        }
+    }
+
+    private var memoryGauge: some View {
+        RingGauge(title: PulseDockAppStrings.memoryUsedTitle, value: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: DashboardColor.blue)
+    }
+
+    private func memoryDetails(memoryTrend: [Double]) -> some View {
+        VStack(spacing: 14) {
+            MemorySegmentBar(snapshot: snapshot)
+            TrendRow(title: PulseDockAppStrings.memoryUsageTrendTitle, value: snapshot.memoryText, tint: DashboardColor.blue, values: memoryTrend)
+            KeyValueGrid(items: [
+                (PulseDockAppStrings.memoryTotalLabel, snapshot.memoryDetailText),
+                (PulseDockAppStrings.memoryFreeLabel, snapshot.memoryFreeText),
+                (PulseDockAppStrings.memoryCachedLabel, snapshot.memoryCachedText),
+                (PulseDockAppStrings.memoryCompressedLabel, snapshot.memoryCompressedText),
+                (PulseDockAppStrings.memorySwapLabel, snapshot.memorySwapText),
+                (PulseDockAppStrings.memorySwapAvailableLabel, snapshot.memorySwapAvailableText),
+                (PulseDockAppStrings.memorySwapTotalLabel, snapshot.memorySwapTotalText)
+            ])
+        }
+    }
+
+    private var compositionPanel: some View {
+        DashboardPanel(title: PulseDockAppStrings.memoryCompositionTitle, subtitle: PulseDockAppStrings.memoryCompositionSubtitle, icon: "rectangle.3.group") {
+            VStack(spacing: 12) {
+                StatLine(label: PulseDockAppStrings.memoryAppActiveLabel, value: snapshot.memoryActiveText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryActiveBytes, total: snapshot.memoryTotalBytes)), tint: DashboardColor.green)
+                StatLine(label: PulseDockAppStrings.memoryWiredLabel, value: snapshot.memoryWiredText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryWiredBytes, total: snapshot.memoryTotalBytes)), tint: DashboardColor.amber)
+                StatLine(label: PulseDockAppStrings.memoryCompressedLabel, value: snapshot.memoryCompressedText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryCompressedBytes, total: snapshot.memoryTotalBytes)), tint: DashboardColor.purple)
+                StatLine(label: PulseDockAppStrings.memoryCachedFilesLabel, value: snapshot.memoryCachedText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryCompositionReport, progress: normalizedBytes(snapshot.memoryCachedBytes, total: snapshot.memoryTotalBytes)), tint: DashboardColor.cyan)
+                StatLine(label: PulseDockAppStrings.memorySwapLabel, value: snapshot.memorySwapText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemorySwapReport, progress: snapshot.memorySwapUsage), tint: DashboardColor.red)
+            }
+        }
+    }
 }
 
 private struct StoragePage: View {
     @ObservedObject var store: MetricsStore
     let history: [MetricSnapshot]
+    let capabilityColumns: [GridItem]
 
     private var snapshot: MetricSnapshot { store.snapshot }
 
@@ -557,17 +659,17 @@ private struct StoragePage: View {
                 }
             }
 
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 12) {
+            LazyVGrid(columns: capabilityColumns, spacing: 12) {
                 SourceCapabilityCard(title: PulseDockAppStrings.storageCapacityStatsTitle, value: snapshot.storageVolumeSummaryText, icon: "checkmark.circle", status: snapshot.hasStorageVolumeReport ? .normal : .neutral, source: PulseDockAppStrings.storageSystemVolumeInfoSource)
                 SourceCapabilityCard(title: PulseDockAppStrings.storagePrimaryAvailableTitle, value: snapshot.diskAvailableText, icon: "externaldrive.badge.checkmark", status: usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold), source: PulseDockAppStrings.storagePrimaryVolumeLabel)
                 SourceCapabilityCard(title: PulseDockAppStrings.storageExternalVolumesTitle, value: snapshot.externalStorageVolumeSummaryText, icon: "externaldrive.connected.to.line.below", status: snapshot.hasExternalStorageVolumeSummaryReport ? .normal : .neutral, source: PulseDockAppStrings.storageMountedVolumesSource)
             }
 
             DashboardPanel(title: PulseDockAppStrings.storageVolumeListTitle, subtitle: PulseDockAppStrings.storageVolumeListSubtitle, icon: "list.bullet.rectangle") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.storageVolumeTableColumns)
-                    ForEach(snapshot.storageVolumes.filter(\.hasInventoryReport).prefix(8)) { volume in
-                        TableRow(values: [
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.storageVolumeTableColumns,
+                    rows: snapshot.storageVolumes.filter(\.hasInventoryReport).prefix(8).map { volume in
+                        [
                             volumeLabel(volume),
                             volume.fileSystem,
                             volume.totalText,
@@ -576,9 +678,10 @@ private struct StoragePage: View {
                             volume.usageText,
                             volume.kindText,
                             volume.accessText
-                        ])
-                    }
-                }
+                        ]
+                    },
+                    preferredColumnWidth: DashboardLayout.wideTableColumnWidth
+                )
             }
         }
     }
@@ -598,24 +701,27 @@ private struct NetworkPage: View {
 
         VStack(alignment: .leading, spacing: 16) {
             LazyVGrid(columns: metricColumns, spacing: 12) {
-                MetricCard(title: PulseDockAppStrings.networkDownloadTitle, value: snapshot.networkInText, detail: PulseDockAppStrings.networkRealtimeRateDetail, icon: "arrow.down", tint: DashboardColor.blue, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkInBytesPerSecond)), values: networkDownloadTrend)
-                MetricCard(title: PulseDockAppStrings.networkUploadTitle, value: snapshot.networkOutText, detail: PulseDockAppStrings.networkRealtimeRateDetail, icon: "arrow.up", tint: DashboardColor.green, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkOutBytesPerSecond)), values: networkUploadTrend)
-                MetricCard(title: PulseDockAppStrings.networkTotalThroughputTitle, value: snapshot.networkText, detail: PulseDockAppStrings.networkCombinedTrafficDetail, icon: "network", tint: DashboardColor.cyan, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), values: networkTrend)
-                MetricCard(title: PulseDockAppStrings.networkConnectionStatusTitle, value: snapshot.networkPathText, detail: snapshot.networkPathDetailText, icon: "checkmark.seal", tint: networkStatusColor(snapshot), badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: networkPathProgress(snapshot)), values: networkPathTrend)
-                MetricCard(title: PulseDockAppStrings.networkInterfaceTitle, value: snapshot.networkInterfaceSummary, detail: PulseDockAppStrings.networkActiveInterfacesDetail, icon: "wifi", tint: DashboardColor.purple, badgeText: nil, progress: reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), values: [])
+                MetricCard(title: PulseDockAppStrings.networkDownloadTitle, value: snapshot.networkInText, detail: PulseDockAppStrings.networkRealtimeRateDetail, icon: "arrow.down", tint: DashboardColor.blue, badgeText: nil, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkInBytesPerSecond)), values: networkDownloadTrend)
+                MetricCard(title: PulseDockAppStrings.networkUploadTitle, value: snapshot.networkOutText, detail: PulseDockAppStrings.networkRealtimeRateDetail, icon: "arrow.up", tint: DashboardColor.green, badgeText: nil, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkOutBytesPerSecond)), values: networkUploadTrend)
+                MetricCard(title: PulseDockAppStrings.networkTotalThroughputTitle, value: snapshot.networkText, detail: PulseDockAppStrings.networkCombinedTrafficDetail, icon: "network", tint: DashboardColor.cyan, badgeText: nil, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkBytesPerSecond)), values: networkTrend)
+                MetricCard(title: PulseDockAppStrings.networkConnectionStatusTitle, value: snapshot.networkPathText, detail: snapshot.networkPathDetailText, icon: "checkmark.seal", tint: networkStatusColor(snapshot), badgeText: nil, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkPathReport, progress: snapshot.canonicalNetworkPathState.progress), values: networkPathTrend)
+                MetricCard(title: PulseDockAppStrings.networkInterfaceTitle, value: snapshot.networkInterfaceSummary, detail: PulseDockAppStrings.networkActiveInterfacesDetail, icon: "wifi", tint: DashboardColor.purple, badgeText: nil, progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkInterfaceReport, progress: activeInterfaceProgress(snapshot)), values: [])
             }
 
             DashboardPanel(title: PulseDockAppStrings.networkConnectivityTitle, subtitle: PulseDockAppStrings.networkSystemPathSubtitle, icon: "point.3.connected.trianglepath.dotted") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.networkCapabilityTableColumns)
-                    TableRow(values: [PulseDockAppStrings.networkPathLabel, snapshot.networkPathText, snapshot.networkPathDetailText])
-                    TableRow(values: [PulseDockAppStrings.networkCapabilityLabel, snapshot.networkPathCapabilityText, PulseDockAppStrings.networkSystemPathSubtitle])
-                    TableRow(values: ["DNS", snapshot.networkDNSCapabilityText, PulseDockAppStrings.networkNameResolutionSource])
-                    TableRow(values: ["IPv4", snapshot.networkIPv4CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle])
-                    TableRow(values: ["IPv6", snapshot.networkIPv6CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle])
-                    TableRow(values: [PulseDockAppStrings.networkLowDataModeLabel, snapshot.networkLowDataModeText, PulseDockAppStrings.networkSystemPathSubtitle])
-                    TableRow(values: [PulseDockAppStrings.networkMeteredLabel, snapshot.networkMeteredText, PulseDockAppStrings.networkSystemPathSubtitle])
-                }
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.networkCapabilityTableColumns,
+                    rows: [
+                        [PulseDockAppStrings.networkPathLabel, snapshot.networkPathText, snapshot.networkPathDetailText],
+                        [PulseDockAppStrings.networkCapabilityLabel, snapshot.networkPathCapabilityText, PulseDockAppStrings.networkSystemPathSubtitle],
+                        ["DNS", snapshot.networkDNSCapabilityText, PulseDockAppStrings.networkNameResolutionSource],
+                        ["IPv4", snapshot.networkIPv4CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle],
+                        ["IPv6", snapshot.networkIPv6CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle],
+                        [PulseDockAppStrings.networkLowDataModeLabel, snapshot.networkLowDataModeText, PulseDockAppStrings.networkSystemPathSubtitle],
+                        [PulseDockAppStrings.networkMeteredLabel, snapshot.networkMeteredText, PulseDockAppStrings.networkSystemPathSubtitle]
+                    ],
+                    preferredColumnWidth: DashboardLayout.minimumTableColumnWidth
+                )
             }
 
             DashboardPanel(title: PulseDockAppStrings.networkTrendTitle, subtitle: PulseDockAppStrings.networkRecentLiveSamplesSubtitle, icon: "chart.line.uptrend.xyaxis") {
@@ -628,26 +734,24 @@ private struct NetworkPage: View {
             }
 
             DashboardPanel(title: PulseDockAppStrings.networkInterfaceTitle, subtitle: PulseDockAppStrings.networkInterfacesSubtitle, icon: "wifi") {
-                VStack(spacing: 0) {
-                    let reportedInterfaces = snapshot.networkInterfaces.filter(\.hasInventoryReport)
-                    TableHeader(columns: PulseDockAppStrings.networkInterfaceTableColumns)
-                    if reportedInterfaces.isEmpty {
-                        TableEmptyRow(text: PulseDockAppStrings.systemDidNotReport)
-                    } else {
-                        ForEach(reportedInterfaces.prefix(10)) { interface in
-                            TableRow(values: [
-                                interface.displayName,
-                                interface.kind,
-                                interface.stateText,
-                                interface.mtuText,
-                                interface.linkSpeedText,
-                                interface.byteCountText,
-                                interface.packetCountText,
-                                interface.packetErrorText
-                            ])
-                        }
-                    }
-                }
+                let reportedInterfaces = snapshot.networkInterfaces.filter(\.hasInventoryReport)
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.networkInterfaceTableColumns,
+                    rows: reportedInterfaces.prefix(10).map { interface in
+                        [
+                            interface.displayName,
+                            interface.kind,
+                            interface.stateText,
+                            interface.mtuText,
+                            interface.linkSpeedText,
+                            interface.byteCountText,
+                            interface.packetCountText,
+                            interface.packetErrorText
+                        ]
+                    },
+                    emptyText: reportedInterfaces.isEmpty ? PulseDockAppStrings.systemDidNotReport : nil,
+                    preferredColumnWidth: DashboardLayout.wideTableColumnWidth
+                )
             }
         }
     }
@@ -656,56 +760,83 @@ private struct NetworkPage: View {
 private struct PowerPage: View {
     let snapshot: MetricSnapshot
     let history: [MetricSnapshot]
+    let isCompact: Bool
 
     var body: some View {
         let powerTrend = powerTrendValues(from: history)
 
         VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                DashboardPanel(title: PulseDockAppStrings.powerBatteryPanelTitle, subtitle: PulseDockAppStrings.powerBatteryPanelSubtitle, icon: "battery.75percent") {
-                    HStack(spacing: 24) {
-                        RingGauge(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, progress: powerGaugeProgress(snapshot), tint: powerTint(snapshot))
-                            .frame(width: 152, height: 152)
-                        VStack(spacing: 14) {
-                            TrendRow(title: powerTrendTitle(snapshot), value: snapshot.powerStatusText, tint: powerTint(snapshot), values: powerTrend)
-                            KeyValueGrid(items: [
-                                (PulseDockAppStrings.powerSourceLabel, snapshot.powerSourceText),
-                                (PulseDockAppStrings.batteryRemainingTimeLabel, snapshot.batteryTimeRemainingText),
-                                (PulseDockAppStrings.batteryCurrentCapacityLabel, snapshot.batteryCurrentCapacityText),
-                                (PulseDockAppStrings.batteryMaxCapacityLabel, snapshot.batteryMaxCapacityText),
-                                (PulseDockAppStrings.batteryCycleCountLabel, snapshot.batteryCycleText),
-                                (PulseDockAppStrings.batteryHealthLabel, snapshot.batteryHealthText),
-                                (PulseDockAppStrings.batteryDesignCapacityLabel, snapshot.batteryDesignCapacityText),
-                                (PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText),
-                                (PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText)
-                            ])
-                        }
-                    }
-                }
-
-                DashboardPanel(title: PulseDockAppStrings.statusThermalTitle, subtitle: PulseDockAppStrings.statusThermalSubtitle, icon: "thermometer.medium") {
-                    VStack(spacing: 12) {
-                        StatusSummaryRow(title: PulseDockAppStrings.statusCurrentStateTitle, value: snapshot.thermalText, status: thermalStatus(snapshot.thermalState))
-                        StatusSummaryRow(title: PulseDockAppStrings.statusPerformanceLimitTitle, value: snapshot.thermalLimitText, status: thermalStatus(snapshot.thermalState))
-                        StatusSummaryRow(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral)
-                        StatusSummaryRow(title: PulseDockAppStrings.cpuRecentSampleLabel, value: snapshot.sampleTimeText, status: snapshot.hasSampleTimeReport ? .normal : .neutral)
-                    }
-                }
-                .frame(width: 340)
+            ResponsivePanelPair(isCompact: isCompact, secondaryWidth: 340) {
+                batteryPanel(powerTrend: powerTrend)
+            } secondary: {
+                thermalPanel
             }
 
             DashboardPanel(title: PulseDockAppStrings.batteryInformationTitle, subtitle: PulseDockAppStrings.batteryInformationSubtitle, icon: "bolt") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.itemCurrentDescriptionTableColumns)
-                    TableRow(values: [PulseDockAppStrings.batteryRemainingTimeLabel, snapshot.batteryTimeRemainingText, PulseDockAppStrings.sourceSystemEstimate])
-                    TableRow(values: [PulseDockAppStrings.batteryCurrentCapacityLabel, snapshot.batteryCurrentCapacityText, PulseDockAppStrings.sourcePowerStatus])
-                    TableRow(values: [PulseDockAppStrings.batteryMaxCapacityLabel, snapshot.batteryMaxCapacityText, PulseDockAppStrings.sourcePowerStatus])
-                    TableRow(values: [PulseDockAppStrings.batteryDesignCapacityLabel, snapshot.batteryDesignCapacityText, PulseDockAppStrings.sourceBatterySpecifications])
-                    TableRow(values: [PulseDockAppStrings.batteryCycleCountLabel, snapshot.batteryCycleText, PulseDockAppStrings.sourceBatteryHealth])
-                    TableRow(values: [PulseDockAppStrings.batteryHealthLabel, snapshot.batteryHealthText, PulseDockAppStrings.sourceBatteryHealth])
-                    TableRow(values: [PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText, PulseDockAppStrings.sourcePowerStatus])
-                    TableRow(values: [PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText, PulseDockAppStrings.sourcePowerStatus])
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.itemCurrentDescriptionTableColumns,
+                    rows: [
+                        [PulseDockAppStrings.batteryRemainingTimeLabel, snapshot.batteryTimeRemainingText, PulseDockAppStrings.sourceSystemEstimate],
+                        [PulseDockAppStrings.batteryCurrentCapacityLabel, snapshot.batteryCurrentCapacityText, PulseDockAppStrings.sourcePowerStatus],
+                        [PulseDockAppStrings.batteryMaxCapacityLabel, snapshot.batteryMaxCapacityText, PulseDockAppStrings.sourcePowerStatus],
+                        [PulseDockAppStrings.batteryDesignCapacityLabel, snapshot.batteryDesignCapacityText, PulseDockAppStrings.sourceBatterySpecifications],
+                        [PulseDockAppStrings.batteryCycleCountLabel, snapshot.batteryCycleText, PulseDockAppStrings.sourceBatteryHealth],
+                        [PulseDockAppStrings.batteryHealthLabel, snapshot.batteryHealthText, PulseDockAppStrings.sourceBatteryHealth],
+                        [PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText, PulseDockAppStrings.sourcePowerStatus],
+                        [PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText, PulseDockAppStrings.sourcePowerStatus]
+                    ],
+                    preferredColumnWidth: DashboardLayout.minimumTableColumnWidth
+                )
+            }
+        }
+    }
+
+    private func batteryPanel(powerTrend: [Double]) -> some View {
+        DashboardPanel(title: PulseDockAppStrings.powerBatteryPanelTitle, subtitle: PulseDockAppStrings.powerBatteryPanelSubtitle, icon: "battery.75percent") {
+            if isCompact {
+                VStack(spacing: 14) {
+                    powerGauge
+                        .frame(width: 132, height: 132)
+                    powerDetails(powerTrend: powerTrend)
                 }
+            } else {
+                HStack(spacing: 24) {
+                    powerGauge
+                        .frame(width: 152, height: 152)
+                    powerDetails(powerTrend: powerTrend)
+                }
+            }
+        }
+    }
+
+    private var powerGauge: some View {
+        RingGauge(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, progress: powerGaugeProgress(snapshot), tint: powerTint(snapshot))
+    }
+
+    private func powerDetails(powerTrend: [Double]) -> some View {
+        VStack(spacing: 14) {
+            TrendRow(title: powerTrendTitle(snapshot), value: snapshot.powerStatusText, tint: powerTint(snapshot), values: powerTrend)
+            KeyValueGrid(items: [
+                (PulseDockAppStrings.powerSourceLabel, snapshot.powerSourceText),
+                (PulseDockAppStrings.batteryRemainingTimeLabel, snapshot.batteryTimeRemainingText),
+                (PulseDockAppStrings.batteryCurrentCapacityLabel, snapshot.batteryCurrentCapacityText),
+                (PulseDockAppStrings.batteryMaxCapacityLabel, snapshot.batteryMaxCapacityText),
+                (PulseDockAppStrings.batteryCycleCountLabel, snapshot.batteryCycleText),
+                (PulseDockAppStrings.batteryHealthLabel, snapshot.batteryHealthText),
+                (PulseDockAppStrings.batteryDesignCapacityLabel, snapshot.batteryDesignCapacityText),
+                (PulseDockAppStrings.batteryVoltageLabel, snapshot.batteryVoltageText),
+                (PulseDockAppStrings.batteryCurrentLabel, snapshot.batteryAmperageText)
+            ])
+        }
+    }
+
+    private var thermalPanel: some View {
+        DashboardPanel(title: PulseDockAppStrings.statusThermalTitle, subtitle: PulseDockAppStrings.statusThermalSubtitle, icon: "thermometer.medium") {
+            VStack(spacing: 12) {
+                StatusSummaryRow(title: PulseDockAppStrings.statusCurrentStateTitle, value: snapshot.thermalText, status: thermalStatus(snapshot.thermalState))
+                StatusSummaryRow(title: PulseDockAppStrings.statusPerformanceLimitTitle, value: snapshot.thermalLimitText, status: thermalStatus(snapshot.thermalState))
+                StatusSummaryRow(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, status: snapshot.hasUptimeReport ? .normal : .neutral)
+                StatusSummaryRow(title: PulseDockAppStrings.cpuRecentSampleLabel, value: snapshot.sampleTimeText, status: snapshot.hasSampleTimeReport ? .normal : .neutral)
             }
         }
     }
@@ -713,20 +844,21 @@ private struct PowerPage: View {
 
 private struct GPUDisplayPage: View {
     let snapshot: MetricSnapshot
+    let capabilityColumns: [GridItem]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 12) {
+            LazyVGrid(columns: capabilityColumns, spacing: 12) {
                 SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: "sparkles.rectangle.stack", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceDeviceCapabilities)
                 SourceCapabilityCard(title: PulseDockAppStrings.metricDisplays, value: snapshot.displaySummaryText, icon: "display", status: snapshot.hasDisplayReport ? .normal : .neutral, source: PulseDockAppStrings.sourceDisplayConfiguration)
                 SourceCapabilityCard(title: PulseDockAppStrings.gpuUnifiedMemoryTitle, value: unifiedMemorySummary, icon: "memorychip", status: hasUnifiedMemorySummary ? .normal : .neutral, source: PulseDockAppStrings.sourceGPUCapabilities)
             }
 
             DashboardPanel(title: PulseDockAppStrings.gpuUnifiedMemoryPanelTitle, subtitle: PulseDockAppStrings.gpuUnifiedMemoryPanelSubtitle, icon: "display") {
-                VStack(spacing: 12) {
-                    TableHeader(columns: PulseDockAppStrings.gpuDeviceTableColumns)
-                    ForEach(snapshot.gpuDevices.filter(\.hasInventoryReport)) { device in
-                        TableRow(values: [
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.gpuDeviceTableColumns,
+                    rows: snapshot.gpuDevices.filter(\.hasInventoryReport).map { device in
+                        [
                             device.name,
                             device.kindText,
                             device.unifiedMemoryText,
@@ -734,16 +866,17 @@ private struct GPUDisplayPage: View {
                             device.threadgroupMemoryText,
                             device.threadgroupSizeText,
                             device.stateText
-                        ])
-                    }
-                }
+                        ]
+                    },
+                    preferredColumnWidth: DashboardLayout.wideTableColumnWidth
+                )
             }
 
             DashboardPanel(title: PulseDockAppStrings.metricDisplays, subtitle: PulseDockAppStrings.displayPanelSubtitle, icon: "rectangle.on.rectangle") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.displayTableColumns)
-                    ForEach(snapshot.displays.filter(\.hasInventoryReport)) { display in
-                        TableRow(values: [
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.displayTableColumns,
+                    rows: snapshot.displays.filter(\.hasInventoryReport).map { display in
+                        [
                             display.name,
                             display.pixelSizeText,
                             display.modeSizeText,
@@ -753,9 +886,10 @@ private struct GPUDisplayPage: View {
                             display.physicalSizeText,
                             display.rotationText,
                             display.stateText
-                        ])
-                    }
-                }
+                        ]
+                    },
+                    preferredColumnWidth: DashboardLayout.wideTableColumnWidth
+                )
             }
         }
     }
@@ -790,17 +924,18 @@ private struct ProcessesPage: View {
             }
 
             DashboardPanel(title: PulseDockAppStrings.processesRunningAppsTitle, subtitle: ProcessMetric.listSubtitle(for: snapshot.runningApps, defaultSubtitle: PulseDockAppStrings.processesDefaultSubtitle), icon: "list.bullet.rectangle") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.processesTableColumns)
-                    ForEach(snapshot.runningApps.filter(\.hasInventoryReport)) { process in
-                        TableRow(values: [
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.processesTableColumns,
+                    rows: snapshot.runningApps.filter(\.hasInventoryReport).map { process in
+                        [
                             process.name,
                             process.stateText,
                             process.architectureText,
                             process.launchText
-                        ])
-                    }
-                }
+                        ]
+                    },
+                    preferredColumnWidth: DashboardLayout.minimumTableColumnWidth
+                )
             }
         }
     }
@@ -808,62 +943,65 @@ private struct ProcessesPage: View {
 
 private struct SensorsPage: View {
     @ObservedObject var store: MetricsStore
+    let isCompact: Bool
+    let capabilityColumns: [GridItem]
 
     private var snapshot: MetricSnapshot { store.snapshot }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                DashboardPanel(title: PulseDockAppStrings.statusThermalTitle, subtitle: PulseDockAppStrings.statusThermalSubtitle, icon: "thermometer.medium") {
-                    VStack(spacing: 14) {
-                        RingGauge(title: PulseDockAppStrings.statusThermalTitle, value: snapshot.thermalText, progress: thermalProgress(snapshot.thermalState), tint: thermalStatus(snapshot.thermalState).color)
-                            .frame(width: 160, height: 160)
-                        StatusSummaryRow(title: PulseDockAppStrings.statusPerformanceLimitTitle, value: snapshot.thermalLimitText, status: thermalStatus(snapshot.thermalState))
-                    }
+            if isCompact {
+                VStack(alignment: .leading, spacing: DashboardLayout.compactPanelSpacing) {
+                    thermalPanel
+                    realtimeSignalsPanel
                 }
-                .frame(width: 360)
-
-                DashboardPanel(title: PulseDockAppStrings.statusRealtimeSignalsTitle, subtitle: PulseDockAppStrings.statusRealtimeSignalsSubtitle, icon: "waveform.path.ecg.rectangle") {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricCPU, value: snapshot.cpuText, icon: "cpu", status: usageStatusLevel(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold), source: PulseDockAppStrings.sourceThreshold(MetricFormatting.percentage(store.cpuAlertThreshold)))
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, icon: "memorychip", status: usageStatusLevel(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold), source: PulseDockAppStrings.sourceThreshold(MetricFormatting.percentage(store.memoryAlertThreshold)))
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, icon: "internaldrive", status: usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold), source: PulseDockAppStrings.sourceThreshold(MetricFormatting.percentage(store.diskAlertThreshold)))
-                        SourceCapabilityCard(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, icon: "battery.75percent", status: powerStatusLevel(snapshot), source: snapshot.powerSourceText)
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricNetworkConnection, value: snapshot.networkPathText, icon: "network", status: networkStatusLevel(snapshot), source: snapshot.networkPathDetailText)
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricDisplays, value: snapshot.displaySummaryText, icon: "display", status: snapshot.hasDisplayReport ? .normal : .neutral, source: snapshot.sampleTimeText)
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: "sparkles.rectangle.stack", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceGraphicsDevices)
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricStorageVolumes, value: snapshot.storageVolumeSummaryText, icon: "externaldrive", status: snapshot.hasStorageVolumeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceFileSystemCapacity)
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricLoad, value: snapshot.loadDetailText, icon: "speedometer", status: snapshot.hasLoadAverageReport ? .normal : .neutral, source: PulseDockAppStrings.sourceLoadAverages)
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricSystemVersion, value: snapshot.osVersionText, icon: "desktopcomputer", status: snapshot.hasOSVersionReport ? .normal : .neutral, source: PulseDockAppStrings.sourceOSVersion)
-                        SourceCapabilityCard(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, icon: "timer", status: snapshot.hasUptimeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceSystemBootTime)
-                    }
+            } else {
+                HStack(alignment: .top, spacing: DashboardLayout.compactPanelSpacing) {
+                    thermalPanel
+                        .frame(width: DashboardLayout.regularAsideWidth)
+                    realtimeSignalsPanel
                 }
             }
 
             DashboardPanel(title: PulseDockAppStrings.localRuleTableTitle, subtitle: PulseDockAppStrings.localRuleTableSubtitle, icon: "checkmark.shield") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.statusRuleTableColumns)
-                    TableRow(values: [PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
-                    TableRow(values: [PulseDockAppStrings.metricMemory, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText, thresholdStatusText(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
-                    TableRow(values: [PulseDockAppStrings.metricDisk, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText, thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
-                    TableRow(values: [PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkPathText, snapshot.networkRuleStatusText])
-                }
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.statusRuleTableColumns,
+                    rows: [
+                        [PulseDockAppStrings.metricCPU, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
+                        [PulseDockAppStrings.metricMemory, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText, thresholdStatusText(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
+                        [PulseDockAppStrings.metricDisk, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText, thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold, warningText: PulseDockAppStrings.statusWarning)],
+                        [PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkPathText, snapshot.networkRuleStatusText]
+                    ],
+                    preferredColumnWidth: DashboardLayout.minimumTableColumnWidth
+                )
             }
+        }
+    }
 
-            DashboardPanel(title: PulseDockAppStrings.statusSystemSignalsTitle, subtitle: PulseDockAppStrings.statusSystemSignalsSubtitle, icon: "list.clipboard") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.statusSignalTableColumns)
-                    TableRow(values: [PulseDockAppStrings.metricSystemThermalState, snapshot.thermalText, PulseDockAppStrings.sourceThermalState])
-                    TableRow(values: [PulseDockAppStrings.metricSystemVersion, snapshot.osVersionText, PulseDockAppStrings.sourceOSVersion])
-                    TableRow(values: [PulseDockAppStrings.metricUptime, snapshot.uptimeText, PulseDockAppStrings.sourceSystemBootTime])
-                    TableRow(values: [PulseDockAppStrings.metricKernelVersion, snapshot.kernelText, PulseDockAppStrings.sourceSystemVersion])
-                    TableRow(values: ["\(PulseDockAppStrings.metricLoad) 1/5/15", snapshot.loadDetailText, PulseDockAppStrings.sourceLoadAverages])
-                    TableRow(values: [snapshot.powerStatusTitle, snapshot.powerStatusText, snapshot.powerSourceText])
-                    TableRow(values: [PulseDockAppStrings.metricNetworkConnection, snapshot.networkPathText, snapshot.networkPathDetailText])
-                    TableRow(values: [PulseDockAppStrings.metricDisplays, snapshot.displaySummaryText, PulseDockAppStrings.sourceDisplayConfiguration])
-                    TableRow(values: [PulseDockAppStrings.metricGPU, snapshot.gpuSummaryText, PulseDockAppStrings.sourceGraphicsDevices])
-                    TableRow(values: [PulseDockAppStrings.metricStorageVolumes, snapshot.storageVolumeSummaryText, PulseDockAppStrings.sourceFileSystemCapacity])
-                }
+    private var thermalPanel: some View {
+        DashboardPanel(title: PulseDockAppStrings.statusThermalTitle, subtitle: PulseDockAppStrings.statusThermalSubtitle, icon: "thermometer.medium") {
+            VStack(spacing: 14) {
+                RingGauge(title: PulseDockAppStrings.statusThermalTitle, value: snapshot.thermalText, progress: ThermalState(raw: snapshot.thermalState).progress, tint: thermalStatus(snapshot.thermalState).color)
+                    .frame(width: isCompact ? 132 : 160, height: isCompact ? 132 : 160)
+                StatusSummaryRow(title: PulseDockAppStrings.statusPerformanceLimitTitle, value: snapshot.thermalLimitText, status: thermalStatus(snapshot.thermalState))
+            }
+        }
+    }
+
+    private var realtimeSignalsPanel: some View {
+        DashboardPanel(title: PulseDockAppStrings.statusRealtimeSignalsTitle, subtitle: PulseDockAppStrings.statusRealtimeSignalsSubtitle, icon: "waveform.path.ecg.rectangle") {
+            LazyVGrid(columns: capabilityColumns, spacing: 12) {
+                SourceCapabilityCard(title: PulseDockAppStrings.metricCPU, value: snapshot.cpuText, icon: "cpu", status: usageStatusLevel(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold), source: PulseDockAppStrings.sourceThreshold(MetricFormatting.percentage(store.cpuAlertThreshold)))
+                SourceCapabilityCard(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, icon: "memorychip", status: usageStatusLevel(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold), source: PulseDockAppStrings.sourceThreshold(MetricFormatting.percentage(store.memoryAlertThreshold)))
+                SourceCapabilityCard(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, icon: "internaldrive", status: usageStatusLevel(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold), source: PulseDockAppStrings.sourceThreshold(MetricFormatting.percentage(store.diskAlertThreshold)))
+                SourceCapabilityCard(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, icon: "battery.75percent", status: powerStatusLevel(snapshot), source: snapshot.powerSourceText)
+                SourceCapabilityCard(title: PulseDockAppStrings.metricNetworkConnection, value: snapshot.networkPathText, icon: "network", status: networkStatusLevel(snapshot), source: snapshot.networkPathDetailText)
+                SourceCapabilityCard(title: PulseDockAppStrings.metricDisplays, value: snapshot.displaySummaryText, icon: "display", status: snapshot.hasDisplayReport ? .normal : .neutral, source: snapshot.sampleTimeText)
+                SourceCapabilityCard(title: PulseDockAppStrings.metricGPU, value: snapshot.gpuSummaryText, icon: "sparkles.rectangle.stack", status: snapshot.hasGPUReport ? .normal : .neutral, source: PulseDockAppStrings.sourceGraphicsDevices)
+                SourceCapabilityCard(title: PulseDockAppStrings.metricStorageVolumes, value: snapshot.storageVolumeSummaryText, icon: "externaldrive", status: snapshot.hasStorageVolumeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceFileSystemCapacity)
+                SourceCapabilityCard(title: PulseDockAppStrings.metricLoad, value: snapshot.loadDetailText, icon: "speedometer", status: snapshot.hasLoadAverageReport ? .normal : .neutral, source: PulseDockAppStrings.sourceLoadAverages)
+                SourceCapabilityCard(title: PulseDockAppStrings.metricSystemVersion, value: snapshot.osVersionText, icon: "desktopcomputer", status: snapshot.hasOSVersionReport ? .normal : .neutral, source: PulseDockAppStrings.sourceOSVersion)
+                SourceCapabilityCard(title: PulseDockAppStrings.metricUptime, value: snapshot.uptimeText, icon: "timer", status: snapshot.hasUptimeReport ? .normal : .neutral, source: PulseDockAppStrings.sourceSystemBootTime)
             }
         }
     }
@@ -881,7 +1019,7 @@ private struct HistoryAlertsPage: View {
     var body: some View {
         let cpuTrend = cpuTrendValues(from: history)
         let memoryTrend = memoryTrendValues(from: history)
-        let networkTrend = networkTrendValues(from: history, keyPath: \.networkBytesPerSecond)
+        let networkTrend = networkTrendValues(from: history)
         let powerTrend = powerTrendValues(from: history)
 
         VStack(alignment: .leading, spacing: 16) {
@@ -905,16 +1043,6 @@ private struct HistoryAlertsPage: View {
                     ThresholdControlRow(title: "CPU", value: store.cpuAlertThreshold, draftValue: $draftCPUThreshold, update: store.updateCPUAlertThreshold, tint: DashboardColor.green)
                     ThresholdControlRow(title: PulseDockAppStrings.metricMemory, value: store.memoryAlertThreshold, draftValue: $draftMemoryThreshold, update: store.updateMemoryAlertThreshold, tint: DashboardColor.blue)
                     ThresholdControlRow(title: PulseDockAppStrings.metricDisk, value: store.diskAlertThreshold, draftValue: $draftDiskThreshold, update: store.updateDiskAlertThreshold, tint: DashboardColor.amber)
-                }
-            }
-
-            DashboardPanel(title: PulseDockAppStrings.localRuleTableTitle, subtitle: PulseDockAppStrings.localRuleTableSubtitle, icon: "checkmark.shield") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.statusRuleTableColumns)
-                    TableRow(values: [PulseDockAppStrings.historyRuleCPUOver, MetricFormatting.percentage(store.cpuAlertThreshold), snapshot.cpuText, thresholdStatusText(hasReport: snapshot.hasCPUUsageReport, usage: snapshot.cpuUsage, threshold: store.cpuAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
-                    TableRow(values: [PulseDockAppStrings.historyRuleMemoryHigh, MetricFormatting.percentage(store.memoryAlertThreshold), snapshot.memoryUsageText, thresholdStatusText(hasReport: snapshot.hasMemoryUsageReport, usage: snapshot.memoryUsage, threshold: store.memoryAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
-                    TableRow(values: [PulseDockAppStrings.historyRuleDiskHigh, MetricFormatting.percentage(store.diskAlertThreshold), snapshot.diskUsageText, thresholdStatusText(hasReport: snapshot.hasDiskUsageReport, usage: snapshot.diskUsage, threshold: store.diskAlertThreshold, warningText: PulseDockAppStrings.statusWarning)])
-                    TableRow(values: [PulseDockAppStrings.metricNetworkConnection, PulseDockAppStrings.statusOnline, snapshot.networkPathText, snapshot.networkRuleStatusText])
                 }
             }
         }
@@ -955,17 +1083,20 @@ private struct SettingsPage: View {
             }
 
             DashboardPanel(title: PulseDockAppStrings.settingsDataSourcesTitle, subtitle: PulseDockAppStrings.settingsDataSourcesSubtitle, icon: "checklist") {
-                VStack(spacing: 0) {
-                    TableHeader(columns: PulseDockAppStrings.settingsDataSourceTableColumns)
-                    TableRow(values: [PulseDockAppStrings.metricCPUMemory, snapshot.cpuMemorySourceStatusText, PulseDockAppStrings.sourceSystemProcessorMemoryStats])
-                    TableRow(values: [PulseDockAppStrings.metricLoad, snapshot.loadAverageSourceStatusText, PulseDockAppStrings.sourceLoadAverages])
-                    TableRow(values: [PulseDockAppStrings.metricNetworkConnection, snapshot.networkSourceStatusText, PulseDockAppStrings.sourceConnectionInterfaceTraffic])
-                    TableRow(values: [PulseDockAppStrings.metricRunningApps, snapshot.runningAppsSourceStatusText, PulseDockAppStrings.sourceApplicationSessionList])
-                    TableRow(values: [PulseDockAppStrings.metricGPUDisplays, snapshot.gpuDisplaySourceStatusText, PulseDockAppStrings.sourceGraphicsDisplayConfiguration])
-                    TableRow(values: [PulseDockAppStrings.metricVolumeCapacity, snapshot.storageSourceStatusText, PulseDockAppStrings.sourceFileSystemCapacity])
-                    TableRow(values: [PulseDockAppStrings.metricPowerThermalState, snapshot.powerThermalSourceStatusText, PulseDockAppStrings.sourcePowerThermalState])
-                    TableRow(values: [PulseDockAppStrings.metricSystemVersionUptimeKernel, snapshot.systemVersionSourceStatusText, PulseDockAppStrings.sourceSystemVersionBootTime])
-                }
+                ResponsiveTable(
+                    columns: PulseDockAppStrings.settingsDataSourceTableColumns,
+                    rows: [
+                        [PulseDockAppStrings.metricCPUMemory, snapshot.cpuMemorySourceStatusText, PulseDockAppStrings.sourceSystemProcessorMemoryStats],
+                        [PulseDockAppStrings.metricLoad, snapshot.loadAverageSourceStatusText, PulseDockAppStrings.sourceLoadAverages],
+                        [PulseDockAppStrings.metricNetworkConnection, snapshot.networkSourceStatusText, PulseDockAppStrings.sourceConnectionInterfaceTraffic],
+                        [PulseDockAppStrings.metricRunningApps, snapshot.runningAppsSourceStatusText, PulseDockAppStrings.sourceApplicationSessionList],
+                        [PulseDockAppStrings.metricGPUDisplays, snapshot.gpuDisplaySourceStatusText, PulseDockAppStrings.sourceGraphicsDisplayConfiguration],
+                        [PulseDockAppStrings.metricVolumeCapacity, snapshot.storageSourceStatusText, PulseDockAppStrings.sourceFileSystemCapacity],
+                        [PulseDockAppStrings.metricPowerThermalState, snapshot.powerThermalSourceStatusText, PulseDockAppStrings.sourcePowerThermalState],
+                        [PulseDockAppStrings.metricSystemVersionUptimeKernel, snapshot.systemVersionSourceStatusText, PulseDockAppStrings.sourceSystemVersionBootTime]
+                    ],
+                    preferredColumnWidth: DashboardLayout.minimumTableColumnWidth
+                )
             }
         }
     }
@@ -1028,10 +1159,8 @@ private struct SettingsPage: View {
                 KeyValueGrid(items: [
                     (PulseDockAppStrings.settingsWidgetSizeLabel, PulseDockAppStrings.settingsWidgetSizesValue),
                     (PulseDockAppStrings.settingsWidgetDataSourceLabel, PulseDockAppStrings.settingsWidgetDataSourceValue),
-                    (PulseDockAppStrings.settingsWidgetRefreshLabel, PulseDockAppStrings.settingsWidgetRefreshValue),
                     (PulseDockAppStrings.settingsWidgetSampleLabel, snapshot.sampleTimeText),
-                    (PulseDockAppStrings.settingsWidgetHistoryLabel, store.historyDurationText),
-                    (PulseDockAppStrings.settingsWidgetMainWindowLabel, store.refreshInterval.label)
+                    (PulseDockAppStrings.settingsWidgetHistoryLabel, store.historyDurationText)
                 ])
             }
         }
@@ -1164,17 +1293,18 @@ private struct ProcessListPanel: View {
 
     var body: some View {
         DashboardPanel(title: title, subtitle: ProcessMetric.listSubtitle(for: processes, defaultSubtitle: subtitle), icon: "list.bullet.rectangle") {
-            VStack(spacing: 0) {
-                TableHeader(columns: PulseDockAppStrings.processesTableColumns)
-                ForEach(processes.filter(\.hasInventoryReport).prefix(6)) { process in
-                    TableRow(values: [
+            ResponsiveTable(
+                columns: PulseDockAppStrings.processesTableColumns,
+                rows: processes.filter(\.hasInventoryReport).prefix(6).map { process in
+                    [
                         process.name,
                         process.stateText,
                         process.architectureText,
                         process.launchText
-                    ])
-                }
-            }
+                    ]
+                },
+                preferredColumnWidth: DashboardLayout.minimumTableColumnWidth
+            )
         }
     }
 }
@@ -1217,8 +1347,8 @@ private struct WidgetMiniPreview: View {
             }
 
             HStack(spacing: 12) {
-                RingGauge(title: "CPU", value: snapshot.cpuText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: DashboardColor.green)
-                RingGauge(title: "MEM", value: snapshot.memoryUsageText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: DashboardColor.blue)
+                RingGauge(title: "CPU", value: snapshot.cpuText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: DashboardColor.green)
+                RingGauge(title: "MEM", value: snapshot.memoryUsageText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: DashboardColor.blue)
             }
         }
         .padding(14)
@@ -1316,21 +1446,39 @@ private struct TrendRow: View {
     let values: [Double]
 
     var body: some View {
-        HStack(spacing: DashboardSpacing.md) {
-            VStack(alignment: .leading, spacing: DashboardSpacing.xxs) {
-                Text(title)
-                    .font(DashboardTypography.caption)
-                    .foregroundStyle(DashboardColor.muted)
-                Text(value)
-                    .font(DashboardTypography.metricValue)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: DashboardSpacing.md) {
+                trendLabel
+                    .frame(width: 96, alignment: .leading)
+                trendSparkline
             }
-            .frame(width: 96, alignment: .leading)
 
-            Sparkline(values: values, tint: tint, fill: true)
-                .frame(height: 46)
+            VStack(alignment: .leading, spacing: DashboardSpacing.sm) {
+                trendLabel
+                trendSparkline
+            }
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title), \(value)")
+    }
+
+    private var trendLabel: some View {
+        VStack(alignment: .leading, spacing: DashboardSpacing.xxs) {
+            Text(title)
+                .font(DashboardTypography.caption)
+                .foregroundStyle(DashboardColor.muted)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+            Text(value)
+                .font(DashboardTypography.metricValue)
+                .lineLimit(1)
+                .minimumScaleFactor(0.68)
+        }
+    }
+
+    private var trendSparkline: some View {
+        Sparkline(values: values, tint: tint, fill: true)
+            .frame(height: 46)
     }
 }
 
@@ -1381,7 +1529,7 @@ private struct Sparkline: View {
 
     private var preparedValues: [Double] {
         if values.count > 1 {
-            return values.suffix(80)
+            return values.suffix(sparklineVisibleSampleLimit)
         }
 
         if let value = values.first {
@@ -1431,7 +1579,7 @@ private struct StatProgress: View {
                 if let progress {
                     Capsule()
                         .fill(tint.gradient)
-                        .frame(width: progressFillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 6))
+                        .frame(width: MetricScales.fillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 6))
                         .animation(DashboardMotion.metric(reduceMotion: reduceMotion), value: progress)
                 }
             }
@@ -1588,6 +1736,8 @@ private struct LegendDot: View {
             Text(title)
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(DashboardColor.muted)
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
         }
     }
 }
@@ -1603,7 +1753,7 @@ private enum StatusLevel {
         case .normal: DashboardColor.green
         case .warning: DashboardColor.amber
         case .critical: DashboardColor.red
-        case .neutral: DashboardColor.blue
+        case .neutral: DashboardColor.cyan
         }
     }
 
@@ -1687,14 +1837,17 @@ private struct SourceCapabilityCard: View {
 
 private struct KeyValueGrid: View {
     let items: [(String, String)]
+    var minimumColumnWidth: CGFloat = 132
 
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumColumnWidth), spacing: 10)], spacing: 10) {
             ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                 VStack(alignment: .leading, spacing: 2) {
                     Text(item.0)
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(DashboardColor.muted)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
                     Text(item.1)
                         .font(.system(size: 13, weight: .semibold).monospacedDigit())
                         .lineLimit(1)
@@ -1844,6 +1997,33 @@ private struct ThresholdControlRow: View {
     }
 }
 
+private struct ResponsiveTable: View {
+    let columns: [String]
+    let rows: [[String]]
+    var emptyText: String?
+    var preferredColumnWidth: CGFloat = DashboardLayout.minimumTableColumnWidth
+
+    private var resolvedMinimumTableWidth: CGFloat {
+        minimumTableWidth(columnCount: columns.count, preferredColumnWidth: preferredColumnWidth)
+    }
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: true) {
+            VStack(spacing: 0) {
+                TableHeader(columns: columns)
+                if rows.isEmpty, let emptyText {
+                    TableEmptyRow(text: emptyText)
+                } else {
+                    ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                        TableRow(values: row)
+                    }
+                }
+            }
+            .frame(minWidth: resolvedMinimumTableWidth)
+        }
+    }
+}
+
 private struct TableHeader: View {
     let columns: [String]
 
@@ -1930,32 +2110,20 @@ private extension View {
     }
 }
 
-private func normalizedRate(_ bytesPerSecond: UInt64) -> Double {
-    MetricScales.networkRateProgress(bytesPerSecond: bytesPerSecond)
-}
-
-private func reportedProgress(hasReport: Bool, progress: Double) -> Double? {
-    guard hasReport else { return nil }
-    return progress
-}
-
-private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat {
-    guard let normalizedProgress = MetricScales.clampedProgress(progress), normalizedProgress > 0 else {
-        return 0
-    }
-    return max(minimumVisibleWidth, totalWidth * normalizedProgress)
+private func minimumTableWidth(columnCount: Int, preferredColumnWidth: CGFloat = DashboardLayout.minimumTableColumnWidth) -> CGFloat {
+    max(CGFloat(columnCount) * preferredColumnWidth, 360)
 }
 
 private func reportedHistorySampleCountText(from history: [MetricSnapshot]) -> String {
     let reportedSampleCount = history.filter(\.hasSampleTimeReport).count
     guard reportedSampleCount > 0 else { return PulseDockAppStrings.notReported }
-    return PulseDockAppStrings.recentSampleCount(reportedSampleCount)
+    return PulseDockAppStrings.recentSampleCount(min(reportedSampleCount, sparklineVisibleSampleLimit))
 }
 
 private func reportedHistorySampleChipText(from history: [MetricSnapshot]) -> String {
     let reportedSampleCount = history.filter(\.hasSampleTimeReport).count
     guard reportedSampleCount > 0 else { return PulseDockAppStrings.notReported }
-    return PulseDockAppStrings.recentSampleChipCount(reportedSampleCount)
+    return PulseDockAppStrings.recentSampleChipCount(min(reportedSampleCount, sparklineVisibleSampleLimit))
 }
 
 private func cpuTrendValues(from history: [MetricSnapshot]) -> [Double] {
@@ -1979,15 +2147,15 @@ private func networkTrendValues(from history: [MetricSnapshot]) -> [Double] {
 }
 
 private func networkTrendValues(from history: [MetricSnapshot], keyPath: KeyPath<MetricSnapshot, UInt64>) -> [Double] {
-    history.filter(\.hasNetworkByteCounters).map { normalizedRate($0[keyPath: keyPath]) }
+    history.filter(\.hasNetworkByteCounters).map { MetricScales.networkRateProgress(bytesPerSecond: $0[keyPath: keyPath]) }
 }
 
 private func networkPathTrendValues(from history: [MetricSnapshot]) -> [Double] {
-    history.filter(\.hasNetworkPathReport).map(networkPathProgress)
+    history.filter(\.hasNetworkPathReport).map { $0.canonicalNetworkPathState.progress }
 }
 
 private func thermalTrendValues(from history: [MetricSnapshot]) -> [Double] {
-    history.filter(\.hasThermalStateReport).compactMap { thermalProgress($0.thermalState) }
+    history.filter(\.hasThermalStateReport).compactMap { ThermalState(raw: $0.thermalState).progress }
 }
 
 private func uptimeTrendValues(from history: [MetricSnapshot]) -> [Double] {
@@ -2013,34 +2181,25 @@ private func diskCapacitySegments(_ snapshot: MetricSnapshot) -> [CapacitySegmen
     ]
 }
 
-private func networkStatusLevel(_ snapshot: MetricSnapshot) -> StatusLevel {
-    switch snapshot.canonicalNetworkPathState {
-    case .satisfied:
-        .normal
-    case .unsatisfied:
-        .critical
-    case .requiresConnection:
-        .warning
-    case .unknown:
-        .neutral
+private func statusLevel(for tone: MetricStatusTone) -> StatusLevel {
+    switch tone {
+    case .normal:
+        return .normal
+    case .warning:
+        return .warning
+    case .critical:
+        return .critical
+    case .neutral:
+        return .neutral
     }
+}
+
+private func networkStatusLevel(_ snapshot: MetricSnapshot) -> StatusLevel {
+    statusLevel(for: snapshot.canonicalNetworkPathState.metricStatusTone)
 }
 
 private func networkStatusColor(_ snapshot: MetricSnapshot) -> Color {
     networkStatusLevel(snapshot).color
-}
-
-private func networkPathProgress(_ snapshot: MetricSnapshot) -> Double {
-    switch snapshot.canonicalNetworkPathState {
-    case .satisfied:
-        1
-    case .requiresConnection:
-        0.45
-    case .unsatisfied:
-        0
-    case .unknown:
-        0
-    }
 }
 
 private func activeInterfaceProgress(_ snapshot: MetricSnapshot) -> Double {
@@ -2100,20 +2259,5 @@ private func thresholdStatusText(hasReport: Bool, usage: Double, threshold: Doub
 }
 
 private func thermalStatus(_ state: String) -> StatusLevel {
-    switch ThermalState(raw: state) {
-    case .critical: .critical
-    case .hot, .warm: .warning
-    case .nominal: .normal
-    case .unknown: .neutral
-    }
-}
-
-private func thermalProgress(_ state: String) -> Double? {
-    switch ThermalState(raw: state) {
-    case .critical: 1
-    case .hot: 0.78
-    case .warm: 0.52
-    case .nominal: 0.24
-    case .unknown: nil
-    }
+    statusLevel(for: ThermalState(raw: state).metricStatusTone)
 }

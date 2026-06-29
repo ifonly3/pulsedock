@@ -51,10 +51,10 @@ private struct MenuPopoverPreview: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 11) {
                     VStack(spacing: 7) {
-                        PopoverMetricRow(title: "CPU", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green(for: colorScheme))
-                        PopoverMetricRow(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue(for: colorScheme))
-                        PopoverMetricRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", progress: reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: normalizedRate(snapshot.networkBytesPerSecond)), tint: Palette.cyan(for: colorScheme))
-                        PopoverMetricRow(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, detail: snapshot.diskText, progress: reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber(for: colorScheme))
+                        PopoverMetricRow(title: "CPU", value: snapshot.cpuText, detail: snapshot.logicalCoreSummaryText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasCPUUsageReport, progress: snapshot.cpuUsage), tint: Palette.green(for: colorScheme))
+                        PopoverMetricRow(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, detail: snapshot.memoryText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasMemoryUsageReport, progress: snapshot.memoryUsage), tint: Palette.blue(for: colorScheme))
+                        PopoverMetricRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, detail: "\(snapshot.networkPathText) · ↓ \(snapshot.networkInText)  ↑ \(snapshot.networkOutText)", progress: MetricScales.reportedProgress(hasReport: snapshot.hasNetworkByteCounters, progress: MetricScales.networkRateProgress(bytesPerSecond: snapshot.networkBytesPerSecond)), tint: Palette.cyan(for: colorScheme))
+                        PopoverMetricRow(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, detail: snapshot.diskText, progress: MetricScales.reportedProgress(hasReport: snapshot.hasDiskUsageReport, progress: snapshot.diskUsage), tint: Palette.amber(for: colorScheme))
                     }
 
                     HStack(spacing: 8) {
@@ -118,7 +118,7 @@ private struct MenuPopoverPreview: View {
 
             let statusTint = isPaused ? Palette.amber(for: colorScheme) : Palette.green(for: colorScheme)
             HStack(spacing: 5) {
-                Circle().fill(statusTint).frame(width: 7, height: 7)
+                PopoverStatusDot(color: statusTint)
                 Text(isPaused ? PulseDockAppStrings.menuStatusPaused : PulseDockAppStrings.menuStatusLive)
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(statusTint)
@@ -129,22 +129,13 @@ private struct MenuPopoverPreview: View {
         }
     }
 
-    private func normalizedRate(_ bytesPerSecond: UInt64) -> Double {
-        MetricScales.networkRateProgress(bytesPerSecond: bytesPerSecond)
-    }
-
-    private func reportedProgress(hasReport: Bool, progress: Double) -> Double? {
-        guard hasReport else { return nil }
-        return progress
-    }
-
     private func reportedTint(hasReport: Bool, fallback: Color) -> Color {
         guard hasReport else { return Palette.cyan(for: colorScheme) }
         return fallback
     }
 
-    private func powerTint(_ snapshot: MetricSnapshot) -> Color {
-        switch snapshot.powerStatusTone {
+    private func tint(for tone: MetricStatusTone) -> Color {
+        switch tone {
         case .normal:
             return Palette.green(for: colorScheme)
         case .warning:
@@ -156,26 +147,16 @@ private struct MenuPopoverPreview: View {
         }
     }
 
+    private func powerTint(_ snapshot: MetricSnapshot) -> Color {
+        tint(for: snapshot.powerStatusTone)
+    }
+
     private func thermalTint(_ state: String) -> Color {
-        switch ThermalState(raw: state) {
-        case .critical, .hot: Palette.red(for: colorScheme)
-        case .warm: Palette.amber(for: colorScheme)
-        case .nominal: Palette.green(for: colorScheme)
-        case .unknown: Palette.cyan(for: colorScheme)
-        }
+        tint(for: ThermalState(raw: state).metricStatusTone)
     }
 
     private func networkTint(_ snapshot: MetricSnapshot) -> Color {
-        switch snapshot.canonicalNetworkPathState {
-        case .satisfied:
-            Palette.green(for: colorScheme)
-        case .requiresConnection:
-            Palette.amber(for: colorScheme)
-        case .unsatisfied:
-            Palette.red(for: colorScheme)
-        case .unknown:
-            Palette.cyan(for: colorScheme)
-        }
+        tint(for: snapshot.canonicalNetworkPathState.metricStatusTone)
     }
 }
 
@@ -213,7 +194,7 @@ private struct PopoverMetricRow: View {
                     if let progress {
                         Capsule()
                             .fill(tint.gradient)
-                            .frame(width: progressFillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 7))
+                            .frame(width: MetricScales.fillWidth(progress, in: proxy.size.width, minimumVisibleWidth: 7))
                     }
                 }
             }
@@ -240,8 +221,7 @@ private struct PopoverSmallStat: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
-            Circle().fill(tint).frame(width: 7, height: 7)
-                .accessibilityHidden(true)
+            PopoverStatusDot(color: tint)
             Text(title)
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(popoverSecondaryText(for: colorScheme))
@@ -260,6 +240,17 @@ private struct PopoverSmallStat: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title), \(value)")
+    }
+}
+
+private struct PopoverStatusDot: View {
+    let color: Color
+
+    var body: some View {
+        Circle()
+            .fill(color)
+            .frame(width: 7, height: 7)
+            .accessibilityHidden(true)
     }
 }
 
@@ -308,31 +299,30 @@ private func popoverTintFill(_ tint: Color, for colorScheme: ColorScheme) -> Col
     tint.opacity(colorScheme == .dark ? 0.18 : 0.11)
 }
 
-private func progressFillWidth(_ progress: Double, in totalWidth: CGFloat, minimumVisibleWidth: CGFloat) -> CGFloat {
-    guard let normalizedProgress = MetricScales.clampedProgress(progress), normalizedProgress > 0 else {
-        return 0
-    }
-    return max(minimumVisibleWidth, totalWidth * normalizedProgress)
-}
-
 private enum Palette {
     static func blue(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.42, green: 0.66, blue: 1.00) : Color(red: 0.14, green: 0.43, blue: 0.95)
+        color(.blue, for: colorScheme)
     }
 
     static func green(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.26, green: 0.82, blue: 0.58) : Color(red: 0.04, green: 0.62, blue: 0.39)
+        color(.green, for: colorScheme)
     }
 
     static func amber(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 1.00, green: 0.70, blue: 0.30) : Color(red: 0.93, green: 0.54, blue: 0.10)
+        color(.amber, for: colorScheme)
     }
 
     static func cyan(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 0.24, green: 0.76, blue: 0.86) : Color(red: 0.04, green: 0.56, blue: 0.70)
+        color(.cyan, for: colorScheme)
     }
 
     static func red(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark ? Color(red: 1.00, green: 0.38, blue: 0.36) : Color(red: 0.84, green: 0.16, blue: 0.16)
+        color(.red, for: colorScheme)
+    }
+
+    private static func color(_ accent: MetricAccent, for colorScheme: ColorScheme) -> Color {
+        let appearance: MetricAccentAppearance = colorScheme == .dark ? .dark : .light
+        let components = MetricAccentComponents.components(for: accent, appearance: appearance)
+        return Color(red: components.red, green: components.green, blue: components.blue)
     }
 }

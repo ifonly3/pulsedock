@@ -1,7 +1,7 @@
 import Foundation
 
-enum SharedMetricStrings {
-    static var notReported: String {
+public enum SharedMetricStrings {
+    public static var notReported: String {
         localized("shared_metrics.not_reported", defaultValue: "Not reported")
     }
 
