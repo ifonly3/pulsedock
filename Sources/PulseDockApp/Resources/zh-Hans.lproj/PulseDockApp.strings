@@ -81,7 +81,6 @@
 "app.dashboard.network.column.traffic" = "流量";
 "app.dashboard.network.column.type" = "类型";
 "app.dashboard.network.combined_traffic.detail" = "合并上下行";
-"app.dashboard.network.connection.label" = "连接";
 "app.dashboard.network.connection_status.title" = "连接状态";
 "app.dashboard.network.connectivity.title" = "连接能力";
 "app.dashboard.network.download.title" = "下载";
@@ -90,13 +89,9 @@
 "app.dashboard.network.low_data_mode.label" = "低数据模式";
 "app.dashboard.network.metered.label" = "计量网络";
 "app.dashboard.network.name_resolution.source" = "名称解析";
-"app.dashboard.network.path.label" = "路径";
 "app.dashboard.network.realtime_rate.detail" = "实时速率";
-"app.dashboard.network.recent_live_samples.subtitle" = "最近实时采样";
 "app.dashboard.network.system_path.subtitle" = "系统网络路径";
-"app.dashboard.network.total.label" = "总计";
 "app.dashboard.network.total_throughput.title" = "总吞吐";
-"app.dashboard.network.trend.title" = "网络趋势";
 "app.dashboard.network.upload.title" = "上传";
 "app.dashboard.overview.cpu_status.title" = "CPU 状态";
 "app.dashboard.overview.cpu_usage.title" = "CPU 使用率";
@@ -105,7 +100,6 @@
 "app.dashboard.overview.memory_usage.title" = "内存占用";
 "app.dashboard.overview.network_throughput.title" = "网络吞吐";
 "app.dashboard.overview.power_status.title" = "电源状态";
-"app.dashboard.overview.runtime_trends.title" = "运行趋势";
 "app.dashboard.overview.system_status.title" = "系统状态";
 "app.dashboard.page.cpu.subtitle" = "处理器负载与核心";
 "app.dashboard.page.cpu.title" = "CPU";

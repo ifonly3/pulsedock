@@ -347,7 +347,6 @@ import Testing
         (symbol: "overviewMemoryUsageTitle", key: "app.dashboard.overview.memory_usage.title", english: "Memory Usage", chinese: "内存占用"),
         (symbol: "overviewNetworkThroughputTitle", key: "app.dashboard.overview.network_throughput.title", english: "Network Throughput", chinese: "网络吞吐"),
         (symbol: "overviewPowerStatusTitle", key: "app.dashboard.overview.power_status.title", english: "Power Status", chinese: "电源状态"),
-        (symbol: "overviewRuntimeTrendsTitle", key: "app.dashboard.overview.runtime_trends.title", english: "Runtime Trends", chinese: "运行趋势"),
         (symbol: "overviewSystemStatusTitle", key: "app.dashboard.overview.system_status.title", english: "System Status", chinese: "系统状态"),
         (symbol: "overviewCPUStatusTitle", key: "app.dashboard.overview.cpu_status.title", english: "CPU Status", chinese: "CPU 状态"),
         (symbol: "overviewMemoryStatusTitle", key: "app.dashboard.overview.memory_status.title", english: "Memory Status", chinese: "内存状态"),
@@ -442,15 +441,10 @@ import Testing
         (symbol: "networkActiveInterfacesDetail", key: "app.dashboard.network.active_interfaces.detail", english: "Active Interfaces", chinese: "活动接口"),
         (symbol: "networkConnectivityTitle", key: "app.dashboard.network.connectivity.title", english: "Connectivity", chinese: "连接能力"),
         (symbol: "networkSystemPathSubtitle", key: "app.dashboard.network.system_path.subtitle", english: "System network path", chinese: "系统网络路径"),
-        (symbol: "networkPathLabel", key: "app.dashboard.network.path.label", english: "Path", chinese: "路径"),
         (symbol: "networkCapabilityLabel", key: "app.dashboard.network.capability.label", english: "Capability", chinese: "能力"),
         (symbol: "networkNameResolutionSource", key: "app.dashboard.network.name_resolution.source", english: "Name resolution", chinese: "名称解析"),
         (symbol: "networkLowDataModeLabel", key: "app.dashboard.network.low_data_mode.label", english: "Low Data Mode", chinese: "低数据模式"),
         (symbol: "networkMeteredLabel", key: "app.dashboard.network.metered.label", english: "Metered Network", chinese: "计量网络"),
-        (symbol: "networkTrendTitle", key: "app.dashboard.network.trend.title", english: "Network Trend", chinese: "网络趋势"),
-        (symbol: "networkRecentLiveSamplesSubtitle", key: "app.dashboard.network.recent_live_samples.subtitle", english: "Recent live samples", chinese: "最近实时采样"),
-        (symbol: "networkTotalLabel", key: "app.dashboard.network.total.label", english: "Total", chinese: "总计"),
-        (symbol: "networkConnectionLabel", key: "app.dashboard.network.connection.label", english: "Connection", chinese: "连接"),
         (symbol: "networkInterfacesSubtitle", key: "app.dashboard.network.interfaces.subtitle", english: "Network interfaces and links", chinese: "网络接口与链路")
     ]
 

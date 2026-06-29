@@ -91,7 +91,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - CPU trend charts filter out samples whose CPU counters were not reported, so missing samples do not appear as 0% dips.
 - Memory, disk, and network trend charts filter out samples whose capacity or byte-counter data was not reported, so missing samples do not appear as zero-value dips.
 - Memory trend charts use the shared memory reported-state flag, so future capacity validation changes stay consistent across text and charts.
-- The Overview running trend surfaces load-average history alongside CPU, memory, network, and disk.
+- Overview metric cards surface compact CPU, memory, network, and power sparklines; the History page owns the expanded multi-signal trend view.
 - Current progress bars and gauges in the app and widgets suppress filled progress when the paired live value is not reported, so missing samples do not render as 0% readings.
 - Dashboard progress bars and gauges use explicit snapshot reported-state flags instead of user-facing text comparisons.
 - Widget progress rings and rows use explicit snapshot reported-state flags instead of user-facing text comparisons.
@@ -242,8 +242,8 @@ This file is an internal product and App Store readiness audit. It should not be
 - Network interface byte count display text reports the system-not-reported state when counters are unavailable, instead of formatting missing byte counters as zero.
 - Aggregate network rate display text reports the system-not-reported state when byte counters are unavailable, instead of formatting missing aggregate throughput as zero.
 - Network formatting distinguishes byte-per-second throughput (`B/s`, `KB/s`) from bit-per-second aggregate and link rates (`Kbps`, `Mbps`, `Gbps`).
-- The Network page trend panel surfaces aggregate throughput alongside download and upload history.
-- The Network page trend panel surfaces connection status history from the public network path monitor.
+- Network metric cards surface aggregate throughput alongside download, upload, and connection status history.
+- Network connection status history is derived from the public network path monitor.
 - Network interface MTU uses public route interface statistics and `getifaddrs` interface data fallback, without storing raw interface names in snapshots.
 - Network interface MTU display text reports the system-not-reported state when MTU is unavailable or zero.
 - Network interface packet counters and interface error counters use the same public route statistics and `getifaddrs` fallback without storing raw interface names in snapshots.
@@ -321,7 +321,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require the History page to surface persisted load-average trend.
 - Source-level tests require the History page to surface persisted thermal-state trend.
 - Source-level tests require the History page to surface persisted uptime trend.
-- Source-level tests require the Overview running trend to surface persisted load-average history.
+- Source-level tests require the History page, not Overview, to own persisted load-average history.
 - Source-level tests keep user-facing copy aligned with implemented signals, including memory usage wording and WidgetKit timeline refresh semantics.
 - Source-level tests prevent raw thermal unknown states from reaching dashboard, menu bar, or widget surfaces.
 - Source-level tests require thermal reported-state checks to use an explicit snapshot flag instead of user-facing text comparisons.
@@ -446,8 +446,8 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests prevent legacy network path cost flags from inventing disabled low-data-mode or metered-network state.
 - Source-level tests require Network page path capability labels to come from the shared snapshot model.
 - Source-level tests require Network page low-data and metered labels to come from the shared snapshot model.
-- Source-level tests require the Network page trend panel to surface aggregate throughput history.
-- Source-level tests require the Network page trend panel to surface network path status history.
+- Source-level tests require Network metric cards to retain aggregate throughput history.
+- Source-level tests require Network metric cards to retain network path status history.
 - Source-level tests require Network path other-interface labels to use localized product text.
 - Source-level tests require network path reported-state checks to use an explicit snapshot flag instead of user-facing text comparisons.
 - Source-level tests prevent unknown network path state from borrowing online details or positive progress.

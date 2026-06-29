@@ -404,18 +404,7 @@ private struct OverviewPage: View {
                 MetricCard(title: PulseDockAppStrings.overviewPowerStatusTitle, value: snapshot.powerStatusText, detail: snapshot.powerSourceText, icon: "battery.75percent", tint: powerTint(snapshot), badgeText: snapshot.batteryPercent.map { MetricFormatting.percentage($0) }, progress: powerGaugeProgress(snapshot), values: powerTrend)
             }
 
-            if isCompact {
-                VStack(alignment: .leading, spacing: 12) {
-                    overviewTrendPanel(cpuTrend: cpuTrend, memoryTrend: memoryTrend, networkTrend: networkTrend)
-                    overviewStatusPanel
-                }
-            } else {
-                HStack(alignment: .top, spacing: 12) {
-                    overviewTrendPanel(cpuTrend: cpuTrend, memoryTrend: memoryTrend, networkTrend: networkTrend)
-                    overviewStatusPanel
-                        .frame(width: 330)
-                }
-            }
+            overviewStatusPanel
 
             if isCompact {
                 VStack(alignment: .leading, spacing: 12) {
@@ -428,18 +417,6 @@ private struct OverviewPage: View {
                     WidgetPreviewPanel(snapshot: snapshot)
                         .frame(width: 360)
                 }
-            }
-        }
-    }
-
-    private func overviewTrendPanel(cpuTrend: [Double], memoryTrend: [Double], networkTrend: [Double]) -> some View {
-        DashboardPanel(title: PulseDockAppStrings.overviewRuntimeTrendsTitle, subtitle: reportedHistorySampleCountText(from: history), icon: "chart.xyaxis.line") {
-            VStack(spacing: 14) {
-                TrendRow(title: PulseDockAppStrings.metricCPU, value: snapshot.cpuText, tint: DashboardColor.green, values: cpuTrend)
-                TrendRow(title: PulseDockAppStrings.metricLoad, value: snapshot.loadText, tint: DashboardColor.purple, values: loadTrendValues(from: history))
-                TrendRow(title: PulseDockAppStrings.metricMemory, value: snapshot.memoryUsageText, tint: DashboardColor.blue, values: memoryTrend)
-                TrendRow(title: PulseDockAppStrings.metricNetwork, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrend)
-                TrendRow(title: PulseDockAppStrings.metricDisk, value: snapshot.diskUsageText, tint: DashboardColor.amber, values: diskTrendValues(from: history))
             }
         }
     }
@@ -682,7 +659,6 @@ private struct NetworkPage: View {
                 ResponsiveTable(
                     columns: PulseDockAppStrings.networkCapabilityTableColumns,
                     rows: [
-                        [PulseDockAppStrings.networkPathLabel, snapshot.networkPathText, snapshot.networkPathDetailText],
                         [PulseDockAppStrings.networkCapabilityLabel, snapshot.networkPathCapabilityText, PulseDockAppStrings.networkSystemPathSubtitle],
                         ["DNS", snapshot.networkDNSCapabilityText, PulseDockAppStrings.networkNameResolutionSource],
                         ["IPv4", snapshot.networkIPv4CapabilityText, PulseDockAppStrings.networkSystemPathSubtitle],
@@ -692,15 +668,6 @@ private struct NetworkPage: View {
                     ],
                     preferredColumnWidth: DashboardLayout.minimumTableColumnWidth
                 )
-            }
-
-            DashboardPanel(title: PulseDockAppStrings.networkTrendTitle, subtitle: PulseDockAppStrings.networkRecentLiveSamplesSubtitle, icon: "chart.line.uptrend.xyaxis") {
-                VStack(spacing: 14) {
-                    TrendRow(title: PulseDockAppStrings.networkTotalLabel, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrend)
-                    TrendRow(title: PulseDockAppStrings.networkConnectionLabel, value: snapshot.networkPathText, tint: networkStatusColor(snapshot), values: networkPathTrend)
-                    TrendRow(title: PulseDockAppStrings.networkDownloadTitle, value: snapshot.networkInText, tint: DashboardColor.blue, values: networkDownloadTrend)
-                    TrendRow(title: PulseDockAppStrings.networkUploadTitle, value: snapshot.networkOutText, tint: DashboardColor.green, values: networkUploadTrend)
-                }
             }
 
             DashboardPanel(title: PulseDockAppStrings.networkInterfaceTitle, subtitle: PulseDockAppStrings.networkInterfacesSubtitle, icon: "wifi") {

@@ -122,10 +122,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.overview.power_status.title", defaultValue: "Power Status")
     }
 
-    static var overviewRuntimeTrendsTitle: String {
-        localized("app.dashboard.overview.runtime_trends.title", defaultValue: "Runtime Trends")
-    }
-
     static var overviewSystemStatusTitle: String {
         localized("app.dashboard.overview.system_status.title", defaultValue: "System Status")
     }
@@ -399,10 +395,6 @@ enum PulseDockAppStrings {
         localized("app.dashboard.network.system_path.subtitle", defaultValue: "System network path")
     }
 
-    static var networkPathLabel: String {
-        localized("app.dashboard.network.path.label", defaultValue: "Path")
-    }
-
     static var networkCapabilityLabel: String {
         localized("app.dashboard.network.capability.label", defaultValue: "Capability")
     }
@@ -417,22 +409,6 @@ enum PulseDockAppStrings {
 
     static var networkMeteredLabel: String {
         localized("app.dashboard.network.metered.label", defaultValue: "Metered Network")
-    }
-
-    static var networkTrendTitle: String {
-        localized("app.dashboard.network.trend.title", defaultValue: "Network Trend")
-    }
-
-    static var networkRecentLiveSamplesSubtitle: String {
-        localized("app.dashboard.network.recent_live_samples.subtitle", defaultValue: "Recent live samples")
-    }
-
-    static var networkTotalLabel: String {
-        localized("app.dashboard.network.total.label", defaultValue: "Total")
-    }
-
-    static var networkConnectionLabel: String {
-        localized("app.dashboard.network.connection.label", defaultValue: "Connection")
     }
 
     static var networkInterfacesSubtitle: String {

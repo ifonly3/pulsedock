@@ -626,11 +626,11 @@ import Testing
     let nextStart = try #require(dashboardView.range(of: "private struct PowerPage")?.lowerBound)
     let networkPage = String(dashboardView[networkStart..<nextStart])
 
-    #expect(networkPage.contains("DashboardPanel(title: PulseDockAppStrings.networkTrendTitle, subtitle: PulseDockAppStrings.networkRecentLiveSamplesSubtitle, icon: \"chart.line.uptrend.xyaxis\")"))
+    #expect(!networkPage.contains("DashboardPanel(title: PulseDockAppStrings.networkTrendTitle"))
     #expect(networkPage.contains("let networkTrend = networkTrendValues(from: history"))
-    #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkTotalLabel, value: snapshot.networkText, tint: DashboardColor.cyan, values: networkTrend)"))
-    #expect(audit.contains("The Network page trend panel surfaces aggregate throughput alongside download and upload history."))
-    #expect(audit.contains("Source-level tests require the Network page trend panel to surface aggregate throughput history."))
+    #expect(networkPage.contains("values: networkTrend"))
+    #expect(audit.contains("Network metric cards surface aggregate throughput alongside download, upload, and connection status history."))
+    #expect(audit.contains("Source-level tests require Network metric cards to retain aggregate throughput history."))
 }
 
 @Test func networkPageTrendPanelSurfacesPathStatusHistory() throws {
@@ -648,13 +648,13 @@ import Testing
     let networkPage = String(dashboardView[networkStart..<nextStart])
 
     #expect(networkPage.contains("let networkPathTrend = networkPathTrendValues(from: history)"))
-    #expect(networkPage.contains("TrendRow(title: PulseDockAppStrings.networkConnectionLabel, value: snapshot.networkPathText, tint: networkStatusColor(snapshot), values: networkPathTrend)"))
+    #expect(networkPage.contains("values: networkPathTrend"))
     #expect(dashboardView.contains("private func networkPathTrendValues(from history: [MetricSnapshot]) -> [Double]"))
     #expect(dashboardView.contains("history.filter(\\.hasNetworkPathReport).map { $0.canonicalNetworkPathState.progress }"))
     #expect(!dashboardView.contains("history.filter { $0.networkPathText != \"未报告\" }.map(networkPathProgress)"))
     #expect(!dashboardView.contains("history.filter(\\.hasNetworkPathReport).map(networkPathProgress)"))
-    #expect(audit.contains("The Network page trend panel surfaces connection status history from the public network path monitor."))
-    #expect(audit.contains("Source-level tests require the Network page trend panel to surface network path status history."))
+    #expect(audit.contains("Network connection status history is derived from the public network path monitor."))
+    #expect(audit.contains("Source-level tests require Network metric cards to retain network path status history."))
 }
 
 @Test func minutesFormatterUsesCompactDurations() {
@@ -7587,9 +7587,9 @@ import Testing
     let nextStart = try #require(dashboardView.range(of: "private struct CPUPage")?.lowerBound)
     let overviewPage = String(dashboardView[overviewStart..<nextStart])
 
-    #expect(overviewPage.contains("TrendRow(title: PulseDockAppStrings.metricLoad, value: snapshot.loadText, tint: DashboardColor.purple, values: loadTrendValues(from: history))"))
-    #expect(audit.contains("The Overview running trend surfaces load-average history alongside CPU, memory, network, and disk."))
-    #expect(audit.contains("Source-level tests require the Overview running trend to surface persisted load-average history."))
+    #expect(!overviewPage.contains("TrendRow(title: PulseDockAppStrings.metricLoad"))
+    #expect(audit.contains("Overview metric cards surface compact CPU, memory, network, and power sparklines; the History page owns the expanded multi-signal trend view."))
+    #expect(audit.contains("Source-level tests require the History page, not Overview, to own persisted load-average history."))
 }
 
 @Test func overviewRunningAppSummarySurfacesWorkspaceStateCounts() throws {
@@ -7857,7 +7857,7 @@ import Testing
     #expect(dashboardView.contains("private func reportedHistorySampleCountText(from history: [MetricSnapshot]) -> String"))
     #expect(dashboardView.contains("private func reportedHistorySampleChipText(from history: [MetricSnapshot]) -> String"))
     #expect(dashboardView.contains("let reportedSampleCount = history.filter(\\.hasSampleTimeReport).count"))
-    #expect(dashboardView.contains("DashboardPanel(title: PulseDockAppStrings.overviewRuntimeTrendsTitle, subtitle: reportedHistorySampleCountText(from: history), icon: \"chart.xyaxis.line\")"))
+    #expect(!dashboardView.contains("DashboardPanel(title: PulseDockAppStrings.overviewRuntimeTrendsTitle"))
     #expect(dashboardView.contains("DataChip(icon: \"waveform.path.ecg\", text: reportedHistorySampleChipText(from: history))"))
     #expect(dashboardView.contains("DashboardPanel(title: PulseDockAppStrings.historyTrendsTitle, subtitle: reportedHistorySampleCountText(from: history), icon: \"chart.xyaxis.line\")"))
     #expect(!dashboardView.contains("subtitle: \"最近 \\(history.count) 次采样\""))

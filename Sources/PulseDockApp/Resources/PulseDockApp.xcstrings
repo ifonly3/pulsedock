@@ -1329,22 +1329,6 @@
         }
       }
     },
-    "app.dashboard.network.connection.label": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connection"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "连接"
-          }
-        }
-      }
-    },
     "app.dashboard.network.connection_status.title": {
       "localizations": {
         "en": {
@@ -1473,22 +1457,6 @@
         }
       }
     },
-    "app.dashboard.network.path.label": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Path"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "路径"
-          }
-        }
-      }
-    },
     "app.dashboard.network.realtime_rate.detail": {
       "localizations": {
         "en": {
@@ -1501,22 +1469,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "实时速率"
-          }
-        }
-      }
-    },
-    "app.dashboard.network.recent_live_samples.subtitle": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recent live samples"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "最近实时采样"
           }
         }
       }
@@ -1537,22 +1489,6 @@
         }
       }
     },
-    "app.dashboard.network.total.label": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "总计"
-          }
-        }
-      }
-    },
     "app.dashboard.network.total_throughput.title": {
       "localizations": {
         "en": {
@@ -1565,22 +1501,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "总吞吐"
-          }
-        }
-      }
-    },
-    "app.dashboard.network.trend.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Network Trend"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "网络趋势"
           }
         }
       }
@@ -1709,22 +1629,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "电源状态"
-          }
-        }
-      }
-    },
-    "app.dashboard.overview.runtime_trends.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Runtime Trends"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "运行趋势"
           }
         }
       }

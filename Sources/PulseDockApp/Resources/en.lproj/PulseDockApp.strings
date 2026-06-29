@@ -81,7 +81,6 @@
 "app.dashboard.network.column.traffic" = "Traffic";
 "app.dashboard.network.column.type" = "Type";
 "app.dashboard.network.combined_traffic.detail" = "Combined upload and download";
-"app.dashboard.network.connection.label" = "Connection";
 "app.dashboard.network.connection_status.title" = "Connection Status";
 "app.dashboard.network.connectivity.title" = "Connectivity";
 "app.dashboard.network.download.title" = "Download";
@@ -90,13 +89,9 @@
 "app.dashboard.network.low_data_mode.label" = "Low Data Mode";
 "app.dashboard.network.metered.label" = "Metered Network";
 "app.dashboard.network.name_resolution.source" = "Name resolution";
-"app.dashboard.network.path.label" = "Path";
 "app.dashboard.network.realtime_rate.detail" = "Live Rate";
-"app.dashboard.network.recent_live_samples.subtitle" = "Recent live samples";
 "app.dashboard.network.system_path.subtitle" = "System network path";
-"app.dashboard.network.total.label" = "Total";
 "app.dashboard.network.total_throughput.title" = "Total Throughput";
-"app.dashboard.network.trend.title" = "Network Trend";
 "app.dashboard.network.upload.title" = "Upload";
 "app.dashboard.overview.cpu_status.title" = "CPU Status";
 "app.dashboard.overview.cpu_usage.title" = "CPU Usage";
@@ -105,7 +100,6 @@
 "app.dashboard.overview.memory_usage.title" = "Memory Usage";
 "app.dashboard.overview.network_throughput.title" = "Network Throughput";
 "app.dashboard.overview.power_status.title" = "Power Status";
-"app.dashboard.overview.runtime_trends.title" = "Runtime Trends";
 "app.dashboard.overview.system_status.title" = "System Status";
 "app.dashboard.page.cpu.subtitle" = "Processor load and cores";
 "app.dashboard.page.cpu.title" = "CPU";
