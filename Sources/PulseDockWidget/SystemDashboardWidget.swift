@@ -246,9 +246,11 @@ private struct MediumStatusStrip: View {
     let snapshot: MetricSnapshot
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             MiniStatus(title: PulseDockWidgetStrings.miniThermal, value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
-            MiniStatus(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 }
@@ -680,11 +682,19 @@ private struct MiniStatus: View {
             Text(title)
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(widgetSecondaryText(for: colorScheme))
+                .lineLimit(1)
+                .minimumScaleFactor(0.55)
+                .allowsTightening(true)
+                .truncationMode(.tail)
+                .layoutPriority(1)
             Text(value)
                 .font(.system(size: 11, weight: .semibold).monospacedDigit())
                 .foregroundStyle(widgetPrimaryText(for: colorScheme))
                 .lineLimit(1)
-                .minimumScaleFactor(0.64)
+                .minimumScaleFactor(0.55)
+                .allowsTightening(true)
+                .truncationMode(.tail)
+                .layoutPriority(1)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title), \(value)")

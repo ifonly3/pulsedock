@@ -278,7 +278,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thermal"
+            "value" : "Temp"
           }
         },
         "zh-Hans" : {

@@ -4207,7 +4207,7 @@ import Testing
     #expect(mediumWidget.contains("WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText"))
     #expect(mediumWidget.contains("WidgetRow(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText"))
     #expect(mediumWidget.contains("MiniStatus(title: PulseDockWidgetStrings.miniThermal, value: snapshot.thermalText"))
-    #expect(mediumWidget.contains("MiniStatus(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText"))
+    #expect(mediumWidget.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText"))
     #expect(!mediumWidget.contains("WidgetRow(title: snapshot.powerStatusTitle"))
     #expect(mediumWidget.contains("VStack(spacing: 18)"))
     #expect(mediumWidget.contains(".frame(width: 166, alignment: .leading)"))
@@ -4350,7 +4350,7 @@ import Testing
     #expect(!mediumWidget.contains("Text(\"\\(snapshot.networkPathText) · \\(snapshot.networkPathDetailText)\")"))
     #expect(widget.contains("private struct MediumStatusStrip: View"))
     #expect(widget.contains("MiniStatus(title: PulseDockWidgetStrings.miniThermal, value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))"))
-    #expect(widget.contains("MiniStatus(title: snapshot.powerStatusTitle, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))"))
+    #expect(widget.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))"))
     #expect(audit.contains("Medium widget left column uses a first-version-style CPU block with core summary and a compact status strip instead of stacking network detail text."))
     #expect(audit.contains("Source-level tests keep the medium widget from reintroducing crowded left-column network detail copy."))
 }
@@ -7323,7 +7323,7 @@ import Testing
     let widgetStringCatalog = try fixture("Sources/PulseDockWidget/Resources/PulseDockWidget.xcstrings")
     let expectedEntries = [
         (symbol: "widgetDescription", key: "widget.description", english: "Show Mac CPU, memory, disk, connection, power, load, thermal, uptime, system, and kernel status on your desktop.", chinese: "在桌面显示 Mac 的 CPU、内存、磁盘、连接、电源、负载、热状态、运行时间、系统和内核状态。"),
-        (symbol: "miniThermal", key: "widget.mini.thermal", english: "Thermal", chinese: "热状态"),
+        (symbol: "miniThermal", key: "widget.mini.thermal", english: "Temp", chinese: "热状态"),
         (symbol: "miniNetwork", key: "widget.mini.network", english: "Net", chinese: "网"),
         (symbol: "miniPower", key: "widget.mini.power", english: "Pwr", chinese: "电"),
         (symbol: "metricMemory", key: "widget.metric.memory", english: "Memory", chinese: "内存"),
@@ -9450,6 +9450,34 @@ import Testing
     #expect(strings.contains("widget.metric.cpu"))
     #expect(strings.contains("widget.metric.memory_compact"))
     #expect(strings.contains("widget.power.ups"))
+}
+
+@Test func mediumWidgetMiniStatusLabelsStayOnOneLineInEnglish() throws {
+    let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
+    let mediumStatusStrip = try #require(
+        widget.range(of: "private struct MediumStatusStrip").map { start in
+            let remainder = widget[start.lowerBound...]
+            let end = remainder.range(of: "\nprivate struct LargeWidget")?.lowerBound ?? remainder.endIndex
+            return String(remainder[..<end])
+        }
+    )
+    let miniStatus = try #require(
+        widget.range(of: "private struct MiniStatus").map { start in
+            let remainder = widget[start.lowerBound...]
+            let end = remainder.range(of: "\nprivate struct StatTile")?.lowerBound ?? remainder.endIndex
+            return String(remainder[..<end])
+        }
+    )
+
+    #expect(mediumStatusStrip.contains(".frame(maxWidth: .infinity, alignment: .leading)"))
+    #expect(mediumStatusStrip.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText"))
+    #expect(!mediumStatusStrip.contains("snapshot.powerStatusTitle"))
+    #expect(miniStatus.contains("Text(title)"))
+    #expect(miniStatus.contains(".lineLimit(1)"))
+    #expect(miniStatus.contains(".minimumScaleFactor(0.55)"))
+    #expect(miniStatus.contains(".allowsTightening(true)"))
+    #expect(miniStatus.contains(".truncationMode(.tail)"))
+    #expect(miniStatus.contains(".layoutPriority(1)"))
 }
 
 @Test func metricSnapshotHasExplicitSchemaVersionAndDecodesCurrentSchema() throws {

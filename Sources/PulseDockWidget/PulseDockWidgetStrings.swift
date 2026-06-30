@@ -11,7 +11,7 @@ enum PulseDockWidgetStrings {
     }
 
     static var miniThermal: String {
-        localized("widget.mini.thermal", defaultValue: "Thermal")
+        localized("widget.mini.thermal", defaultValue: "Temp")
     }
 
     static var miniNetwork: String {
