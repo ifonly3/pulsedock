@@ -183,11 +183,8 @@ private struct PopoverMetricRow: View {
                         .lineLimit(1)
                 }
                 Spacer()
-                Text(value)
-                    .font(.system(size: 15, weight: .semibold).monospacedDigit())
+                StablePopoverMetricText(text: value, font: .system(size: 15, weight: .semibold), minWidth: 54, alignment: .trailing, minimumScaleFactor: 0.7)
                     .foregroundStyle(popoverPrimaryText(for: colorScheme))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
             }
 
             GeometryReader { proxy in
@@ -227,11 +224,8 @@ private struct PopoverSmallStat: View {
             Text(title)
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(popoverSecondaryText(for: colorScheme))
-            Text(value)
-                .font(.system(size: 13, weight: .semibold).monospacedDigit())
+            StablePopoverMetricText(text: value, font: .system(size: 13, weight: .semibold), minWidth: 44, alignment: .leading, minimumScaleFactor: 0.62)
                 .foregroundStyle(popoverPrimaryText(for: colorScheme))
-                .lineLimit(1)
-                .minimumScaleFactor(0.62)
         }
         .padding(8)
         .frame(maxWidth: .infinity, minHeight: 60, alignment: .leading)
@@ -242,6 +236,25 @@ private struct PopoverSmallStat: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title), \(value)")
+    }
+}
+
+private struct StablePopoverMetricText: View {
+    let text: String
+    let font: Font
+    let minWidth: CGFloat
+    let alignment: Alignment
+    let minimumScaleFactor: CGFloat
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Text(text)
+            .font(font.monospacedDigit())
+            .lineLimit(1)
+            .minimumScaleFactor(minimumScaleFactor)
+            .contentTransition(reduceMotion ? .identity : .numericText())
+            .animation(DashboardMotion.metric(reduceMotion: reduceMotion), value: text)
+            .frame(minWidth: minWidth, alignment: alignment)
     }
 }
 

@@ -487,10 +487,7 @@ private struct CPUPage: View {
         DashboardPanel(title: PulseDockAppStrings.cpuProcessorTitle, subtitle: PulseDockAppStrings.cpuProcessorSubtitle, icon: "cpu") {
             VStack(spacing: 18) {
                 HStack(alignment: .firstTextBaseline) {
-                    Text(snapshot.cpuText)
-                        .font(.system(size: 54, weight: .semibold, design: .default).monospacedDigit())
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.62)
+                    StableMetricText(text: snapshot.cpuText, font: .system(size: 54, weight: .semibold, design: .default), minWidth: DashboardLayout.heroMetricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.62)
                     Text(PulseDockAppStrings.cpuCurrentTotalUsageTitle)
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(DashboardColor.muted)
@@ -600,8 +597,7 @@ private struct StoragePage: View {
             DashboardPanel(title: PulseDockAppStrings.storageSpaceTitle, subtitle: PulseDockAppStrings.storageLocalVolumeCapacitySubtitle, icon: "internaldrive") {
                 VStack(spacing: 18) {
                     HStack(alignment: .firstTextBaseline) {
-                        Text(snapshot.diskUsedText)
-                            .font(.system(size: 44, weight: .semibold).monospacedDigit())
+                        StableMetricText(text: snapshot.diskUsedText, font: .system(size: 44, weight: .semibold), minWidth: DashboardLayout.wideMetricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.62)
                         Text(PulseDockAppStrings.storageUsedOfTotal(snapshot.diskTotalText))
                             .foregroundStyle(DashboardColor.muted)
                         Spacer()
@@ -1356,10 +1352,7 @@ private struct RingGauge: View {
                     .animation(DashboardMotion.metric(reduceMotion: reduceMotion), value: clampedProgress)
             }
             VStack(spacing: DashboardSpacing.xxs) {
-                Text(value)
-                    .font(DashboardTypography.metricValue)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.58)
+                StableMetricText(text: value, font: DashboardTypography.metricValue, minWidth: DashboardLayout.statValueMinWidth, alignment: .center, minimumScaleFactor: 0.58)
                 Text(title)
                     .font(DashboardTypography.caption)
                     .foregroundStyle(DashboardColor.muted)
@@ -1401,10 +1394,7 @@ private struct TrendRow: View {
                 .foregroundStyle(DashboardColor.muted)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
-            Text(value)
-                .font(DashboardTypography.metricValue)
-                .lineLimit(1)
-                .minimumScaleFactor(0.68)
+            StableMetricText(text: value, font: DashboardTypography.metricValue, minWidth: DashboardLayout.metricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.68)
         }
     }
 
@@ -1490,8 +1480,7 @@ private struct CompactMetricLine: View {
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(DashboardColor.muted)
                 Spacer()
-                Text(value)
-                    .font(.system(size: 11, weight: .semibold).monospacedDigit())
+                StableMetricText(text: value, font: .system(size: 11, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .trailing, minimumScaleFactor: 0.68)
             }
             StatProgress(progress: progress, tint: tint)
         }
@@ -1710,10 +1699,7 @@ private struct StatusSummaryRow: View {
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(DashboardColor.muted)
             Spacer(minLength: 8)
-            Text(value)
-                .font(.system(size: 13, weight: .semibold).monospacedDigit())
-                .lineLimit(1)
-                .minimumScaleFactor(0.78)
+            StableMetricText(text: value, font: .system(size: 13, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .trailing, minimumScaleFactor: 0.78)
                 .layoutPriority(1)
             Text(status.text)
                 .font(.system(size: 10, weight: .semibold))

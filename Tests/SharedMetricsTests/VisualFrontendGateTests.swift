@@ -197,6 +197,40 @@ struct VisualFrontendGateTests {
         #expect(componentBody(named: "KeyValueGrid", in: dashboard).contains("StableMetricText(text: item.1, font: .system(size: 13, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .leading, minimumScaleFactor: 0.68)"))
     }
 
+    @Test func dashboardLiveMetricSurfacesUseAnimatedStableTextSelectively() throws {
+        let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+        let tokens = try fixture("Sources/PulseDockApp/DashboardVisualTokens.swift")
+        let cpuPage = componentBody(named: "CPUPage", in: dashboard)
+        let storagePage = componentBody(named: "StoragePage", in: dashboard)
+        let ringGauge = componentBody(named: "RingGauge", in: dashboard)
+        let trendRow = componentBody(named: "TrendRow", in: dashboard)
+        let compactMetricLine = componentBody(named: "CompactMetricLine", in: dashboard)
+        let statusSummaryRow = componentBody(named: "StatusSummaryRow", in: dashboard)
+        let coreUsageTile = componentBody(named: "CoreUsageTile", in: dashboard)
+
+        #expect(tokens.contains("static let heroMetricValueMinWidth: CGFloat = 152"))
+        #expect(tokens.contains("static let wideMetricValueMinWidth: CGFloat = 220"))
+        #expect(cpuPage.contains("StableMetricText(text: snapshot.cpuText, font: .system(size: 54, weight: .semibold, design: .default), minWidth: DashboardLayout.heroMetricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.62)"))
+        #expect(storagePage.contains("StableMetricText(text: snapshot.diskUsedText, font: .system(size: 44, weight: .semibold), minWidth: DashboardLayout.wideMetricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.62)"))
+        #expect(ringGauge.contains("StableMetricText(text: value, font: DashboardTypography.metricValue, minWidth: DashboardLayout.statValueMinWidth, alignment: .center, minimumScaleFactor: 0.58)"))
+        #expect(trendRow.contains("StableMetricText(text: value, font: DashboardTypography.metricValue, minWidth: DashboardLayout.metricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.68)"))
+        #expect(compactMetricLine.contains("StableMetricText(text: value, font: .system(size: 11, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .trailing, minimumScaleFactor: 0.68)"))
+        #expect(statusSummaryRow.contains("StableMetricText(text: value, font: .system(size: 13, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .trailing, minimumScaleFactor: 0.78)"))
+        #expect(coreUsageTile.contains("Text(MetricFormatting.percentage(value))"))
+        #expect(!coreUsageTile.contains("StableMetricText"))
+    }
+
+    @Test func popoverLiveMetricValuesUseAnimatedStableText() throws {
+        let popover = try fixture("Sources/PulseDockApp/WidgetPanelView.swift")
+        let metricRow = componentBody(named: "PopoverMetricRow", in: popover)
+        let smallStat = componentBody(named: "PopoverSmallStat", in: popover)
+
+        #expect(popover.contains("private struct StablePopoverMetricText: View"))
+        #expect(popover.contains(".contentTransition(reduceMotion ? .identity : .numericText())"))
+        #expect(metricRow.contains("StablePopoverMetricText(text: value, font: .system(size: 15, weight: .semibold), minWidth: 54, alignment: .trailing, minimumScaleFactor: 0.7)"))
+        #expect(smallStat.contains("StablePopoverMetricText(text: value, font: .system(size: 13, weight: .semibold), minWidth: 44, alignment: .leading, minimumScaleFactor: 0.62)"))
+    }
+
     @Test func dynamicWidthAndMotionReviewDocumentCoversKnownSurfaces() throws {
         let review = try fixture("docs/review/frontend-dynamic-width-motion-review.md")
 

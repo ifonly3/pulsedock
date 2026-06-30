@@ -57,6 +57,8 @@ enum DashboardLayout {
     static let sampleChipMinWidth: CGFloat = 156
     static let shortTimeChipMinWidth: CGFloat = 96
     static let metricValueMinWidth: CGFloat = 96
+    static let heroMetricValueMinWidth: CGFloat = 152
+    static let wideMetricValueMinWidth: CGFloat = 220
     static let statValueMinWidth: CGFloat = 56
     static let badgeValueMinWidth: CGFloat = 42
 }

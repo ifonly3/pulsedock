@@ -35,12 +35,12 @@ final class PulseGlyphIconRenderer {
 
         NSGraphicsContext.current?.imageInterpolation = .high
 
-        drawDockShadow()
-        drawAquaRoundedBase()
-        drawDepthRim()
-        drawMonitorGlyph()
+        drawIconShadow()
+        drawWhiteBase()
+        drawSubtleRim()
+        drawGaugeRing()
+        drawGaugeFace()
         drawPulseWaveform()
-        drawMetricCapsules()
         drawSpecularHighlights()
 
         let image = NSImage(size: bitmap.size)
@@ -48,232 +48,181 @@ final class PulseGlyphIconRenderer {
         return image
     }
 
-    private func drawDockShadow() {
+    private func drawIconShadow() {
         let shadowPath = NSBezierPath(
-            roundedRect: rect(x: 68, y: 70, width: 888, height: 878),
+            roundedRect: rect(x: 78, y: 82, width: 868, height: 856),
             xRadius: scale(210),
             yRadius: scale(210)
         )
 
         NSGraphicsContext.saveGraphicsState()
         let shadow = NSShadow()
-        shadow.shadowColor = NSColor.black.withAlphaComponent(0.30)
-        shadow.shadowBlurRadius = scale(62)
-        shadow.shadowOffset = NSSize(width: 0, height: -scale(24))
+        shadow.shadowColor = NSColor(calibratedRed: 0.13, green: 0.22, blue: 0.28, alpha: 0.20)
+        shadow.shadowBlurRadius = scale(52)
+        shadow.shadowOffset = NSSize(width: 0, height: -scale(18))
         shadow.set()
-        NSColor.black.withAlphaComponent(0.10).setFill()
+        NSColor.black.withAlphaComponent(0.08).setFill()
         shadowPath.fill()
         NSGraphicsContext.restoreGraphicsState()
     }
 
-    private func drawAquaRoundedBase() {
+    private func drawWhiteBase() {
         let basePath = NSBezierPath(
-            roundedRect: rect(x: 58, y: 72, width: 908, height: 884),
-            xRadius: scale(212),
-            yRadius: scale(212)
+            roundedRect: rect(x: 72, y: 84, width: 880, height: 856),
+            xRadius: scale(216),
+            yRadius: scale(216)
         )
 
         NSGradient(colors: [
-            NSColor(calibratedRed: 0.96, green: 0.99, blue: 0.96, alpha: 1),
-            NSColor(calibratedRed: 0.62, green: 0.86, blue: 0.84, alpha: 1),
-            NSColor(calibratedRed: 0.12, green: 0.52, blue: 0.45, alpha: 1),
-            NSColor(calibratedRed: 0.05, green: 0.13, blue: 0.14, alpha: 1)
-        ])?.draw(in: basePath, angle: -44)
+            NSColor(calibratedRed: 1.00, green: 1.00, blue: 1.00, alpha: 1),
+            NSColor(calibratedRed: 0.96, green: 0.985, blue: 1.00, alpha: 1),
+            NSColor(calibratedRed: 0.90, green: 0.94, blue: 0.97, alpha: 1)
+        ])?.draw(in: basePath, angle: -68)
 
         let upperGlow = NSBezierPath(
-            roundedRect: rect(x: 108, y: 684, width: 808, height: 218),
-            xRadius: scale(134),
-            yRadius: scale(134)
+            roundedRect: rect(x: 118, y: 662, width: 788, height: 214),
+            xRadius: scale(128),
+            yRadius: scale(128)
         )
         NSGradient(colors: [
-            NSColor.white.withAlphaComponent(0.50),
-            NSColor.white.withAlphaComponent(0.10)
+            NSColor.white.withAlphaComponent(0.72),
+            NSColor.white.withAlphaComponent(0.02)
         ])?.draw(in: upperGlow, angle: -90)
-
-        let lowerShade = NSBezierPath(
-            roundedRect: rect(x: 118, y: 102, width: 788, height: 222),
-            xRadius: scale(130),
-            yRadius: scale(130)
-        )
-        NSColor.black.withAlphaComponent(0.13).setFill()
-        lowerShade.fill()
     }
 
-    private func drawDepthRim() {
+    private func drawSubtleRim() {
         let outer = NSBezierPath(
-            roundedRect: rect(x: 58, y: 72, width: 908, height: 884),
-            xRadius: scale(212),
-            yRadius: scale(212)
+            roundedRect: rect(x: 72, y: 84, width: 880, height: 856),
+            xRadius: scale(216),
+            yRadius: scale(216)
         )
-        NSColor.white.withAlphaComponent(0.56).setStroke()
-        outer.lineWidth = scale(8)
+        NSColor(calibratedRed: 0.66, green: 0.74, blue: 0.80, alpha: 0.32).setStroke()
+        outer.lineWidth = scale(4)
         outer.stroke()
 
         let inner = NSBezierPath(
-            roundedRect: rect(x: 84, y: 100, width: 856, height: 828),
-            xRadius: scale(190),
-            yRadius: scale(190)
+            roundedRect: rect(x: 92, y: 106, width: 840, height: 812),
+            xRadius: scale(194),
+            yRadius: scale(194)
         )
-        NSColor.black.withAlphaComponent(0.12).setStroke()
-        inner.lineWidth = scale(4)
+        NSColor.white.withAlphaComponent(0.72).setStroke()
+        inner.lineWidth = scale(3)
         inner.stroke()
     }
 
-    private func drawMonitorGlyph() {
-        let panelPath = NSBezierPath(
-            roundedRect: rect(x: 176, y: 286, width: 672, height: 500),
-            xRadius: scale(118),
-            yRadius: scale(118)
-        )
+    private func drawGaugeRing() {
+        let center = point(x: 512, y: 512)
+        let radius = scale(310)
+        let lineWidth = scale(62)
 
         NSGraphicsContext.saveGraphicsState()
-        let panelShadow = NSShadow()
-        panelShadow.shadowColor = NSColor.black.withAlphaComponent(0.22)
-        panelShadow.shadowBlurRadius = scale(46)
-        panelShadow.shadowOffset = NSSize(width: 0, height: -scale(16))
-        panelShadow.set()
-        NSGradient(colors: [
-            NSColor.white.withAlphaComponent(0.54),
-            NSColor(calibratedRed: 0.89, green: 1.00, blue: 0.96, alpha: 0.31),
-            NSColor(calibratedRed: 0.07, green: 0.22, blue: 0.22, alpha: 0.20)
-        ])?.draw(in: panelPath, angle: 88)
+        let ringShadow = NSShadow()
+        ringShadow.shadowColor = NSColor(calibratedRed: 0.04, green: 0.32, blue: 0.48, alpha: 0.18)
+        ringShadow.shadowBlurRadius = scale(28)
+        ringShadow.shadowOffset = NSSize(width: 0, height: -scale(8))
+        ringShadow.set()
+        let track = NSBezierPath()
+        track.appendArc(withCenter: center, radius: radius, startAngle: 0, endAngle: 360)
+        track.lineWidth = lineWidth
+        track.lineCapStyle = .round
+        NSColor(calibratedRed: 0.82, green: 0.88, blue: 0.92, alpha: 1).setStroke()
+        track.stroke()
         NSGraphicsContext.restoreGraphicsState()
 
-        NSColor.white.withAlphaComponent(0.64).setStroke()
-        panelPath.lineWidth = scale(7)
-        panelPath.stroke()
+        strokeArc(start: 134, end: 222, center: center, radius: radius, lineWidth: lineWidth, color: NSColor(calibratedRed: 0.15, green: 0.58, blue: 0.98, alpha: 1))
+        strokeArc(start: 222, end: 362, center: center, radius: radius, lineWidth: lineWidth, color: NSColor(calibratedRed: 0.35, green: 0.88, blue: 0.67, alpha: 1))
 
-        let screen = NSBezierPath(
-            roundedRect: rect(x: 228, y: 354, width: 568, height: 344),
-            xRadius: scale(72),
-            yRadius: scale(72)
-        )
+        let knobCenter = point(x: 820, y: 512)
+        NSGraphicsContext.saveGraphicsState()
+        let knobShadow = NSShadow()
+        knobShadow.shadowColor = NSColor(calibratedRed: 0.05, green: 0.24, blue: 0.36, alpha: 0.26)
+        knobShadow.shadowBlurRadius = scale(12)
+        knobShadow.shadowOffset = NSSize(width: 0, height: -scale(3))
+        knobShadow.set()
+        NSColor.white.setFill()
+        NSBezierPath(ovalIn: NSRect(x: knobCenter.x - scale(35), y: knobCenter.y - scale(35), width: scale(70), height: scale(70))).fill()
+        NSGraphicsContext.restoreGraphicsState()
+    }
+
+    private func drawGaugeFace() {
+        let face = NSBezierPath(ovalIn: rect(x: 240, y: 240, width: 544, height: 544))
+
         NSGradient(colors: [
-            NSColor(calibratedRed: 0.04, green: 0.18, blue: 0.18, alpha: 0.56),
-            NSColor(calibratedRed: 0.04, green: 0.34, blue: 0.31, alpha: 0.36),
-            NSColor.white.withAlphaComponent(0.18)
-        ])?.draw(in: screen, angle: 92)
+            NSColor(calibratedRed: 0.08, green: 0.16, blue: 0.22, alpha: 1),
+            NSColor(calibratedRed: 0.03, green: 0.08, blue: 0.13, alpha: 1)
+        ])?.draw(in: face, angle: -72)
 
-        NSColor.white.withAlphaComponent(0.20).setStroke()
-        screen.lineWidth = scale(3)
-        screen.stroke()
+        NSColor.white.withAlphaComponent(0.08).setStroke()
+        face.lineWidth = scale(3)
+        face.stroke()
 
-        let stand = NSBezierPath(
-            roundedRect: rect(x: 426, y: 254, width: 172, height: 64),
-            xRadius: scale(32),
-            yRadius: scale(32)
-        )
-        NSColor.white.withAlphaComponent(0.32).setFill()
-        stand.fill()
-
-        let base = NSBezierPath(
-            roundedRect: rect(x: 350, y: 214, width: 324, height: 62),
-            xRadius: scale(31),
-            yRadius: scale(31)
-        )
-        NSColor(calibratedRed: 0.02, green: 0.18, blue: 0.18, alpha: 0.26).setFill()
-        base.fill()
-        NSColor.white.withAlphaComponent(0.20).setStroke()
-        base.lineWidth = scale(3)
-        base.stroke()
-
-        for index in 0..<3 {
-            let dot = NSBezierPath(
-                ovalIn: rect(x: CGFloat(288 + index * 48), y: 648, width: 18, height: 18)
-            )
-            NSColor.white.withAlphaComponent(0.42 - CGFloat(index) * 0.07).setFill()
-            dot.fill()
-        }
+        drawDialTick(x: 512, y: 704, width: 8, height: 42, alpha: 0.18)
+        drawDialTick(x: 512, y: 278, width: 8, height: 42, alpha: 0.14)
+        drawDialTick(x: 704, y: 512, width: 42, height: 8, alpha: 0.14)
+        drawDialTick(x: 278, y: 512, width: 42, height: 8, alpha: 0.14)
     }
 
     private func drawPulseWaveform() {
         let path = NSBezierPath()
-        path.move(to: point(x: 284, y: 526))
-        path.line(to: point(x: 356, y: 526))
-        path.line(to: point(x: 392, y: 612))
-        path.line(to: point(x: 454, y: 426))
-        path.line(to: point(x: 516, y: 586))
-        path.line(to: point(x: 570, y: 526))
-        path.line(to: point(x: 626, y: 526))
-        path.line(to: point(x: 662, y: 476))
-        path.line(to: point(x: 714, y: 560))
-        path.line(to: point(x: 760, y: 560))
+        path.move(to: point(x: 318, y: 512))
+        path.line(to: point(x: 394, y: 512))
+        path.line(to: point(x: 428, y: 472))
+        path.line(to: point(x: 484, y: 622))
+        path.line(to: point(x: 536, y: 406))
+        path.line(to: point(x: 586, y: 552))
+        path.line(to: point(x: 632, y: 512))
+        path.line(to: point(x: 706, y: 512))
 
-        path.lineWidth = scale(34)
+        path.lineWidth = scale(36)
         path.lineCapStyle = .round
         path.lineJoinStyle = .round
 
         NSGraphicsContext.saveGraphicsState()
         let glow = NSShadow()
-        glow.shadowColor = NSColor(calibratedRed: 0.00, green: 0.72, blue: 0.52, alpha: 0.46)
-        glow.shadowBlurRadius = scale(34)
+        glow.shadowColor = NSColor(calibratedRed: 0.20, green: 0.86, blue: 1.00, alpha: 0.50)
+        glow.shadowBlurRadius = scale(30)
         glow.shadowOffset = .zero
         glow.set()
-        NSColor(calibratedRed: 0.00, green: 0.66, blue: 0.47, alpha: 1).setStroke()
+        NSColor(calibratedRed: 0.30, green: 0.88, blue: 1.00, alpha: 1).setStroke()
         path.stroke()
         NSGraphicsContext.restoreGraphicsState()
 
-        path.lineWidth = scale(12)
+        path.lineWidth = scale(11)
         NSColor.white.withAlphaComponent(0.92).setStroke()
         path.stroke()
     }
 
-    private func drawMetricCapsules() {
-        let colors = [
-            NSColor(calibratedRed: 0.05, green: 0.62, blue: 0.40, alpha: 1),
-            NSColor(calibratedRed: 0.12, green: 0.42, blue: 0.95, alpha: 1),
-            NSColor(calibratedRed: 0.93, green: 0.54, blue: 0.10, alpha: 1)
-        ]
-        let widths: [CGFloat] = [258, 188, 302]
+    private func drawSpecularHighlights() {
+        let faceHighlight = NSBezierPath(ovalIn: rect(x: 304, y: 602, width: 416, height: 122))
+        NSColor.white.withAlphaComponent(0.055).setFill()
+        faceHighlight.fill()
 
-        for index in 0..<3 {
-            let y = 376 + CGFloat(index) * 52
-            let track = NSBezierPath(
-                roundedRect: rect(x: 314, y: y, width: 396, height: 16),
-                xRadius: scale(8),
-                yRadius: scale(8)
-            )
-            NSColor.white.withAlphaComponent(0.22).setFill()
-            track.fill()
-
-            let fill = NSBezierPath(
-                roundedRect: rect(x: 314, y: y, width: widths[index], height: 16),
-                xRadius: scale(8),
-                yRadius: scale(8)
-            )
-            colors[index].setFill()
-            fill.fill()
-        }
+        let baseHighlight = NSBezierPath(
+            roundedRect: rect(x: 136, y: 724, width: 752, height: 90),
+            xRadius: scale(45),
+            yRadius: scale(45)
+        )
+        NSColor.white.withAlphaComponent(0.20).setFill()
+        baseHighlight.fill()
     }
 
-    private func drawSpecularHighlights() {
-        let highlight = NSBezierPath()
-        highlight.move(to: point(x: 162, y: 734))
-        highlight.curve(
-            to: point(x: 554, y: 914),
-            controlPoint1: point(x: 270, y: 858),
-            controlPoint2: point(x: 404, y: 930)
-        )
-        highlight.curve(
-            to: point(x: 858, y: 720),
-            controlPoint1: point(x: 700, y: 902),
-            controlPoint2: point(x: 788, y: 806)
-        )
-        highlight.line(to: point(x: 806, y: 674))
-        highlight.curve(
-            to: point(x: 530, y: 804),
-            controlPoint1: point(x: 720, y: 744),
-            controlPoint2: point(x: 638, y: 790)
-        )
-        highlight.curve(
-            to: point(x: 190, y: 684),
-            controlPoint1: point(x: 386, y: 824),
-            controlPoint2: point(x: 256, y: 768)
-        )
-        highlight.close()
+    private func strokeArc(start: CGFloat, end: CGFloat, center: NSPoint, radius: CGFloat, lineWidth: CGFloat, color: NSColor) {
+        let path = NSBezierPath()
+        path.appendArc(withCenter: center, radius: radius, startAngle: start, endAngle: end)
+        path.lineWidth = lineWidth
+        path.lineCapStyle = .round
+        color.setStroke()
+        path.stroke()
+    }
 
-        NSColor.white.withAlphaComponent(0.12).setFill()
-        highlight.fill()
+    private func drawDialTick(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, alpha: CGFloat) {
+        let tick = NSBezierPath(
+            roundedRect: rect(x: x - width / 2, y: y - height / 2, width: width, height: height),
+            xRadius: scale(min(width, height) / 2),
+            yRadius: scale(min(width, height) / 2)
+        )
+        NSColor.white.withAlphaComponent(alpha).setFill()
+        tick.fill()
     }
 
     private func rect(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> NSRect {
