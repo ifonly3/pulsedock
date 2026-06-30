@@ -126,7 +126,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Widgets disable system content margins and own their family-specific padding, avoiding double-inset crowding while keeping the first-version composition.
 - Medium widgets keep the large CPU readout and use three supporting metric rows so the desktop layout stays breathable; power remains visible in the small and large widget families.
 - Medium widget layout follows the roomier first-version composition with wider left content, larger CPU type, and relaxed supporting row spacing.
-- Medium widget left column uses a first-version-style CPU block with core summary and a compact status strip instead of stacking network detail text.
+- Medium widget left column uses a first-version-style CPU block with core summary and omits the secondary Temp/Pwr strip to preserve breathing room.
 - Dashboard widget preview adapts its background, stroke, shadow, and secondary text to light and dark appearances.
 - The main app writes a compact latest snapshot to App Group UserDefaults on a 60-second throttled cadence and asks WidgetKit to reload its timeline kind after shared writes.
 - Shared widget snapshot writes return a success flag and log DEBUG-only encoding failures instead of silently dropping malformed compact snapshots.
@@ -311,7 +311,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require static system information to be sampled once per sampler instance without caching active processor count.
 - Source-level tests require medium widgets to avoid duplicating the CPU row and keep three supporting rows for memory, connection, and disk.
 - Source-level tests keep medium widget vertical padding, row spacing, and dark-mode text/track colors from regressing into a crowded layout.
-- Source-level tests keep the medium widget from reintroducing crowded left-column network detail copy.
+- Source-level tests keep the medium widget from reintroducing crowded left-column network detail or secondary mini-status copy.
 - Source-level tests keep large widget ring spacing, grouped sections, and dynamic panel styling from regressing into a crowded vertical stack.
 - Source-level tests require persisted trend history to use sanitized snapshots instead of writing full live snapshots.
 - Source-level tests require sanitized history snapshots to reset OS and kernel identity fields through shared not-reported placeholders.

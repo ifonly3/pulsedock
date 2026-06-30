@@ -4206,8 +4206,9 @@ import Testing
     #expect(mediumWidget.contains("WidgetRow(title: PulseDockWidgetStrings.metricMemory, value: snapshot.memoryUsageText"))
     #expect(mediumWidget.contains("WidgetRow(title: PulseDockWidgetStrings.metricConnection, value: snapshot.networkPathText"))
     #expect(mediumWidget.contains("WidgetRow(title: PulseDockWidgetStrings.metricDisk, value: snapshot.diskUsageText"))
-    #expect(mediumWidget.contains("MiniStatus(title: PulseDockWidgetStrings.miniThermal, value: snapshot.thermalText"))
-    #expect(mediumWidget.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText"))
+    #expect(!mediumWidget.contains("MiniStatus(title: PulseDockWidgetStrings.miniThermal"))
+    #expect(!mediumWidget.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower"))
+    #expect(!mediumWidget.contains("MediumStatusStrip"))
     #expect(!mediumWidget.contains("WidgetRow(title: snapshot.powerStatusTitle"))
     #expect(mediumWidget.contains("VStack(spacing: 18)"))
     #expect(mediumWidget.contains(".frame(width: 166, alignment: .leading)"))
@@ -4325,7 +4326,7 @@ import Testing
     #expect(audit.contains("Source-level tests keep medium widget vertical padding, row spacing, and dark-mode text/track colors from regressing into a crowded layout"))
 }
 
-@Test func mediumWidgetUsesAirierFirstVersionStatusStrip() throws {
+@Test func mediumWidgetOmitsSecondaryStatusStripForBreathingRoom() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let widget = try String(
         contentsOf: root.appendingPathComponent("Sources/PulseDockWidget/SystemDashboardWidget.swift"),
@@ -4344,15 +4345,14 @@ import Testing
     #expect(mediumWidget.contains("VStack(alignment: .leading, spacing: 9)"))
     #expect(mediumWidget.contains(".font(.system(size: 52, weight: .semibold).monospacedDigit())"))
     #expect(mediumWidget.contains("Text(snapshot.logicalCoreSummaryText)"))
-    #expect(mediumWidget.contains("MediumStatusStrip(snapshot: snapshot)"))
+    #expect(!mediumWidget.contains("MediumStatusStrip(snapshot: snapshot)"))
     #expect(mediumWidget.contains(".frame(width: 166, alignment: .leading)"))
     #expect(mediumWidget.contains("VStack(spacing: 18)"))
     #expect(!mediumWidget.contains("Text(\"\\(snapshot.networkPathText) · \\(snapshot.networkPathDetailText)\")"))
-    #expect(widget.contains("private struct MediumStatusStrip: View"))
-    #expect(widget.contains("MiniStatus(title: PulseDockWidgetStrings.miniThermal, value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))"))
-    #expect(widget.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))"))
-    #expect(audit.contains("Medium widget left column uses a first-version-style CPU block with core summary and a compact status strip instead of stacking network detail text."))
-    #expect(audit.contains("Source-level tests keep the medium widget from reintroducing crowded left-column network detail copy."))
+    #expect(!widget.contains("private struct MediumStatusStrip: View"))
+    #expect(widget.contains("private struct MiniStatus: View"))
+    #expect(audit.contains("Medium widget left column uses a first-version-style CPU block with core summary and omits the secondary Temp/Pwr strip to preserve breathing room."))
+    #expect(audit.contains("Source-level tests keep the medium widget from reintroducing crowded left-column network detail or secondary mini-status copy."))
 }
 
 @Test func widgetsOwnTheirContentMarginsInsteadOfUsingSystemDoubleInsets() throws {
@@ -9343,8 +9343,8 @@ import Testing
     let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
 
     #expect(widget.contains("private struct SmallWidget: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
+    #expect(widget.contains("private struct MediumWidget: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
     #expect(widget.contains("private struct LargeWidget: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
-    #expect(widget.contains("private struct MediumStatusStrip: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
     #expect(widget.contains("private struct LargeInfoGrid: View {\n    @Environment(\\.colorScheme) private var colorScheme"))
     #expect(widget.contains("private func thermalTint(_ state: String, for colorScheme: ColorScheme) -> Color"))
     #expect(widget.contains("private func networkTint(_ snapshot: MetricSnapshot, for colorScheme: ColorScheme) -> Color"))
@@ -9452,12 +9452,12 @@ import Testing
     #expect(strings.contains("widget.power.ups"))
 }
 
-@Test func mediumWidgetMiniStatusLabelsStayOnOneLineInEnglish() throws {
+@Test func widgetMiniStatusLabelsStayOnOneLineWhenUsedInSmallFamily() throws {
     let widget = try fixture("Sources/PulseDockWidget/SystemDashboardWidget.swift")
-    let mediumStatusStrip = try #require(
-        widget.range(of: "private struct MediumStatusStrip").map { start in
+    let smallWidget = try #require(
+        widget.range(of: "private struct SmallWidget").map { start in
             let remainder = widget[start.lowerBound...]
-            let end = remainder.range(of: "\nprivate struct LargeWidget")?.lowerBound ?? remainder.endIndex
+            let end = remainder.range(of: "\nprivate struct MediumWidget")?.lowerBound ?? remainder.endIndex
             return String(remainder[..<end])
         }
     )
@@ -9469,9 +9469,9 @@ import Testing
         }
     )
 
-    #expect(mediumStatusStrip.contains(".frame(maxWidth: .infinity, alignment: .leading)"))
-    #expect(mediumStatusStrip.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText"))
-    #expect(!mediumStatusStrip.contains("snapshot.powerStatusTitle"))
+    #expect(!widget.contains("private struct MediumStatusStrip"))
+    #expect(smallWidget.contains("MiniStatus(title: PulseDockWidgetStrings.miniThermal"))
+    #expect(smallWidget.contains("MiniStatus(title: PulseDockWidgetStrings.miniPower"))
     #expect(miniStatus.contains("Text(title)"))
     #expect(miniStatus.contains(".lineLimit(1)"))
     #expect(miniStatus.contains(".minimumScaleFactor(0.55)"))

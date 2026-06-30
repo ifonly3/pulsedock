@@ -224,8 +224,6 @@ private struct MediumWidget: View {
                     .foregroundStyle(widgetSecondaryText(for: colorScheme))
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)
-                Spacer(minLength: 4)
-                MediumStatusStrip(snapshot: snapshot)
             }
             .frame(width: 166, alignment: .leading)
 
@@ -238,20 +236,6 @@ private struct MediumWidget: View {
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 18)
-    }
-}
-
-private struct MediumStatusStrip: View {
-    @Environment(\.colorScheme) private var colorScheme
-    let snapshot: MetricSnapshot
-
-    var body: some View {
-        HStack(spacing: 8) {
-            MiniStatus(title: PulseDockWidgetStrings.miniThermal, value: snapshot.thermalText, tint: thermalTint(snapshot.thermalState, for: colorScheme))
-                .frame(maxWidth: .infinity, alignment: .leading)
-            MiniStatus(title: PulseDockWidgetStrings.miniPower, value: snapshot.powerStatusText, tint: powerTint(snapshot, for: colorScheme))
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
     }
 }
 
