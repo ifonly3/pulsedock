@@ -144,19 +144,19 @@ Keep these checks before every release:
 
 ## 7. Local Verification Before Archive
 
-Latest local verification on 2026-06-27:
+Latest local verification on 2026-06-30:
 
 - `swift build --target PulseDockWidget` passed.
-- `swift test` passed with 316 Swift Testing tests.
-- `scripts/generate-xcodeproj.rb` regenerated `PulseDock.xcodeproj`.
+- `swift test` passed with 383 Swift Testing tests.
 - `xcodebuild -project PulseDock.xcodeproj -scheme PulseDock -configuration Release -destination 'generic/platform=macOS' -derivedDataPath .build/xcode-derived-data CODE_SIGNING_ALLOWED=NO build` passed. Xcode emitted a CoreSimulator version warning, but the generic macOS build succeeded.
 - `scripts/audit-localization.sh` passed with zero Swift Chinese string findings.
 - `scripts/validate-public-pages.sh` passed for repository-local public page sources.
 - `CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh` passed with live HTTP 200 URLs.
 - App and widget each include one `PrivacyInfo.xcprivacy`.
 - `SCREENSHOT_LOCALE=zh-Hans scripts/validate-app-store-screenshots.sh` validated 5 existing Simplified Chinese screenshots.
-- `SCREENSHOT_LOCALE=en scripts/validate-app-store-screenshots.sh` remains the global release gate and will fail until English screenshots are captured.
-- Launch smoke test still needs to be rerun for the next signed local package.
+- `SCREENSHOT_LOCALE=en scripts/validate-app-store-screenshots.sh` still fails because `docs/app-store/screenshots/en/` does not yet contain the required 5 English screenshots.
+- `scripts/package-app.sh` produced `dist/Pulse Dock.app`; local ad-hoc signing preserved App Sandbox and `group.com.ifonly3.pulsedock` entitlements for both the app and widget extension.
+- `script/build_and_run.sh --verify` passed as a launch smoke test for the locally built app.
 
 Run these before making the App Store archive:
 

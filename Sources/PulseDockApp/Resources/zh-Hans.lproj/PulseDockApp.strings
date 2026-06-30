@@ -238,8 +238,12 @@
 "app.settings.local_history.title" = "本地历史";
 "app.settings.main_window_refresh.detail" = "实时趋势与状态卡片";
 "app.settings.main_window_refresh.title" = "主窗口刷新";
-"app.settings.menu_bar_cpu.label" = "菜单栏 CPU";
-"app.settings.menu_bar_status.detail" = "显示当前 CPU 占用";
+"app.settings.menu_bar_metric.battery" = "电池";
+"app.settings.menu_bar_metric.cpu" = "CPU";
+"app.settings.menu_bar_metric.icon_only" = "仅图标";
+"app.settings.menu_bar_metric.memory" = "内存";
+"app.settings.menu_bar_metric.network" = "网络";
+"app.settings.menu_bar_status.detail" = "选择菜单栏图标旁显示的指标";
 "app.settings.menu_bar_status.title" = "菜单栏状态";
 "app.settings.privacy_policy.detail" = "本地采样、无账号、无追踪、无分析、无远程探测";
 "app.settings.privacy_policy.title" = "隐私政策";

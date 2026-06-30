@@ -3841,18 +3841,82 @@
         }
       }
     },
-    "app.settings.menu_bar_cpu.label": {
+    "app.settings.menu_bar_metric.battery": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Menu Bar CPU"
+            "value": "Battery"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "菜单栏 CPU"
+            "value": "电池"
+          }
+        }
+      }
+    },
+    "app.settings.menu_bar_metric.cpu": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CPU"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CPU"
+          }
+        }
+      }
+    },
+    "app.settings.menu_bar_metric.icon_only": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Icon Only"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仅图标"
+          }
+        }
+      }
+    },
+    "app.settings.menu_bar_metric.memory": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memory"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内存"
+          }
+        }
+      }
+    },
+    "app.settings.menu_bar_metric.network": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "网络"
           }
         }
       }
@@ -3862,13 +3926,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Show current CPU usage"
+            "value": "Choose the metric shown beside the menu bar icon"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "显示当前 CPU 占用"
+            "value": "选择菜单栏图标旁显示的指标"
           }
         }
       }

@@ -46,8 +46,12 @@ enum DashboardLayout {
     static let contentHorizontalPadding: CGFloat = 24
     static let contentTopPadding: CGFloat = 18
     static let contentBottomPadding: CGFloat = 28
+    static let topBarMinHeight: CGFloat = 82
+    static let topBarVerticalPadding: CGFloat = 12
     static let regularAsideWidth: CGFloat = 360
     static let compactPanelSpacing: CGFloat = 12
+    static let settingsControlMaxWidth: CGFloat = 180
+    static let settingsControlCompactMaxWidth: CGFloat = 220
     static let minimumTableColumnWidth: CGFloat = 96
     static let wideTableColumnWidth: CGFloat = 112
 }

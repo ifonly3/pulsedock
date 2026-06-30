@@ -936,11 +936,27 @@ enum PulseDockAppStrings {
     }
 
     static var settingsMenuBarStatusDetail: String {
-        localized("app.settings.menu_bar_status.detail", defaultValue: "Show current CPU usage")
+        localized("app.settings.menu_bar_status.detail", defaultValue: "Choose the metric shown beside the menu bar icon")
     }
 
-    static var settingsMenuBarCPULabel: String {
-        localized("app.settings.menu_bar_cpu.label", defaultValue: "Menu Bar CPU")
+    static var settingsMenuBarMetricIconOnlyLabel: String {
+        localized("app.settings.menu_bar_metric.icon_only", defaultValue: "Icon Only")
+    }
+
+    static var settingsMenuBarMetricCPULabel: String {
+        localized("app.settings.menu_bar_metric.cpu", defaultValue: "CPU")
+    }
+
+    static var settingsMenuBarMetricNetworkLabel: String {
+        localized("app.settings.menu_bar_metric.network", defaultValue: "Network")
+    }
+
+    static var settingsMenuBarMetricMemoryLabel: String {
+        localized("app.settings.menu_bar_metric.memory", defaultValue: "Memory")
+    }
+
+    static var settingsMenuBarMetricBatteryLabel: String {
+        localized("app.settings.menu_bar_metric.battery", defaultValue: "Battery")
     }
 
     static var settingsWidgetRefreshTitle: String {

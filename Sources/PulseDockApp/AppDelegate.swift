@@ -7,7 +7,11 @@ import SharedMetrics
 
 private enum MenuBarStatusItemLayout {
     static let compactLength = NSStatusItem.squareLength
-    static let cpuTitleLength: CGFloat = 72
+    static let metricTitleLength: CGFloat = 92
+
+    static func titleLength(for text: String) -> CGFloat {
+        metricTitleLength
+    }
 }
 
 private enum StatusPopoverTiming {
@@ -274,7 +278,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         popover.delegate = self
         popover.contentSize = menuPopoverSize
 
-        store.$snapshot.combineLatest(store.$showsMenuBarCPU)
+        store.$snapshot.combineLatest(store.$menuBarMetric)
             .sink { [weak self] _, _ in
                 self?.updateStatusButtonTitle()
             }
@@ -333,28 +337,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         statusHostingController = nil
     }
 
-    private var statusButtonCPUText: String? {
-        guard store.snapshot.hasCPUUsageReport else { return nil }
-        let text = store.snapshot.cpuText.trimmingCharacters(in: .whitespacesAndNewlines)
+    private func statusButtonText(_ text: String, isReported: Bool) -> String? {
+        guard isReported else { return nil }
+        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, text != PulseDockAppStrings.notReported else { return nil }
         return text
     }
 
+    private func statusButtonMetricText(for option: MenuBarMetricOption) -> String? {
+        switch option {
+        case .iconOnly:
+            return nil
+        case .cpu:
+            return statusButtonText(store.snapshot.cpuText, isReported: store.snapshot.hasCPUUsageReport)
+        case .network:
+            return statusButtonText(store.snapshot.networkText, isReported: store.snapshot.hasNetworkByteCounters)
+        case .memory:
+            return statusButtonText(store.snapshot.memoryUsageText, isReported: store.snapshot.hasMemoryUsageReport)
+        case .battery:
+            return statusButtonText(store.snapshot.powerStatusText, isReported: store.snapshot.hasPowerStatusReport)
+        }
+    }
+
     private func updateStatusButtonTitle() {
-        guard store.showsMenuBarCPU else {
+        guard let metricText = statusButtonMetricText(for: store.menuBarMetric) else {
             statusItem?.length = MenuBarStatusItemLayout.compactLength
             statusItem?.button?.title = ""
             return
         }
 
-        guard let cpuText = statusButtonCPUText else {
-            statusItem?.length = MenuBarStatusItemLayout.compactLength
-            statusItem?.button?.title = ""
-            return
-        }
-
-        statusItem?.length = MenuBarStatusItemLayout.cpuTitleLength
-        statusItem?.button?.title = " \(cpuText)"
+        statusItem?.length = MenuBarStatusItemLayout.titleLength(for: metricText)
+        statusItem?.button?.title = " \(metricText)"
     }
 
     @objc private func toggleStatusPopover(_ sender: Any?) {

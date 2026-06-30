@@ -90,8 +90,59 @@ struct VisualFrontendGateTests {
         #expect(!sidebar.contains("SidebarHealthCard"))
         #expect(sidebar.contains("DashboardLayout.sidebarWidth"))
         #expect(topBar.contains("ViewThatFits(in: .horizontal)"))
-        #expect(topBar.contains(".frame(minHeight: 82)"))
+        #expect(topBar.contains(".frame(maxWidth: .infinity, minHeight: DashboardLayout.topBarMinHeight, alignment: .leading)"))
         #expect(topBar.contains("compactContent"))
+    }
+
+    @Test func responsiveFrontendReviewCoversDashboardChromeAndWidgets() throws {
+        let review = try fixture("docs/review/frontend-responsive-design-review.md")
+
+        for required in [
+            "Dashboard Overview",
+            "Dashboard CPU",
+            "Dashboard GPU / Displays",
+            "Dashboard Memory",
+            "Dashboard Storage",
+            "Dashboard Network",
+            "Dashboard Power",
+            "Dashboard Apps",
+            "Dashboard Status",
+            "Dashboard History",
+            "Dashboard Settings",
+            "Menu Bar Status",
+            "Menu Bar Popover",
+            "Small Widget",
+            "Medium Widget",
+            "RF-1"
+        ] {
+            #expect(review.contains(required))
+        }
+    }
+
+    @Test func dashboardTopBarOwnsFullWidthHeaderBand() throws {
+        let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+        let tokens = try fixture("Sources/PulseDockApp/DashboardVisualTokens.swift")
+        let topBar = componentBody(named: "DashboardTopBar", in: dashboard)
+
+        #expect(tokens.contains("static let topBarMinHeight: CGFloat = 82"))
+        #expect(topBar.contains(".frame(maxWidth: .infinity, alignment: .leading)"))
+        #expect(topBar.contains(".frame(maxWidth: .infinity, minHeight: DashboardLayout.topBarMinHeight, alignment: .leading)"))
+        #expect(topBar.contains("regularContent"))
+        #expect(topBar.contains("compactContent"))
+        #expect(!topBar.contains(".frame(minHeight: 82)"))
+    }
+
+    @Test func settingsRowsUseResponsiveControlFallbacks() throws {
+        let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+        let tokens = try fixture("Sources/PulseDockApp/DashboardVisualTokens.swift")
+        let controlRow = componentBody(named: "SettingControlRow", in: dashboard)
+        let readOnlyRow = componentBody(named: "SettingReadOnlyRow", in: dashboard)
+
+        #expect(tokens.contains("static let settingsControlMaxWidth: CGFloat = 180"))
+        #expect(controlRow.contains("ViewThatFits(in: .horizontal)"))
+        #expect(controlRow.contains("layoutPriority(1)"))
+        #expect(readOnlyRow.contains("ViewThatFits(in: .horizontal)"))
+        #expect(readOnlyRow.contains("controlChip"))
     }
 
     @Test func dashboardWindowMinimumSizeMatchesContentArea() throws {
@@ -137,6 +188,22 @@ struct VisualFrontendGateTests {
         #expect(!keyValueGrid.contains("GridItem(.flexible()), GridItem(.flexible())"))
         #expect(trendRow.contains("ViewThatFits(in: .horizontal)"))
         #expect(trendRow.contains("trendSparkline"))
+    }
+
+    @Test func responsiveReviewTracksRemainingFixedWidths() throws {
+        let review = try fixture("docs/review/frontend-responsive-design-review.md")
+        let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+
+        for fixedWidth in [
+            ".frame(width: 360)",
+            ".frame(width: 340)",
+            ".frame(width: 320)",
+            ".frame(width: 214)"
+        ] {
+            if dashboard.contains(fixedWidth) {
+                #expect(review.contains(fixedWidth))
+            }
+        }
     }
 }
 

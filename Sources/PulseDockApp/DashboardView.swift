@@ -328,9 +328,10 @@ private struct DashboardTopBar: View {
             regularContent
             compactContent
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, DashboardLayout.contentHorizontalPadding)
-        .padding(.vertical, 12)
-        .frame(minHeight: 82)
+        .padding(.vertical, DashboardLayout.topBarVerticalPadding)
+        .frame(maxWidth: .infinity, minHeight: DashboardLayout.topBarMinHeight, alignment: .leading)
         .background {
             ZStack {
                 VisualEffectView(material: .headerView)
@@ -345,11 +346,13 @@ private struct DashboardTopBar: View {
     private var regularContent: some View {
         HStack(spacing: 18) {
             titleBlock
+                .layoutPriority(1)
 
-            Spacer()
+            Spacer(minLength: DashboardSpacing.lg)
 
             chips
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var compactContent: some View {
@@ -357,6 +360,7 @@ private struct DashboardTopBar: View {
             titleBlock
             chips
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var titleBlock: some View {
@@ -374,9 +378,23 @@ private struct DashboardTopBar: View {
     }
 
     private var chips: some View {
+        ViewThatFits(in: .horizontal) {
+            fullChipRow
+            essentialChipRow
+        }
+    }
+
+    private var fullChipRow: some View {
         HStack(spacing: 8) {
             DataChip(icon: "desktopcomputer", text: PulseDockAppStrings.dashboardTopBarLocalMachine)
             DataChip(icon: "clock", text: PulseDockAppStrings.dashboardSampleChip(snapshot.sampleTimeText))
+            DataChip(icon: "arrow.clockwise", text: refreshInterval.label)
+        }
+    }
+
+    private var essentialChipRow: some View {
+        HStack(spacing: 8) {
+            DataChip(icon: "clock", text: snapshot.sampleTimeText)
             DataChip(icon: "arrow.clockwise", text: refreshInterval.label)
         }
     }
@@ -963,6 +981,7 @@ private struct SettingsPage: View {
     @ObservedObject var store: MetricsStore
     let isCompact: Bool
     @State private var draftRefreshInterval: RefreshIntervalOption?
+    @State private var draftMenuBarMetric: MenuBarMetricOption?
 
     private var snapshot: MetricSnapshot { store.snapshot }
 
@@ -1033,12 +1052,22 @@ private struct SettingsPage: View {
                     .frame(width: 164)
                 }
                 SettingControlRow(title: PulseDockAppStrings.settingsMenuBarStatusTitle, detail: PulseDockAppStrings.settingsMenuBarStatusDetail) {
-                    Toggle(PulseDockAppStrings.settingsMenuBarCPULabel, isOn: Binding(
-                        get: { store.showsMenuBarCPU },
-                        set: { store.updateShowsMenuBarCPU($0) }
-                    ))
-                    .toggleStyle(.switch)
+                    Picker(PulseDockAppStrings.settingsMenuBarStatusTitle, selection: Binding(
+                        get: { draftMenuBarMetric ?? store.menuBarMetric },
+                        set: { draftMenuBarMetric = $0 }
+                    )) {
+                        ForEach(MenuBarMetricOption.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                    .onChange(of: draftMenuBarMetric) { _, value in
+                        guard let value else { return }
+                        store.updateMenuBarMetric(value)
+                        draftMenuBarMetric = nil
+                    }
                     .labelsHidden()
+                    .pickerStyle(.menu)
+                    .frame(width: 156)
                 }
                 SettingReadOnlyRow(
                     title: PulseDockAppStrings.settingsWidgetRefreshTitle,
@@ -1055,8 +1084,8 @@ private struct SettingsPage: View {
                         }
                     }
                     .labelsHidden()
-                    .pickerStyle(.segmented)
-                    .frame(width: 214)
+                    .pickerStyle(.menu)
+                    .frame(width: 156)
                 }
             }
         }
@@ -1796,22 +1825,49 @@ private struct SettingReadOnlyRow: View {
     let detail: String
     let control: String
 
-    var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.system(size: 13, weight: .semibold))
-                Text(detail)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(DashboardColor.muted)
-            }
-            Spacer()
-            Text(control)
-                .font(.system(size: 12, weight: .semibold))
+    private var textBlock: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
+            Text(detail)
+                .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(DashboardColor.muted)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(.quaternary.opacity(0.40), in: Capsule())
+                .lineLimit(2)
+                .minimumScaleFactor(0.78)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var controlChip: some View {
+        Text(control)
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundStyle(DashboardColor.muted)
+            .lineLimit(1)
+            .minimumScaleFactor(0.78)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(.quaternary.opacity(0.40), in: Capsule())
+    }
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                textBlock
+                Spacer(minLength: DashboardSpacing.lg)
+                controlChip
+                    .layoutPriority(1)
+            }
+
+            VStack(alignment: .leading, spacing: DashboardSpacing.sm) {
+                textBlock
+                HStack {
+                    Spacer(minLength: 0)
+                    controlChip
+                        .layoutPriority(1)
+                }
+            }
         }
         .padding(12)
         .background(DashboardColor.panelAlt.opacity(0.72), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
@@ -1853,20 +1909,47 @@ private struct SettingControlRow<Control: View>: View {
     let detail: String
     @ViewBuilder var control: Control
 
-    var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.system(size: 13, weight: .semibold))
-                Text(detail)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(DashboardColor.muted)
-            }
-            Spacer()
-            control
+    private var textBlock: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
+            Text(detail)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(DashboardColor.muted)
+                .lineLimit(2)
+                .minimumScaleFactor(0.78)
         }
-        .padding(12)
-        .background(DashboardColor.panelAlt, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var bodyContent: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                textBlock
+                Spacer(minLength: DashboardSpacing.lg)
+                control
+                    .layoutPriority(1)
+                    .frame(maxWidth: DashboardLayout.settingsControlMaxWidth)
+            }
+
+            VStack(alignment: .leading, spacing: DashboardSpacing.sm) {
+                textBlock
+                HStack {
+                    Spacer(minLength: 0)
+                    control
+                        .layoutPriority(1)
+                        .frame(maxWidth: DashboardLayout.settingsControlCompactMaxWidth)
+                }
+            }
+        }
+    }
+
+    var body: some View {
+        bodyContent
+            .padding(12)
+            .background(DashboardColor.panelAlt, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 }
 

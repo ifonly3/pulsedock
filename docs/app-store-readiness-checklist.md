@@ -1,6 +1,6 @@
 # Pulse Dock App Store Readiness Checklist
 
-> Updated 2026-06-25. This is an internal engineering checklist for App Store readiness and should not be surfaced verbatim in the product UI.
+> Updated 2026-06-30. This is an internal engineering checklist for App Store readiness and should not be surfaced verbatim in the product UI.
 
 ## Fixed In This Pass
 
@@ -25,25 +25,27 @@
 - [x] 将内部 Xcode project/target/scheme/archive 统一为 PulseDock
 - [x] 在应用菜单和设置页补隐私政策与支持入口
 - [x] 为 Mac App Store 截图资产补校验脚本和固定目录
-- [x] App Store screenshots prepared and validated
+- [x] Simplified Chinese App Store screenshots prepared and validated
 - [x] Core custom UI accessibility labels completed
 - [x] Widget reads shared latest app snapshot through App Group with self-sampling fallback
 - [x] App Group provisioning prerequisite documented for production signing
 - [x] Threshold copy says "阈值判断" / "状态判断" for v1 and does not imply system notifications.
 - [x] Local notifications are deferred to a future opt-in feature.
-- [x] v1 localization infrastructure declares English and Simplified Chinese resources; global English submission remains blocked until full localization audit passes.
+- [x] v1 localization infrastructure declares English and Simplified Chinese resources; `scripts/audit-localization.sh` passes with zero Swift Chinese string findings.
 - [x] Window minimum size lowered and compact layouts verified
 - [x] Disk fallback no longer uses NSHomeDirectory string path
 - [x] Running app naming replaces top-process wording at user-facing boundaries
 - [x] Source folders were renamed to `Sources/PulseDockApp` and `Sources/PulseDockWidget`.
 - [x] Repository-local GitHub Pages sources were added for the support and privacy policy URLs.
+- [x] GitHub Pages privacy/support URLs return live HTTP 200 via `CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh`.
+- [x] 2026-06-30 local release gate passed: `swift test`, Widget build, Xcode Release generic build, local package, entitlement inspection, and launch smoke test.
 
 ## Still Open
 
 - [ ] Future: design opt-in local threshold notifications in a separate v1.1 feature plan.
-- [ ] If shipping v1 globally, complete a separate full localization sprint before App Store submission.
+- [ ] If shipping v1 globally, capture and validate the 5 required English App Store screenshots in `docs/app-store/screenshots/en/`.
+- [ ] If shipping v1 globally, complete English App Store Connect metadata before submission.
 - [ ] If shipping v1 without full localization, limit App Store Connect availability to Chinese-language storefronts.
-- [ ] External: publish GitHub Pages privacy/support URLs and run `CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh` before App Store submission.
 - [ ] External: verify App Group sharing with production provisioning, TestFlight, or an App Store-signed archive.
 
 ## Notes

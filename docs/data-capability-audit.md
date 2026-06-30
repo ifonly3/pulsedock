@@ -27,8 +27,8 @@ This file is an internal product and App Store readiness audit. It should not be
 | GPU and display | GPU device inventory, low-power/removable GPU capability, unified memory capability, recommended working set, public threadgroup memory and size limits, active displays, pixel size, display mode size, backing scale factor, color space model and component count, physical screen size, refresh rate, rotation state, mirror/extension state when reported | Metal, CoreGraphics display configuration, AppKit `NSScreen` display metadata, AppKit `NSScreen` fallback, and `NSScreen.maximumFramesPerSecond` when CoreGraphics omits refresh rate | GPU/Display page, Status page, Settings page |
 | Running apps | Foreground-session app count, full-list active/hidden counts, ranked display list, activation policy, executable architecture, and launch time when reported | Workspace running applications in the main app | Overview, Memory page, App page |
 | Widget data | Compact local timeline snapshot shared from the main app through App Group UserDefaults, with Widget extension compact self-sampling fallback when shared data is unavailable or stale | Main app writes a compact snapshot with the shared sampler; Widget extension reads the shared snapshot first and otherwise uses a compact public sampler that skips expensive inventory lists | Small, medium, large WidgetKit widgets |
-| Menu bar monitor | Optional live CPU title, compact popover, open dashboard, pause/resume refresh, open settings | Main app store and AppKit status item | Menu bar popover |
-| Settings | Main-window refresh interval, persisted trend history depth, menu bar CPU title, and local thresholds | App-only UserDefaults with privacy reason `CA92.1` | Settings page, top bar, History page |
+| Menu bar monitor | Optional selected live metric title, compact popover, open dashboard, pause/resume refresh, open settings | Main app store and AppKit status item | Menu bar popover |
+| Settings | Main-window refresh interval, persisted trend history depth, selected menu bar metric, and local thresholds | App-only UserDefaults with privacy reason `CA92.1` | Settings page, top bar, History page |
 | Status thresholds | CPU, memory, and disk local alert thresholds | App-only UserDefaults and current live samples | History, Overview, Status, and Storage pages |
 | Trend history | Sanitized CPU, memory, load, network, disk, battery, thermal, and uptime trend snapshots | App-only UserDefaults with 15-second persistence throttle | Overview, CPU, Memory, Network, Power, and History pages |
 
@@ -99,7 +99,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Menu bar popover progress bars use explicit snapshot reported-state flags instead of user-facing text comparisons.
 - Menu bar popover chooses a visible screen edge and clamps height before showing, with scrollable content for smaller visible areas.
 - Menu bar popover shows without activating the main app, avoiding a second window-ordering pass after the popover is positioned.
-- Menu bar status item uses stable fixed lengths so live CPU title refreshes do not move the popover anchor while it is shown.
+- Menu bar status item uses a stable fixed text length for all selected metrics so live title refreshes do not move the popover anchor while it is shown.
 - Menu bar popover pins a fresh SwiftUI root view to the computed content height before showing.
 - Menu bar popover installs a fresh hosting controller before each show and releases it after close, avoiding stale second-open layout state without replacing content after `show`.
 - Menu bar popover treats the NSStatusBar window as a fixed top anchor, always opening downward while clamping height from the actual anchor frame and visible screen.
@@ -299,7 +299,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require the menu bar popover to avoid post-show window frame refits that desynchronize the arrow.
 - Source-level tests require the menu bar popover to avoid hiding content as a workaround for post-show window movement.
 - Source-level tests require menu bar popover progress bars to use reported-state progress instead of drawing missing values as zero.
-- Source-level tests require the menu bar status item to keep a stable length while the live CPU title refreshes.
+- Source-level tests require the menu bar status item to keep a stable length while the selected live metric refreshes.
 - Source-level tests require the menu bar popover to use dynamic light/dark appearance helpers instead of fixed light panel colors.
 - Source-level tests require the menu bar popover to surface load average with reported-state tinting.
 - Source-level tests require the menu bar popover to surface uptime and Darwin kernel release with explicit snapshot reported-state tinting.
@@ -434,7 +434,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Menu bar popover passes geometry-clamped width and height into SwiftUI before showing.
 - Menu bar popover rebuilds its hidden hosting controller for each show cycle and avoids forcing layout on the system status-bar window before calculating the frame.
 - The menu bar popover leaves the outer background, rounded frame, arrow, and shadow to NSPopover instead of nesting a second custom chrome inside the system popover.
-- Menu bar title updates are coalesced from snapshot and CPU-title preference changes, and missing CPU samples keep the status item icon-only.
+- Menu bar title updates are coalesced from snapshot and selected metric preference changes, and missing selected samples keep the status item icon-only.
 - MetricsStore invalidates timers and cancels refresh tasks during deinitialization as a final lifecycle backstop.
 - Source-level tests prevent dashboard network cards from showing normalized chart baselines as measured percentages.
 - Source-level tests require Network page and large widget path capability display to come from public `NWPath` DNS/IPv4/IPv6 support flags.

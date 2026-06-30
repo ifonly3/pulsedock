@@ -5527,16 +5527,17 @@ import Testing
 
     #expect(appDelegate.contains("private enum MenuBarStatusItemLayout"))
     #expect(appDelegate.contains("static let compactLength = NSStatusItem.squareLength"))
-    #expect(appDelegate.contains("static let cpuTitleLength: CGFloat"))
-    #expect(appDelegate.contains("private var statusButtonCPUText: String?"))
-    #expect(appDelegate.contains("guard store.snapshot.hasCPUUsageReport else { return nil }"))
-    #expect(appDelegate.contains("guard let cpuText = statusButtonCPUText else"))
-    #expect(appDelegate.contains("statusItem?.length = MenuBarStatusItemLayout.cpuTitleLength"))
-    #expect(appDelegate.contains("statusItem?.button?.title = \" \\(cpuText)\""))
-    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$showsMenuBarCPU)"))
+    #expect(appDelegate.contains("static let metricTitleLength: CGFloat = 92"))
+    #expect(appDelegate.contains("static func titleLength(for text: String) -> CGFloat"))
+    #expect(appDelegate.contains("metricTitleLength"))
+    #expect(appDelegate.contains("private func statusButtonMetricText(for option: MenuBarMetricOption) -> String?"))
+    #expect(appDelegate.contains("guard let metricText = statusButtonMetricText(for: store.menuBarMetric) else"))
+    #expect(appDelegate.contains("statusItem?.length = MenuBarStatusItemLayout.titleLength(for: metricText)"))
+    #expect(appDelegate.contains("statusItem?.button?.title = \" \\(metricText)\""))
+    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$menuBarMetric)"))
     #expect(appDelegate.contains("self?.updateStatusButtonTitle()"))
-    #expect(audit.contains("Menu bar status item uses stable fixed lengths so live CPU title refreshes do not move the popover anchor while it is shown."))
-    #expect(audit.contains("Source-level tests require the menu bar status item to keep a stable length while the live CPU title refreshes."))
+    #expect(audit.contains("Menu bar status item uses a stable fixed text length for all selected metrics so live title refreshes do not move the popover anchor while it is shown."))
+    #expect(audit.contains("Source-level tests require the menu bar status item to keep a stable length while the selected live metric refreshes."))
 }
 
 @Test func menuPopoverDoesNotActivateAppAfterShowingStatusPopover() throws {
@@ -5712,11 +5713,11 @@ import Testing
 
     #expect(!appDelegate.contains("DispatchQueue.main.async"))
     #expect(appDelegate.contains("store.start()"))
-    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$showsMenuBarCPU)"))
-    #expect(appDelegate.contains("private var statusButtonCPUText: String?"))
-    #expect(appDelegate.contains("guard let cpuText = statusButtonCPUText else"))
+    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$menuBarMetric)"))
+    #expect(appDelegate.contains("private func statusButtonMetricText(for option: MenuBarMetricOption) -> String?"))
+    #expect(appDelegate.contains("guard let metricText = statusButtonMetricText(for: store.menuBarMetric) else"))
     #expect(!appDelegate.contains("store.showsMenuBarCPU ? \" \\(store.snapshot.cpuText)\" : \"\""))
-    #expect(audit.contains("Menu bar title updates are coalesced from snapshot and CPU-title preference changes, and missing CPU samples keep the status item icon-only."))
+    #expect(audit.contains("Menu bar title updates are coalesced from snapshot and selected metric preference changes, and missing selected samples keep the status item icon-only."))
 }
 
 @Test func metricsStoreInvalidatesTimerOnDeinit() throws {
@@ -7220,6 +7221,8 @@ import Testing
     #expect(dashboardView.contains("SettingsPage(store: store, isCompact: isCompact)"))
     #expect(dashboardView.contains("Picker(PulseDockAppStrings.settingsMainWindowRefreshTitle"))
     #expect(dashboardView.contains("Picker(PulseDockAppStrings.settingsLocalHistoryTitle"))
+    #expect(!dashboardView.contains(".pickerStyle(.segmented)\n                    .frame(width: 214)"))
+    #expect(dashboardView.contains(".pickerStyle(.menu)\n                    .frame(width: 156)"))
 }
 
 @Test func pulseDockAppStringsRuntimeLookupUsesSwiftPMResources() throws {
@@ -7699,7 +7702,7 @@ import Testing
     #expect(audit.contains("Source-level tests prevent the Status page from duplicating storage volume inventory owned by Storage."))
 }
 
-@Test func menuBarCPUDisplayCanBeToggledAndPersisted() throws {
+@Test func menuBarMetricSelectionCanBeConfiguredAndPersisted() throws {
     let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
     let metricsStore = try String(
         contentsOf: root.appendingPathComponent("Sources/PulseDockApp/MetricsStore.swift"),
@@ -7714,17 +7717,33 @@ import Testing
         encoding: .utf8
     )
 
-    #expect(metricsStore.contains("static let showsMenuBarCPU"))
-    #expect(metricsStore.contains("@Published private(set) var showsMenuBarCPU"))
-    #expect(metricsStore.contains("func updateShowsMenuBarCPU"))
-    #expect(metricsStore.contains("defaults.set(isVisible, forKey: DefaultsKeys.showsMenuBarCPU"))
-    #expect(dashboardView.contains("Toggle(PulseDockAppStrings.settingsMenuBarCPULabel, isOn: Binding("))
-    #expect(dashboardView.contains("store.showsMenuBarCPU"))
-    #expect(dashboardView.contains("store.updateShowsMenuBarCPU"))
-    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$showsMenuBarCPU)"))
+    #expect(metricsStore.contains("enum MenuBarMetricOption: String, CaseIterable, Identifiable"))
+    #expect(metricsStore.contains("static let menuBarMetric = \"dashboard.menuBar.metric\""))
+    #expect(metricsStore.contains("static let showsMenuBarCPU = \"dashboard.menuBar.showsCPU\""))
+    #expect(metricsStore.contains("@Published private(set) var menuBarMetric: MenuBarMetricOption"))
+    #expect(metricsStore.contains("private static func savedMenuBarMetric(_ defaults: UserDefaults) -> MenuBarMetricOption"))
+    #expect(metricsStore.contains("func updateMenuBarMetric(_ option: MenuBarMetricOption)"))
+    #expect(metricsStore.contains("defaults.set(option.rawValue, forKey: DefaultsKeys.menuBarMetric)"))
+    #expect(metricsStore.contains("defaults.set(option != .iconOnly, forKey: DefaultsKeys.showsMenuBarCPU)"))
+
+    #expect(dashboardView.contains("@State private var draftMenuBarMetric: MenuBarMetricOption?"))
+    #expect(dashboardView.contains("Picker(PulseDockAppStrings.settingsMenuBarStatusTitle, selection: Binding("))
+    #expect(dashboardView.contains("draftMenuBarMetric ?? store.menuBarMetric"))
+    #expect(dashboardView.contains("store.updateMenuBarMetric(value)"))
+    #expect(dashboardView.contains("ForEach(MenuBarMetricOption.allCases)"))
+    #expect(dashboardView.contains(".pickerStyle(.menu)"))
+    #expect(!dashboardView.contains("Toggle(PulseDockAppStrings.settingsMenuBarCPULabel"))
+
+    #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$menuBarMetric)"))
     #expect(appDelegate.contains("updateStatusButtonTitle()"))
-    #expect(appDelegate.contains("private var statusButtonCPUText: String?"))
-    #expect(appDelegate.contains("guard let cpuText = statusButtonCPUText else"))
+    #expect(appDelegate.contains("private func statusButtonMetricText(for option: MenuBarMetricOption) -> String?"))
+    #expect(appDelegate.contains("case .network:"))
+    #expect(appDelegate.contains("store.snapshot.networkText"))
+    #expect(appDelegate.contains("case .memory:"))
+    #expect(appDelegate.contains("store.snapshot.memoryUsageText"))
+    #expect(appDelegate.contains("case .battery:"))
+    #expect(appDelegate.contains("store.snapshot.powerStatusText"))
+    #expect(appDelegate.contains("MenuBarStatusItemLayout.titleLength(for: metricText)"))
 }
 
 @Test func historyPersistenceUsesSanitizedTrendSnapshots() throws {
@@ -8869,7 +8888,7 @@ import Testing
     #expect(checklist.contains("- [x] 将内部 Xcode project/target/scheme/archive 统一为 PulseDock"))
     #expect(checklist.contains("- [x] 在应用菜单和设置页补隐私政策与支持入口"))
     #expect(checklist.contains("- [x] 为 Mac App Store 截图资产补校验脚本和固定目录"))
-    #expect(checklist.contains("- [x] App Store screenshots prepared and validated"))
+    #expect(checklist.contains("- [x] Simplified Chinese App Store screenshots prepared and validated"))
     #expect(checklist.contains("- [x] Core custom UI accessibility labels completed"))
     #expect(checklist.contains("- [x] Widget reads shared latest app snapshot through App Group with self-sampling fallback"))
     #expect(checklist.contains("- [x] App Group provisioning prerequisite documented for production signing"))
@@ -8878,8 +8897,12 @@ import Testing
     #expect(checklist.contains("- [x] Running app naming replaces top-process wording at user-facing boundaries"))
     #expect(checklist.contains("Source folders were renamed to `Sources/PulseDockApp` and `Sources/PulseDockWidget`."))
     #expect(checklist.contains("- [x] Repository-local GitHub Pages sources were added for the support and privacy policy URLs."))
+    #expect(checklist.contains("- [x] GitHub Pages privacy/support URLs return live HTTP 200 via `CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh`."))
+    #expect(checklist.contains("- [x] 2026-06-30 local release gate passed: `swift test`, Widget build, Xcode Release generic build, local package, entitlement inspection, and launch smoke test."))
     #expect(!checklist.contains("- [ ] 评估 App Group 共享最近一次样本"))
-    #expect(checklist.contains("- [ ] External: publish GitHub Pages privacy/support URLs and run `CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh` before App Store submission."))
+    #expect(checklist.contains("- [ ] If shipping v1 globally, capture and validate the 5 required English App Store screenshots in `docs/app-store/screenshots/en/`."))
+    #expect(checklist.contains("- [ ] If shipping v1 globally, complete English App Store Connect metadata before submission."))
+    #expect(!checklist.contains("- [ ] External: publish GitHub Pages privacy/support URLs and run `CHECK_PUBLIC_URLS=1 scripts/validate-public-pages.sh` before App Store submission."))
     #expect(checklist.contains("- [ ] External: verify App Group sharing with production provisioning, TestFlight, or an App Store-signed archive."))
     #expect(!checklist.contains("- [ ] 评估是否将内部 Xcode target/scheme 从 SystemDashboard 迁移为 PulseDock"))
 }

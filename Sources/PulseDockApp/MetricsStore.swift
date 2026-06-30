@@ -29,12 +29,33 @@ enum HistoryDepthOption: Int, CaseIterable, Identifiable {
     var label: String { PulseDockAppStrings.historySampleCount(rawValue) }
 }
 
+enum MenuBarMetricOption: String, CaseIterable, Identifiable {
+    case iconOnly
+    case cpu
+    case network
+    case memory
+    case battery
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .iconOnly: return PulseDockAppStrings.settingsMenuBarMetricIconOnlyLabel
+        case .cpu: return PulseDockAppStrings.settingsMenuBarMetricCPULabel
+        case .network: return PulseDockAppStrings.settingsMenuBarMetricNetworkLabel
+        case .memory: return PulseDockAppStrings.settingsMenuBarMetricMemoryLabel
+        case .battery: return PulseDockAppStrings.settingsMenuBarMetricBatteryLabel
+        }
+    }
+}
+
 private enum DefaultsKeys {
     static let refreshInterval = "dashboard.refreshInterval"
     static let historyDepth = "dashboard.historyDepth"
     static let cpuAlertThreshold = "dashboard.alertThreshold.cpu"
     static let memoryAlertThreshold = "dashboard.alertThreshold.memory"
     static let diskAlertThreshold = "dashboard.alertThreshold.disk"
+    static let menuBarMetric = "dashboard.menuBar.metric"
     static let showsMenuBarCPU = "dashboard.menuBar.showsCPU"
     static let historySnapshots = "dashboard.historySnapshots"
 }
@@ -50,7 +71,7 @@ final class MetricsStore: ObservableObject {
     @Published private(set) var cpuAlertThreshold: Double
     @Published private(set) var memoryAlertThreshold: Double
     @Published private(set) var diskAlertThreshold: Double
-    @Published private(set) var showsMenuBarCPU: Bool
+    @Published private(set) var menuBarMetric: MenuBarMetricOption
 
     private let sampler: SystemSampler
     private let defaults: UserDefaults
@@ -81,9 +102,7 @@ final class MetricsStore: ObservableObject {
         self.cpuAlertThreshold = Self.savedThreshold(defaults, key: DefaultsKeys.cpuAlertThreshold, defaultValue: 0.9)
         self.memoryAlertThreshold = Self.savedThreshold(defaults, key: DefaultsKeys.memoryAlertThreshold, defaultValue: 0.85)
         self.diskAlertThreshold = Self.savedThreshold(defaults, key: DefaultsKeys.diskAlertThreshold, defaultValue: 0.9)
-        self.showsMenuBarCPU = defaults.object(forKey: DefaultsKeys.showsMenuBarCPU) == nil
-            ? true
-            : defaults.bool(forKey: DefaultsKeys.showsMenuBarCPU)
+        self.menuBarMetric = Self.savedMenuBarMetric(defaults)
 
         let savedSnapshots = Self.savedHistory(defaults, limit: historyDepth.sampleCount)
         if !savedSnapshots.isEmpty {
@@ -182,15 +201,29 @@ final class MetricsStore: ObservableObject {
         defaults.set(normalized, forKey: DefaultsKeys.diskAlertThreshold)
     }
 
-    func updateShowsMenuBarCPU(_ isVisible: Bool) {
-        guard showsMenuBarCPU != isVisible else { return }
+    func updateMenuBarMetric(_ option: MenuBarMetricOption) {
+        guard menuBarMetric != option else { return }
 
-        showsMenuBarCPU = isVisible
-        defaults.set(isVisible, forKey: DefaultsKeys.showsMenuBarCPU)
+        menuBarMetric = option
+        defaults.set(option.rawValue, forKey: DefaultsKeys.menuBarMetric)
+        defaults.set(option != .iconOnly, forKey: DefaultsKeys.showsMenuBarCPU)
     }
 
     var historyDurationText: String {
         MetricFormatting.duration(TimeInterval(historyDepth.sampleCount) * refreshInterval.seconds)
+    }
+
+    private static func savedMenuBarMetric(_ defaults: UserDefaults) -> MenuBarMetricOption {
+        if let rawValue = defaults.string(forKey: DefaultsKeys.menuBarMetric),
+           let option = MenuBarMetricOption(rawValue: rawValue) {
+            return option
+        }
+
+        guard defaults.object(forKey: DefaultsKeys.showsMenuBarCPU) != nil else {
+            return .cpu
+        }
+
+        return defaults.bool(forKey: DefaultsKeys.showsMenuBarCPU) ? .cpu : .iconOnly
     }
 
     private static func savedThreshold(_ defaults: UserDefaults, key: String, defaultValue: Double) -> Double {

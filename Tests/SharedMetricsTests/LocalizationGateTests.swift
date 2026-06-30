@@ -559,8 +559,12 @@ import Testing
         (symbol: "settingsMainWindowRefreshTitle", key: "app.settings.main_window_refresh.title", english: "Main Window Refresh", chinese: "主窗口刷新"),
         (symbol: "settingsMainWindowRefreshDetail", key: "app.settings.main_window_refresh.detail", english: "Live trends and status cards", chinese: "实时趋势与状态卡片"),
         (symbol: "settingsMenuBarStatusTitle", key: "app.settings.menu_bar_status.title", english: "Menu Bar Status", chinese: "菜单栏状态"),
-        (symbol: "settingsMenuBarStatusDetail", key: "app.settings.menu_bar_status.detail", english: "Show current CPU usage", chinese: "显示当前 CPU 占用"),
-        (symbol: "settingsMenuBarCPULabel", key: "app.settings.menu_bar_cpu.label", english: "Menu Bar CPU", chinese: "菜单栏 CPU"),
+        (symbol: "settingsMenuBarStatusDetail", key: "app.settings.menu_bar_status.detail", english: "Choose the metric shown beside the menu bar icon", chinese: "选择菜单栏图标旁显示的指标"),
+        (symbol: "settingsMenuBarMetricIconOnlyLabel", key: "app.settings.menu_bar_metric.icon_only", english: "Icon Only", chinese: "仅图标"),
+        (symbol: "settingsMenuBarMetricCPULabel", key: "app.settings.menu_bar_metric.cpu", english: "CPU", chinese: "CPU"),
+        (symbol: "settingsMenuBarMetricNetworkLabel", key: "app.settings.menu_bar_metric.network", english: "Network", chinese: "网络"),
+        (symbol: "settingsMenuBarMetricMemoryLabel", key: "app.settings.menu_bar_metric.memory", english: "Memory", chinese: "内存"),
+        (symbol: "settingsMenuBarMetricBatteryLabel", key: "app.settings.menu_bar_metric.battery", english: "Battery", chinese: "电池"),
         (symbol: "settingsWidgetRefreshTitle", key: "app.settings.widget_refresh.title", english: "Widget Refresh", chinese: "小组件刷新"),
         (symbol: "settingsWidgetRefreshDetail", key: "app.settings.widget_refresh.detail", english: "Requested about every 5 minutes by the system timeline", chinese: "由系统时间线约每 5 分钟请求一次"),
         (symbol: "settingsLocalHistoryTitle", key: "app.settings.local_history.title", english: "Local History", chinese: "本地历史"),
@@ -590,6 +594,11 @@ import Testing
     ]
 
     let settingsSymbolsRetainedOutsideSettingsPage = Set([
+        "settingsMenuBarMetricIconOnlyLabel",
+        "settingsMenuBarMetricCPULabel",
+        "settingsMenuBarMetricNetworkLabel",
+        "settingsMenuBarMetricMemoryLabel",
+        "settingsMenuBarMetricBatteryLabel",
         "settingsWidgetRefreshLabel",
         "settingsWidgetMainWindowLabel"
     ])

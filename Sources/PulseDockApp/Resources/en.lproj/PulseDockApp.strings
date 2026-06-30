@@ -238,8 +238,12 @@
 "app.settings.local_history.title" = "Local History";
 "app.settings.main_window_refresh.detail" = "Live trends and status cards";
 "app.settings.main_window_refresh.title" = "Main Window Refresh";
-"app.settings.menu_bar_cpu.label" = "Menu Bar CPU";
-"app.settings.menu_bar_status.detail" = "Show current CPU usage";
+"app.settings.menu_bar_metric.battery" = "Battery";
+"app.settings.menu_bar_metric.cpu" = "CPU";
+"app.settings.menu_bar_metric.icon_only" = "Icon Only";
+"app.settings.menu_bar_metric.memory" = "Memory";
+"app.settings.menu_bar_metric.network" = "Network";
+"app.settings.menu_bar_status.detail" = "Choose the metric shown beside the menu bar icon";
 "app.settings.menu_bar_status.title" = "Menu Bar Status";
 "app.settings.privacy_policy.detail" = "Local sampling, no account, no tracking, no analytics, no remote probes";
 "app.settings.privacy_policy.title" = "Privacy Policy";
