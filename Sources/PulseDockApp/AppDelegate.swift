@@ -7,10 +7,26 @@ import SharedMetrics
 
 private enum MenuBarStatusItemLayout {
     static let compactLength = NSStatusItem.squareLength
-    static let metricTitleLength: CGFloat = 92
+    static let metricMinLength: CGFloat = 46
+    static let metricMaxLength: CGFloat = 104
+    static let metricHorizontalPadding: CGFloat = 7
+    static let iconAllowance: CGFloat = 20
 
-    static func titleLength(for text: String) -> CGFloat {
-        metricTitleLength
+    static func titleLength(for text: String, font: NSFont) -> CGFloat {
+        let measuredTextWidth = ceil((text as NSString).size(withAttributes: [.font: font]).width)
+        return min(metricMaxLength, max(metricMinLength, measuredTextWidth + metricHorizontalPadding * 2 + iconAllowance))
+    }
+
+    static func titleLength(for option: MenuBarMetricOption, font: NSFont) -> CGFloat {
+        titleLength(for: representativeText(for: option), font: font)
+    }
+
+    private static func representativeText(for option: MenuBarMetricOption) -> String {
+        switch option {
+        case .iconOnly: ""
+        case .cpu, .memory, .battery: "100%"
+        case .network: "999 Mbps"
+        }
     }
 }
 
@@ -45,6 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var statusHostingController: NSHostingController<WidgetPanelView>?
     private var isStatusPopoverClosing = false
     private var statusPopoverSuppressToggleUntil: Date?
+    private var statusItemLengthMode: MenuBarMetricOption?
     private var cancellables = Set<AnyCancellable>()
     private let store = MetricsStore()
     private let router = DashboardRouter()
@@ -266,6 +283,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         if let button = item.button {
             button.image = NSImage(systemSymbolName: "waveform.path.ecg.rectangle", accessibilityDescription: "Pulse Dock")
             button.imagePosition = .imageLeading
+            button.font = NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .semibold)
             button.target = self
             button.action = #selector(toggleStatusPopover(_:))
         }
@@ -360,14 +378,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     }
 
     private func updateStatusButtonTitle() {
-        guard let metricText = statusButtonMetricText(for: store.menuBarMetric) else {
-            statusItem?.length = MenuBarStatusItemLayout.compactLength
-            statusItem?.button?.title = ""
+        guard let button = statusItem?.button else { return }
+
+        let statusFont = NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .semibold)
+        button.font = statusFont
+
+        let selectedMetric = store.menuBarMetric
+        guard let metricText = statusButtonMetricText(for: selectedMetric) else {
+            applyStatusItemLength(MenuBarStatusItemLayout.compactLength, mode: nil)
+            button.title = ""
             return
         }
 
-        statusItem?.length = MenuBarStatusItemLayout.titleLength(for: metricText)
-        statusItem?.button?.title = " \(metricText)"
+        let statusLength = MenuBarStatusItemLayout.titleLength(for: selectedMetric, font: statusFont)
+        applyStatusItemLength(statusLength, mode: selectedMetric)
+        button.title = metricText
+    }
+
+    private func applyStatusItemLength(_ length: CGFloat, mode: MenuBarMetricOption?) {
+        guard statusItemLengthMode != mode else { return }
+        guard statusPopover?.isShown != true else { return }
+        statusItem?.length = length
+        statusItemLengthMode = mode
     }
 
     @objc private func toggleStatusPopover(_ sender: Any?) {
@@ -510,5 +542,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         guard notification.object as? NSPopover === statusPopover else { return }
         isStatusPopoverClosing = false
         resetStatusPopoverContentHost()
+        updateStatusButtonTitle()
     }
 }

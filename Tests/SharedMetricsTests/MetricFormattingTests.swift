@@ -5527,17 +5527,22 @@ import Testing
 
     #expect(appDelegate.contains("private enum MenuBarStatusItemLayout"))
     #expect(appDelegate.contains("static let compactLength = NSStatusItem.squareLength"))
-    #expect(appDelegate.contains("static let metricTitleLength: CGFloat = 92"))
-    #expect(appDelegate.contains("static func titleLength(for text: String) -> CGFloat"))
-    #expect(appDelegate.contains("metricTitleLength"))
+    #expect(appDelegate.contains("static let metricMinLength: CGFloat = 46"))
+    #expect(appDelegate.contains("static let metricMaxLength: CGFloat = 104"))
+    #expect(appDelegate.contains("static func titleLength(for text: String, font: NSFont) -> CGFloat"))
+    #expect(appDelegate.contains("static func titleLength(for option: MenuBarMetricOption, font: NSFont) -> CGFloat"))
+    #expect(appDelegate.contains("case .network: \"999 Mbps\""))
+    #expect(appDelegate.contains("private var statusItemLengthMode: MenuBarMetricOption?"))
     #expect(appDelegate.contains("private func statusButtonMetricText(for option: MenuBarMetricOption) -> String?"))
-    #expect(appDelegate.contains("guard let metricText = statusButtonMetricText(for: store.menuBarMetric) else"))
-    #expect(appDelegate.contains("statusItem?.length = MenuBarStatusItemLayout.titleLength(for: metricText)"))
-    #expect(appDelegate.contains("statusItem?.button?.title = \" \\(metricText)\""))
+    #expect(appDelegate.contains("let selectedMetric = store.menuBarMetric"))
+    #expect(appDelegate.contains("guard let metricText = statusButtonMetricText(for: selectedMetric) else"))
+    #expect(appDelegate.contains("let statusLength = MenuBarStatusItemLayout.titleLength(for: selectedMetric, font: statusFont)"))
+    #expect(appDelegate.contains("applyStatusItemLength(statusLength, mode: selectedMetric)"))
+    #expect(appDelegate.contains("button.title = metricText"))
     #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$menuBarMetric)"))
     #expect(appDelegate.contains("self?.updateStatusButtonTitle()"))
-    #expect(audit.contains("Menu bar status item uses a stable fixed text length for all selected metrics so live title refreshes do not move the popover anchor while it is shown."))
-    #expect(audit.contains("Source-level tests require the menu bar status item to keep a stable length while the selected live metric refreshes."))
+    #expect(audit.contains("Menu bar status item uses measured, representative, clamped lengths for selected metrics so live title refreshes keep the popover anchor stable without wasting menu bar space."))
+    #expect(audit.contains("Source-level tests require the menu bar status item to measure selected metric families with monospaced digits, representative network text, and a tight clamped width."))
 }
 
 @Test func menuPopoverDoesNotActivateAppAfterShowingStatusPopover() throws {
@@ -5715,7 +5720,8 @@ import Testing
     #expect(appDelegate.contains("store.start()"))
     #expect(appDelegate.contains("store.$snapshot.combineLatest(store.$menuBarMetric)"))
     #expect(appDelegate.contains("private func statusButtonMetricText(for option: MenuBarMetricOption) -> String?"))
-    #expect(appDelegate.contains("guard let metricText = statusButtonMetricText(for: store.menuBarMetric) else"))
+    #expect(appDelegate.contains("let selectedMetric = store.menuBarMetric"))
+    #expect(appDelegate.contains("guard let metricText = statusButtonMetricText(for: selectedMetric) else"))
     #expect(!appDelegate.contains("store.showsMenuBarCPU ? \" \\(store.snapshot.cpuText)\" : \"\""))
     #expect(audit.contains("Menu bar title updates are coalesced from snapshot and selected metric preference changes, and missing selected samples keep the status item icon-only."))
 }
@@ -7743,7 +7749,7 @@ import Testing
     #expect(appDelegate.contains("store.snapshot.memoryUsageText"))
     #expect(appDelegate.contains("case .battery:"))
     #expect(appDelegate.contains("store.snapshot.powerStatusText"))
-    #expect(appDelegate.contains("MenuBarStatusItemLayout.titleLength(for: metricText)"))
+    #expect(appDelegate.contains("MenuBarStatusItemLayout.titleLength(for: selectedMetric, font: statusFont)"))
 }
 
 @Test func historyPersistenceUsesSanitizedTrendSnapshots() throws {

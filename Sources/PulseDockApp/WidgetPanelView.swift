@@ -112,6 +112,8 @@ private struct MenuPopoverPreview: View {
                 Text(snapshot.sampleTimeText)
                     .font(.system(size: 11, weight: .medium).monospacedDigit())
                     .foregroundStyle(popoverSecondaryText(for: colorScheme))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
             }
 
             Spacer()

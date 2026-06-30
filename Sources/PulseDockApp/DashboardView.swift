@@ -387,14 +387,14 @@ private struct DashboardTopBar: View {
     private var fullChipRow: some View {
         HStack(spacing: 8) {
             DataChip(icon: "desktopcomputer", text: PulseDockAppStrings.dashboardTopBarLocalMachine)
-            DataChip(icon: "clock", text: PulseDockAppStrings.dashboardSampleChip(snapshot.sampleTimeText))
+            DataChip(icon: "clock", text: PulseDockAppStrings.dashboardSampleChip(snapshot.sampleTimeText), minWidth: DashboardLayout.sampleChipMinWidth, monospacedDigits: true)
             DataChip(icon: "arrow.clockwise", text: refreshInterval.label)
         }
     }
 
     private var essentialChipRow: some View {
         HStack(spacing: 8) {
-            DataChip(icon: "clock", text: snapshot.sampleTimeText)
+            DataChip(icon: "clock", text: snapshot.sampleTimeText, minWidth: DashboardLayout.shortTimeChipMinWidth, monospacedDigits: true)
             DataChip(icon: "arrow.clockwise", text: refreshInterval.label)
         }
     }
@@ -1157,8 +1157,7 @@ private struct MetricCard: View {
                     .foregroundStyle(tint)
                 Spacer()
                 if let badgeText = badgeText {
-                    Text(badgeText)
-                        .font(.system(size: 11, weight: .semibold).monospacedDigit())
+                    StableMetricText(text: badgeText, font: .system(size: 11, weight: .semibold), minWidth: DashboardLayout.badgeValueMinWidth, alignment: .trailing, minimumScaleFactor: 0.72)
                         .foregroundStyle(tint)
                 }
             }
@@ -1167,10 +1166,7 @@ private struct MetricCard: View {
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(DashboardColor.muted)
-                Text(value)
-                    .font(.system(size: 29, weight: .semibold, design: .default).monospacedDigit())
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.68)
+                StableMetricText(text: value, font: .system(size: 29, weight: .semibold, design: .default), minWidth: DashboardLayout.metricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.68)
                 Text(detail)
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(DashboardColor.muted)
@@ -1211,10 +1207,7 @@ private struct SummaryCard: View {
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(DashboardColor.muted)
-                Text(value)
-                    .font(.system(size: 24, weight: .semibold).monospacedDigit())
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.72)
+                StableMetricText(text: value, font: .system(size: 24, weight: .semibold), minWidth: DashboardLayout.metricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.72)
             }
             Spacer()
         }
@@ -1540,8 +1533,7 @@ private struct StatLine: View {
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(DashboardColor.muted)
                 Spacer()
-                Text(value)
-                    .font(.system(size: 13, weight: .semibold).monospacedDigit())
+                StableMetricText(text: value, font: .system(size: 13, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .trailing, minimumScaleFactor: 0.70)
             }
             StatProgress(progress: progress, tint: tint)
         }
@@ -1787,10 +1779,7 @@ private struct KeyValueGrid: View {
                         .foregroundStyle(DashboardColor.muted)
                         .lineLimit(1)
                         .minimumScaleFactor(0.72)
-                    Text(item.1)
-                        .font(.system(size: 13, weight: .semibold).monospacedDigit())
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.68)
+                    StableMetricText(text: item.1, font: .system(size: 13, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .leading, minimumScaleFactor: 0.68)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(10)
@@ -1800,22 +1789,53 @@ private struct KeyValueGrid: View {
     }
 }
 
+private struct StableMetricText: View {
+    let text: String
+    let font: Font
+    let minWidth: CGFloat?
+    let alignment: Alignment
+    let minimumScaleFactor: CGFloat
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Text(text)
+            .font(font.monospacedDigit())
+            .lineLimit(1)
+            .minimumScaleFactor(minimumScaleFactor)
+            .contentTransition(reduceMotion ? .identity : .numericText())
+            .animation(DashboardMotion.metric(reduceMotion: reduceMotion), value: text)
+            .frame(minWidth: minWidth, alignment: alignment)
+    }
+}
+
 private struct DataChip: View {
     let icon: String
     let text: String
+    var minWidth: CGFloat?
+    var monospacedDigits = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var textFont: Font {
+        let base = Font.system(size: 12, weight: .semibold)
+        return monospacedDigits ? base.monospacedDigit() : base
+    }
 
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.system(size: 11, weight: .semibold))
+                .accessibilityHidden(true)
             Text(text)
-                .font(.system(size: 12, weight: .semibold))
+                .font(textFont)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
+                .contentTransition(monospacedDigits && !reduceMotion ? .numericText() : .identity)
+                .animation(monospacedDigits ? DashboardMotion.metric(reduceMotion: reduceMotion) : nil, value: text)
         }
         .foregroundStyle(.secondary)
         .padding(.horizontal, 9)
         .padding(.vertical, 6)
+        .frame(minWidth: minWidth)
         .background(.quaternary.opacity(0.62), in: Capsule())
     }
 }

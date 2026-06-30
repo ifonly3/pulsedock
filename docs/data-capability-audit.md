@@ -99,7 +99,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Menu bar popover progress bars use explicit snapshot reported-state flags instead of user-facing text comparisons.
 - Menu bar popover chooses a visible screen edge and clamps height before showing, with scrollable content for smaller visible areas.
 - Menu bar popover shows without activating the main app, avoiding a second window-ordering pass after the popover is positioned.
-- Menu bar status item uses a stable fixed text length for all selected metrics so live title refreshes do not move the popover anchor while it is shown.
+- Menu bar status item uses measured, representative, clamped lengths for selected metrics so live title refreshes keep the popover anchor stable without wasting menu bar space.
 - Menu bar popover pins a fresh SwiftUI root view to the computed content height before showing.
 - Menu bar popover installs a fresh hosting controller before each show and releases it after close, avoiding stale second-open layout state without replacing content after `show`.
 - Menu bar popover treats the NSStatusBar window as a fixed top anchor, always opening downward while clamping height from the actual anchor frame and visible screen.
@@ -299,7 +299,7 @@ This file is an internal product and App Store readiness audit. It should not be
 - Source-level tests require the menu bar popover to avoid post-show window frame refits that desynchronize the arrow.
 - Source-level tests require the menu bar popover to avoid hiding content as a workaround for post-show window movement.
 - Source-level tests require menu bar popover progress bars to use reported-state progress instead of drawing missing values as zero.
-- Source-level tests require the menu bar status item to keep a stable length while the selected live metric refreshes.
+- Source-level tests require the menu bar status item to measure selected metric families with monospaced digits, representative network text, and a tight clamped width.
 - Source-level tests require the menu bar popover to use dynamic light/dark appearance helpers instead of fixed light panel colors.
 - Source-level tests require the menu bar popover to surface load average with reported-state tinting.
 - Source-level tests require the menu bar popover to surface uptime and Darwin kernel release with explicit snapshot reported-state tinting.

@@ -54,6 +54,11 @@ enum DashboardLayout {
     static let settingsControlCompactMaxWidth: CGFloat = 220
     static let minimumTableColumnWidth: CGFloat = 96
     static let wideTableColumnWidth: CGFloat = 112
+    static let sampleChipMinWidth: CGFloat = 156
+    static let shortTimeChipMinWidth: CGFloat = 96
+    static let metricValueMinWidth: CGFloat = 96
+    static let statValueMinWidth: CGFloat = 56
+    static let badgeValueMinWidth: CGFloat = 42
 }
 
 enum DashboardColor {

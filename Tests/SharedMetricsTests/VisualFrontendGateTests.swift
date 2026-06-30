@@ -154,6 +154,63 @@ struct VisualFrontendGateTests {
         #expect(!appDelegate.contains("window.minSize = NSSize(width: 960, height: 640)"))
     }
 
+    @Test func menuBarSelectedMetricUsesMeasuredCompactStatusLength() throws {
+        let appDelegate = try fixture("Sources/PulseDockApp/AppDelegate.swift")
+
+        #expect(appDelegate.contains("static let metricMinLength: CGFloat = 46"))
+        #expect(appDelegate.contains("static let metricMaxLength: CGFloat = 104"))
+        #expect(appDelegate.contains("static let metricHorizontalPadding: CGFloat = 7"))
+        #expect(appDelegate.contains("static let iconAllowance: CGFloat = 20"))
+        #expect(appDelegate.contains("static func titleLength(for text: String, font: NSFont) -> CGFloat"))
+        #expect(appDelegate.contains("static func titleLength(for option: MenuBarMetricOption, font: NSFont) -> CGFloat"))
+        #expect(appDelegate.contains("case .network: \"999 Mbps\""))
+        #expect(appDelegate.contains("let measuredTextWidth = ceil((text as NSString).size(withAttributes: [.font: font]).width)"))
+        #expect(appDelegate.contains("return min(metricMaxLength, max(metricMinLength, measuredTextWidth + metricHorizontalPadding * 2 + iconAllowance))"))
+        #expect(appDelegate.contains("private var statusItemLengthMode: MenuBarMetricOption?"))
+        #expect(appDelegate.contains("guard statusPopover?.isShown != true else { return }"))
+        #expect(appDelegate.contains("let statusFont = NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .semibold)"))
+        #expect(appDelegate.contains("button.font = statusFont"))
+        #expect(appDelegate.contains("button.title = metricText"))
+        #expect(appDelegate.contains("let statusLength = MenuBarStatusItemLayout.titleLength(for: selectedMetric, font: statusFont)"))
+        #expect(appDelegate.contains("applyStatusItemLength(statusLength, mode: selectedMetric)"))
+        #expect(!appDelegate.contains("metricTitleLength"))
+        #expect(!appDelegate.contains("button?.title = \" \\(metricText)\""))
+    }
+
+    @Test func dashboardDynamicTextUsesStableDigitComponents() throws {
+        let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
+        let tokens = try fixture("Sources/PulseDockApp/DashboardVisualTokens.swift")
+
+        #expect(tokens.contains("static let sampleChipMinWidth: CGFloat = 156"))
+        #expect(tokens.contains("static let shortTimeChipMinWidth: CGFloat = 96"))
+        #expect(tokens.contains("static let metricValueMinWidth: CGFloat = 96"))
+        #expect(tokens.contains("static let statValueMinWidth: CGFloat = 56"))
+        #expect(tokens.contains("static let badgeValueMinWidth: CGFloat = 42"))
+        #expect(dashboard.contains("private struct StableMetricText: View"))
+        #expect(dashboard.contains("@Environment(\\.accessibilityReduceMotion) private var reduceMotion"))
+        #expect(dashboard.contains(".contentTransition(reduceMotion ? .identity : .numericText())"))
+        #expect(dashboard.contains(".animation(DashboardMotion.metric(reduceMotion: reduceMotion), value: text)"))
+        #expect(dashboard.contains("DataChip(icon: \"clock\", text: PulseDockAppStrings.dashboardSampleChip(snapshot.sampleTimeText), minWidth: DashboardLayout.sampleChipMinWidth, monospacedDigits: true)"))
+        #expect(dashboard.contains("DataChip(icon: \"clock\", text: snapshot.sampleTimeText, minWidth: DashboardLayout.shortTimeChipMinWidth, monospacedDigits: true)"))
+        #expect(dashboard.contains("StableMetricText(text: value, font: .system(size: 29, weight: .semibold, design: .default), minWidth: DashboardLayout.metricValueMinWidth, alignment: .leading, minimumScaleFactor: 0.68)"))
+        #expect(dashboard.contains("StableMetricText(text: value, font: .system(size: 13, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .trailing, minimumScaleFactor: 0.70)"))
+        #expect(componentBody(named: "KeyValueGrid", in: dashboard).contains("StableMetricText(text: item.1, font: .system(size: 13, weight: .semibold), minWidth: DashboardLayout.statValueMinWidth, alignment: .leading, minimumScaleFactor: 0.68)"))
+    }
+
+    @Test func dynamicWidthAndMotionReviewDocumentCoversKnownSurfaces() throws {
+        let review = try fixture("docs/review/frontend-dynamic-width-motion-review.md")
+
+        #expect(review.contains("macOS menu bar status item"))
+        #expect(review.contains("Dashboard top bar chips"))
+        #expect(review.contains("Metric cards and badges"))
+        #expect(review.contains("Settings controls"))
+        #expect(review.contains("Popover widget panel"))
+        #expect(review.contains("Desktop widgets"))
+        #expect(review.contains("Reduce Motion"))
+        #expect(review.contains("DW-1"))
+        #expect(review.contains("DW-6"))
+    }
+
     @Test func dashboardDenseTablesUseResponsiveTableWrapper() throws {
         let dashboard = try fixture("Sources/PulseDockApp/DashboardView.swift")
 
